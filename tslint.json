@@ -1,0 +1,18 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended",
+    "tslint-react"
+  ],
+  "jsRules": {},
+  "rules": {
+    "interface-name": false,
+    "quotemark": [true, "single"]
+  },
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**/*.ts"
+    ]
+  }
+}
