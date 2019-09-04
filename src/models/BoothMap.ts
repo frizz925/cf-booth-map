@@ -1,11 +1,10 @@
 export interface Cell {
   prefix: string;
   number: number;
-  suffix?: string;
+  suffix: string;
 }
 
 export interface Cluster {
-  id: string;
   name: string;
 
   left: number;

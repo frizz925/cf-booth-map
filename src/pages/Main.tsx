@@ -2,8 +2,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 import mapImage from '../assets/floor_map_cf13.png';
 import BoothMap from '../components/BoothMap';
+import CursorTracker from '../components/CursorTracker';
 
-const Container = styled.div``;
 const Image = styled.img`
   display: block;
 `;
@@ -11,10 +11,10 @@ const Image = styled.img`
 export default class Main extends React.Component {
   public render() {
     return (
-      <Container>
+      <CursorTracker>
         <Image src={mapImage} />
         <BoothMap />
-      </Container>
+      </CursorTracker>
     );
   }
 }

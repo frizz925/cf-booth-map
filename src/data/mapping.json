@@ -1,62 +1,117 @@
-{
-  "left": [{
+[
+  {
+    "cluster": "A",
+    "orientation": "vertical",
+    "direction": "right",
     "left": 465,
     "top": 578,
     "right": 600,
     "bottom": 1530,
-    "type": "1x14",
-    "ranges": "38-32",
-    "cluster": "A"
-  }, {
+    "range": "38-32",
+    "suffixes": "b-a"
+  },
+  {
+    "cluster": "A",
+    "orientation": "vertical",
+    "direction": "right",
     "left": 465,
     "top": 1696,
     "right": 600,
     "bottom": 2513,
-    "type": "1x12",
-    "ranges": "31-26",
-    "cluster": "A"
-  }],
-  "middleTop": {
-    "type": "4x10",
+    "range": "31-26",
+    "suffixes": "b-a"
+  },
+  {
+    "clusterRange": "M-I",
+    "clusterDirection": "right",
+    "orientation": "clustered",
     "left": 873,
     "top": 775,
-    "width": 272,
-    "height": 680,
-    "ranges": "10-14,9-5",
-    "clusterRanges": "M-B"
+    "right": 1145,
+    "bottom": 1455,
+    "range": "10,9|11-13|8-6|14,5",
+    "suffixes": "b-a|a-b|b-a|a-b",
+    "clusterGap": {
+      "left": 226,
+      "top": 0
+    }
   },
-  "middleBottom": {
-    "type": "4x8",
+  {
+    "clusterRange": "H-B",
+    "clusterDirection": "right",
+    "orientation": "clustered",
+    "left": 3367,
+    "top": 775,
+    "right": 3639,
+    "bottom": 1455,
+    "range": "10,9|11-13|8-6|14,5",
+    "suffixes": "b-a|a-b|b-a|a-b",
+    "clusterGap": {
+      "left": 226,
+      "top": 0
+    }
+  },
+  {
+    "clusterRange": "M-I",
+    "clusterDirection": "right",
+    "orientation": "clustered",
     "left": 873,
-    "top": 1682,
-    "width": 272,
-    "height": 544,
-    "ranges": "15-18,4-1",
-    "clusterRanges": "M-B"
+    "top": 1681,
+    "right": 1145,
+    "bottom": 2225,
+    "range": "15,4|16-17|3-2|18,1",
+    "suffixes": "b-a|a-b|b-a|a-b",
+    "clusterGap": {
+      "left": 226,
+      "top": 0
+    }
   },
-  "bottom": [{
+  {
+    "clusterRange": "H-B",
+    "clusterDirection": "right",
+    "orientation": "clustered",
+    "left": 3367,
+    "top": 1681,
+    "right": 3639,
+    "bottom": 2225,
+    "range": "15,4|16-17|3-2|18,1",
+    "suffixes": "b-a|a-b|b-a|a-b",
+    "clusterGap": {
+      "left": 226,
+      "top": 0
+    }
+  },
+  {
+    "cluster": "A",
+    "orientation": "horizontal",
+    "direction": "up",
     "left": 842,
     "top": 2523,
     "right": 2066,
     "bottom": 2659,
-    "type": "18x1",
-    "ranges": "25-17",
-    "cluster": "A"
-  }, {
+    "range": "25-17",
+    "suffixes": "b-a"
+  },
+  {
+    "cluster": "A",
+    "orientation": "horizontal",
+    "direction": "up",
     "left": 2243,
     "top": 2523,
     "right": 3331,
     "bottom": 2659,
-    "type": "16x1",
-    "ranges": "16-9",
-    "cluster": "A"
-  }, {
+    "range": "16-9",
+    "suffixes": "b-a"
+  },
+  {
+    "cluster": "A",
+    "orientation": "horizontal",
+    "direction": "up",
     "left": 3480,
     "top": 2518,
     "right": 4569,
     "bottom": 2655,
-    "type": "16x1",
-    "ranges": "8-1",
-    "cluster": "A"
-  }]
-}
+    "range": "8-1",
+    "suffixes": "b-a"
+  }
+]
