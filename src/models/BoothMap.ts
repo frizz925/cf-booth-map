@@ -9,10 +9,8 @@ export interface Cluster {
 
   left: number;
   top: number;
-  width?: number;
-  height?: number;
-  right?: number;
-  bottom?: number;
+  width: number;
+  height: number;
 
   cells: Cell[][];
 }
