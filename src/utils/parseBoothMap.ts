@@ -1,5 +1,6 @@
+import { pascalCase } from 'change-case';
 import { assign, range, rangeRight, zip } from 'lodash';
-import { Cell, Cluster } from '../models/BoothMap';
+import { Cell, Cluster, Direction, Orientation } from '../models/BoothMap';
 
 interface ClusterData {
   cluster?: string;
@@ -97,15 +98,19 @@ function parseCluster(data: ClusterData): Cluster {
   const numberRange = parseRange(data.range);
   const suffixes = parseRange(data.suffixes);
   const cells = numberRange.reduce((curry, num) => {
-    suffixes.map((suffix) => {
+    suffixes.forEach((suffix) => {
+      const direction = pascalCase(data.direction);
+      const orientation = pascalCase(data.orientation);
       curry.push({
+        direction: Direction[direction],
+        orientation: Orientation[orientation],
         prefix: data.cluster,
         number: parseInt(num, 10),
         suffix,
       });
     });
     return curry;
-  }, []);
+  }, [] as Cell[]);
 
   return createCluster(data, cells.reduce((curry, cell) => {
     if (data.orientation === 'horizontal') {
@@ -117,7 +122,7 @@ function parseCluster(data: ClusterData): Cluster {
       curry.push([cell]);
     }
     return curry;
-  }, []));
+  }, [] as Cell[][]));
 }
 
 function createCluster(data: ClusterData, cells: Cell[][]): Cluster {
