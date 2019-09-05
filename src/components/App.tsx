@@ -1,8 +1,13 @@
 import * as React from 'react';
-import MainPage from '../pages/Main';
+import { hot } from 'react-hot-loader/root';
+import { isDevelopment } from '../utils/env';
 
-export default class App extends React.Component<{}, {}> {
-  public render() {
-    return <MainPage />;
-  }
-}
+const MainPage = React.lazy(() => import('../pages/Main'));
+const Loading = <div>Loading...</div>;
+const App: React.FC = () => (
+  <React.Suspense fallback={Loading}>
+    <MainPage />
+  </React.Suspense>
+);
+
+export default isDevelopment ? hot(App) : App;
