@@ -1,24 +1,23 @@
 import { range } from 'lodash';
-import * as React from 'react';
+import React, { Component, ReactNode } from 'react';
 import styled from 'styled-components';
 import mapping from '../data/mapping.json';
 import { Cluster, Orientation } from '../models/BoothMap';
 import parseBoothMap from '../utils/parseBoothMap';
+import NavigationArea from './NavigationArea';
 
-const Container = styled.div`
-position: absolute;
-top: 0;
-left: 0;
-padding: 0;
-margin: 0;
-`;
+interface BoothMapProps {
+  children: ReactNode;
+}
+
+const Container = styled.div``;
 
 const ClusterTable = styled.table`
 position: absolute;
-background-color: red;
+background-color: #000;
 box-sizing: border-box;
-color: red;
-z-index: 2;
+color: #000;
+z-index: 1;
 `;
 
 const ClusterRow = styled.tr`
@@ -53,13 +52,20 @@ const BoothCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   );
 };
 
-export default class BoothMap extends React.Component {
+export default class BoothMap extends Component<BoothMapProps> {
   public render() {
     const clusters = parseBoothMap(mapping);
     const boothMaps = clusters.map((cluster, idx) => (
       <BoothCluster key={idx} cluster={cluster} />
     ));
-    return <Container>{boothMaps}</Container>;
+    return (
+      <Container>
+        <NavigationArea>
+          {this.props.children}
+          {boothMaps}
+        </NavigationArea>
+      </Container>
+    );
   }
 }
 

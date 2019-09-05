@@ -5,7 +5,7 @@
     "direction": "right",
     "left": 464,
     "top": 578,
-    "right": 601,
+    "right": 602,
     "bottom": 1532,
     "range": "38-32",
     "suffixes": "b-a"
@@ -16,7 +16,7 @@
     "direction": "right",
     "left": 464,
     "top": 1696,
-    "right": 601,
+    "right": 602,
     "bottom": 2514,
     "range": "31-26",
     "suffixes": "b-a"
@@ -25,14 +25,14 @@
     "clusterRange": "M-I",
     "clusterDirection": "right",
     "orientation": "clustered",
-    "left": 872,
+    "left": 871,
     "top": 774,
-    "right": 1145,
-    "bottom": 1455,
+    "right": 1146,
+    "bottom": 1456,
     "range": "10,9|11-13|8-6|14,5",
     "suffixes": "b-a|a-b|b-a|a-b",
     "clusterGap": {
-      "left": 226,
+      "left": 224,
       "top": 0
     }
   },
@@ -40,14 +40,14 @@
     "clusterRange": "H-B",
     "clusterDirection": "right",
     "orientation": "clustered",
-    "left": 3366,
+    "left": 3365,
     "top": 774,
-    "right": 3639,
-    "bottom": 1455,
+    "right": 3640,
+    "bottom": 1456,
     "range": "10,9|11-13|8-6|14,5",
     "suffixes": "b-a|a-b|b-a|a-b",
     "clusterGap": {
-      "left": 226,
+      "left": 224,
       "top": 0
     }
   },
@@ -55,14 +55,14 @@
     "clusterRange": "M-I",
     "clusterDirection": "right",
     "orientation": "clustered",
-    "left": 872,
-    "top": 1680,
-    "right": 1145,
-    "bottom": 2226,
+    "left": 871,
+    "top": 1679,
+    "right": 1146,
+    "bottom": 2227,
     "range": "15,4|16-17|3-2|18,1",
     "suffixes": "b-a|a-b|b-a|a-b",
     "clusterGap": {
-      "left": 226,
+      "left": 224,
       "top": 0
     }
   },
@@ -70,14 +70,14 @@
     "clusterRange": "H-B",
     "clusterDirection": "right",
     "orientation": "clustered",
-    "left": 3366,
+    "left": 3365,
     "top": 1678,
-    "right": 3639,
-    "bottom": 2224,
+    "right": 3640,
+    "bottom": 2226,
     "range": "15,4|16-17|3-2|18,1",
     "suffixes": "b-a|a-b|b-a|a-b",
     "clusterGap": {
-      "left": 226,
+      "left": 224,
       "top": 0
     }
   },
@@ -87,7 +87,7 @@
     "direction": "up",
     "left": 842,
     "top": 2523,
-    "right": 2066,
+    "right": 2067,
     "bottom": 2661,
     "range": "25-17",
     "suffixes": "b-a"
@@ -98,7 +98,7 @@
     "direction": "up",
     "left": 2243,
     "top": 2523,
-    "right": 3331,
+    "right": 3333,
     "bottom": 2661,
     "range": "16-9",
     "suffixes": "b-a"
@@ -107,10 +107,10 @@
     "cluster": "A",
     "orientation": "horizontal",
     "direction": "up",
-    "left": 3480,
+    "left": 3479,
     "top": 2518,
-    "right": 4569,
-    "bottom": 2655,
+    "right": 4570,
+    "bottom": 2656,
     "range": "8-1",
     "suffixes": "b-a"
   }

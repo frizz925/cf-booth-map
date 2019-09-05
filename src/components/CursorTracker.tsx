@@ -1,5 +1,10 @@
-import * as React from 'react';
+import CSS from 'csstype';
+import React, { StyleHTMLAttributes } from 'react';
 import styled from 'styled-components';
+
+interface CursorTrackerProps {
+  style: CSS.Properties;
+}
 
 interface CursorTrackerState {
   x: number;
@@ -9,40 +14,42 @@ interface CursorTrackerState {
 const Container = styled.div``;
 
 const CounterWrapper = styled.div`
-  display: table;
-  color: #eee;
-  background-color: #000;
-  font-size: 48pt;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 9999;
-  padding: 24px;
-  margin: 0;
+display: table;
+color: #eee;
+background-color: #000;
+font-size: 48pt;
+position: fixed;
+left: 0;
+top: 0;
+z-index: 9999;
+padding: 24px;
+margin: 0;
 `;
 
 const Counter = styled.div`
-  display: table-row;
+display: table-row;
 `;
 const CounterTitle = styled.span`
-  display: table-cell;
-  padding-right: 8px;
+display: table-cell;
+padding-right: 8px;
 `;
 const CounterNumber = styled.span`
-  display: table-cell;
-  text-align: right;
+display: table-cell;
+text-align: right;
 `;
 
 const Wrapper = styled.div`
-  cursor: crosshair;
-  position: absolute;
-  left: 0;
-  top: 0;
-  padding: 0;
-  margin: 0;
+cursor: crosshair;
+position: absolute;
+left: 0;
+top: 0;
+padding: 0;
+margin: 0;
+width: 100%;
+height: 100%;
 `;
 
-export default class CursorTracker extends React.Component<{}, CursorTrackerState> {
+export default class CursorTracker extends React.Component<CursorTrackerProps, CursorTrackerState> {
   public state = {
     x: 0,
     y: 0,
@@ -51,7 +58,7 @@ export default class CursorTracker extends React.Component<{}, CursorTrackerStat
   private wrapperRef = React.createRef<HTMLDivElement>();
   private listener: (evt: MouseEvent) => void;
 
-  constructor(props: {}) {
+  constructor(props: CursorTrackerProps) {
     super(props);
     this.listener = (evt) => {
       const el = evt.target as HTMLDivElement;
@@ -72,7 +79,7 @@ export default class CursorTracker extends React.Component<{}, CursorTrackerStat
 
   public render() {
     return (
-      <Container>
+      <Container style={this.props.style}>
         <CounterWrapper>
           <Counter>
             <CounterTitle>X:</CounterTitle>
