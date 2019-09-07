@@ -2,6 +2,9 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
 const isDev = process.env.NODE_ENV === 'development';
 
 module.exports = merge({
@@ -38,7 +41,39 @@ module.exports = merge({
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       chunksSortMode: 'dependency',
+      title: 'Comic Frontier Booth Map',
       inject: true,
+    }),
+    new FaviconsWebpackPlugin({
+      logo: path.resolve(__dirname, 'assets/cf-booth-map.png'),
+      outputPath: 'assets',
+      cache: isDev,
+      inject: true,
+      favicons: {
+        appName: 'cf-booth-map',
+        appDescription: 'Comic Frontier Booth Map',
+        background: '#1875d1',
+        theme_color: '#fff',
+      },
+    }),
+    new WorkboxPlugin.InjectManifest({
+      swSrc: './src/serviceWorker.js',
+      swDest: 'sw.js',
+    }),
+    new WebpackPwaManifest({
+      name: 'Comic Frontier Booth Map',
+      short_name: 'CF Map',
+      background_color: '#1875d1',
+      theme_color: '#fff',
+      crossorigin: 'anonymous',
+      start_url: '/',
+      fingerprints: true,
+      ios: true,
+      inject: true,
+      icons: [{
+        src: path.resolve(__dirname, 'assets/cf-booth-map.png'),
+        sizes: [96, 128, 192, 256, 384, 512],
+      }],
     }),
   ],
   optimization: {

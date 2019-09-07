@@ -26,16 +26,6 @@ margin: 0;
 padding: 0;
 `;
 
-const StyledClusterBooth = styled(ClusterBooth)`
-background-color: #fff;
-text-align: center;
-font-size: 9pt;
-overflow: hidden;
-overflow-wrap: break-word;
-padding: 0 4px;
-transition: color 0.3s, background-color 0.6s;
-`;
-
 class BoothCluster extends PureComponent<BoothClusterProps> {
   public render() {
     const { cluster, boothMapping } = this.props;
@@ -56,7 +46,7 @@ class BoothCluster extends PureComponent<BoothClusterProps> {
         const isVertical = booth.orientation === Orientation.Vertical;
         const colSpan = isVertical ? 2 : 1;
         return (
-          <StyledClusterBooth
+          <ClusterBooth
             key={boothNumber}
             boothNumber={boothNumber}
             booth={booth}
@@ -64,7 +54,7 @@ class BoothCluster extends PureComponent<BoothClusterProps> {
             colSpan={colSpan}
           >
             {name}
-          </StyledClusterBooth>
+          </ClusterBooth>
         );
       });
       return <ClusterRow key={i}>{booths}</ClusterRow>;

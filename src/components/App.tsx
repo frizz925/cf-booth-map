@@ -16,11 +16,13 @@ const lazyComponent = (loader: () => Promise<{ default: ComponentType<any> }>): 
 };
 const MainPage = lazyComponent(() => import('../pages/Main'));
 const MappingPage = lazyComponent(() => import('../pages/Mapping'));
+const PreviewPage = lazyComponent(() => import('../pages/Preview'));
 
 const App: React.FC = () => isDevelopment ? (
   <Router>
     <Route path='/' exact={true} component={MainPage} />
     <Route path='/mapping' component={MappingPage} />
+    <Route path='/preview' component={PreviewPage} />
   </Router>
 ) : <MainPage />;
 

@@ -1,5 +1,5 @@
 import { SearchView } from '@models/Search';
-import { clearSearchView, setIsSearching } from '@store/app/actions';
+import { clearSearchView } from '@store/app/actions';
 import { AppState } from '@store/app/types';
 import Hammer from 'hammerjs';
 import { assign } from 'lodash';
@@ -68,7 +68,7 @@ class NavigationArea extends Component<NavigationAreaProps, NavigationAreaState>
       x: -1200,
       y: -1200,
       z: 0,
-      scale: 0.6,
+      scale: 1.0,
       angle: 0.0,
     };
     this.startState = this.state;
@@ -113,7 +113,6 @@ class NavigationArea extends Component<NavigationAreaProps, NavigationAreaState>
     const { scale } = this.state;
     const centerX = (clientRect.left + (clientRect.width / 2)) / scale;
     const centerY = (clientRect.top + (clientRect.height / 2)) / scale;
-    console.log(this.state, searchView, centerX, centerY);
     this.updatePosition(
       this.state.x - (searchView.x / scale) + centerX,
       this.state.y - (searchView.y / scale) + centerY,

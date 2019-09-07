@@ -3,10 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Comic Frontier Circle Map</title>
+  <title>Comic Frontier Booth Map</title>
   <link href="https://fonts.googleapis.com/css?family=Lato:400|Roboto:300,500&display=swap" rel="stylesheet" defer async>
+  <style>
+    body {
+      font-family: Lato, "Helvetica Neue", Arial, sans-serif;
+      font-size: 12pt;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+    }
+
+    #placeholder {
+      display: table;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #placeholder > div {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div id="placeholder">
+      <div>Hang on thighs, we're loading</div>
+    </div>
+  </div>
 </body>
 </html>
