@@ -6,9 +6,11 @@
   ],
   "jsRules": {},
   "rules": {
+    "no-console": [true, "log"],
     "object-literal-sort-keys": false,
     "interface-name": false,
-    "quotemark": [true, "single"]
+    "quotemark": [true, "single"],
+    "whitespace": [true, "check-module"]
   },
   "rulesDirectory": [],
   "linterOptions": {

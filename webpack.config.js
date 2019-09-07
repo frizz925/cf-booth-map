@@ -1,9 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const isDev = process.env.NODE_ENV === 'development';
 
 module.exports = merge({
@@ -16,17 +14,11 @@ module.exports = merge({
   },
   module: {
     rules: [{
-      test: /\.(js|ts)x?$/,
+      test: /\.(j|t)sx?$/,
       exclude: /node_modules/,
       use: 'babel-loader',
     }, {
-      test: /\.css$/,
-      use: [
-        isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-        'css-loader',
-      ],
-    }, {
-      test: /\.(svg|png|jpg|jpeg|gif)$/,
+      test: /\.(svg|png|jpg|jpeg|gif|woff|woff2|ttf|eot)$/,
       use: {
         loader: 'url-loader',
         options: {
@@ -37,22 +29,16 @@ module.exports = merge({
   },
   resolve: {
     modules: ['src', 'node_modules'],
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
   plugins: [
     new webpack.DefinePlugin({
       'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
     }),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       chunksSortMode: 'dependency',
       inject: true,
-    }),
-    new MiniCssExtractPlugin({
-      filename: isDev ? '[name].css' : '[name].[hash:8].css',
-      chunkFilename: isDev ? '[id].css' : '[id].[hash:8].css',
-      ignoreOrder: false,
     }),
   ],
   optimization: {

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -13,6 +13,16 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "./dist/",
-    "typeRoots": ["node_modules/@types", "custom_typings"]
+    "typeRoots": ["node_modules/@types", "custom_typings"],
+    "baseUrl": ".",
+    "paths": {
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@data/*": ["src/data/*"],
+      "@models/*": ["src/models/*"],
+      "@store/*": ["src/store/*"],
+      "@pages/*": ["src/pages/*"],
+      "@utils/*": ["src/utils/*"]
+    }
   }
 }

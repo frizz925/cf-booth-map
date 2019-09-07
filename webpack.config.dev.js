@@ -6,8 +6,14 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     hot: true,
-    host: '0.0.0.0',
+    host: process.env.HOST || 'localhost',
     port: 3000,
+  },
+  module: {
+    rules: [{
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader'],
+    }],
   },
   resolve: {
     alias: {

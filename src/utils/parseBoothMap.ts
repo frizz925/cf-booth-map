@@ -1,27 +1,6 @@
 import { pascalCase } from 'change-case';
 import { assign, range, rangeRight, zip } from 'lodash';
-import { Cell, Cluster, Direction, Orientation } from '../models/BoothMap';
-
-interface ClusterData {
-  cluster?: string;
-  clusterRange?: string;
-  clusterDirection?: string;
-  clusterGap?: {
-    top: number;
-    left: number;
-  };
-
-  orientation: string;
-  direction?: string;
-
-  top: number;
-  left: number;
-  right: number;
-  bottom: number;
-
-  range: string;
-  suffixes: string;
-}
+import Booth, { Cluster, ClusterData, Direction, Orientation } from '../models/Booth';
 
 export default function parse(mapData: ClusterData[]): Cluster[] {
   const result: Cluster[] = [];
@@ -67,7 +46,7 @@ function parseClusteredOrientation(data: ClusterData): Cluster {
     data.range.split('|'),
     data.suffixes.split('|'),
   );
-  const cells = clusteredData.reduce((curry, zipped, idx) => {
+  const booths = clusteredData.reduce((curry, zipped, idx) => {
     const [numberRange, suffixes] = zipped;
     const clusterData = assign({}, data, {
       orientation: idx === 0 || idx === 3 ? 'horizontal' : 'vertical',
@@ -79,60 +58,69 @@ function parseClusteredOrientation(data: ClusterData): Cluster {
       suffixes,
     });
 
-    const clusterCells = parseCluster(clusterData).cells;
+    const clusterBooths = parseCluster(clusterData).booths;
     if (idx === 3) {
-      curry.push(clusterCells[0]);
+      curry.push(clusterBooths[0]);
     } else if (idx === 2) {
-      clusterCells.forEach((row, i) => {
+      clusterBooths.forEach((row, i) => {
         curry[i + 1].push(row[0]);
       });
     } else {
-      return curry.concat(clusterCells);
+      return curry.concat(clusterBooths);
     }
     return curry;
   }, []);
-  return createCluster(data, cells);
+  return createCluster(data, booths);
 }
 
 function parseCluster(data: ClusterData): Cluster {
+  const direction = pascalCase(data.direction);
+  const orientation = pascalCase(data.orientation);
   const numberRange = parseRange(data.range);
   const suffixes = parseRange(data.suffixes);
-  const cells = numberRange.reduce((curry, num) => {
-    suffixes.forEach((suffix) => {
-      const direction = pascalCase(data.direction);
-      const orientation = pascalCase(data.orientation);
-      curry.push({
-        direction: Direction[direction],
-        orientation: Orientation[orientation],
-        prefix: data.cluster,
-        number: parseInt(num, 10),
-        suffix,
+  const baseResult = {
+    direction: Direction[direction],
+    orientation: Orientation[orientation],
+    prefix: data.cluster,
+  };
+  const booths = numberRange.reduce((curry, num) => {
+    const parsedNumber = parseInt(num, 10);
+    if (suffixes.length > 0) {
+      suffixes.forEach((suffix) => {
+        curry.push(assign({
+          number: parsedNumber,
+          suffix,
+        }, baseResult));
       });
-    });
+    } else {
+      curry.push(assign({
+        number: parsedNumber,
+      }, baseResult));
+    }
     return curry;
-  }, [] as Cell[]);
+  }, [] as Booth[]);
 
-  return createCluster(data, cells.reduce((curry, cell) => {
+  return createCluster(data, booths.reduce((curry, booth) => {
     if (data.orientation === 'horizontal') {
       if (curry.length <= 0) {
         curry.push([]);
       }
-      curry[0].push(cell);
+      curry[0].push(booth);
     } else {
-      curry.push([cell]);
+      curry.push([booth]);
     }
     return curry;
-  }, [] as Cell[][]));
+  }, [] as Booth[][]));
 }
 
-function createCluster(data: ClusterData, cells: Cell[][]): Cluster {
+function createCluster(data: ClusterData, booths: Booth[][]): Cluster {
   return {
     name: data.cluster,
     top: data.top,
     left: data.left,
     width: data.right - data.left,
     height: data.bottom - data.top,
-    cells,
+    booths,
   };
 }
 

@@ -1,6 +1,6 @@
 import CSS from 'csstype';
 import { assign } from 'lodash';
-import React, { Component, ReactNode } from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 
 interface TransformableProps {
@@ -18,7 +18,7 @@ width: 100%;
 height: 100%;
 `;
 
-export default class Transformable extends Component<TransformableProps> {
+export default class Transformable extends PureComponent<TransformableProps> {
   constructor(props: TransformableProps) {
     super(props);
   }

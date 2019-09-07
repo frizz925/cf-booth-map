@@ -1,5 +1,55 @@
 [
   {
+    "cluster": "Aa",
+    "orientation": "horizontal",
+    "direction": "down",
+    "left": 751,
+    "top": 357,
+    "right": 2265,
+    "bottom": 513,
+    "range": "45-36"
+  },
+  {
+    "cluster": "Aa",
+    "orientation": "horizontal",
+    "direction": "down",
+    "left": 2414,
+    "top": 357,
+    "right": 3474,
+    "bottom": 513,
+    "range": "35-29"
+  },
+  {
+    "cluster": "Aa",
+    "orientation": "horizontal",
+    "direction": "down",
+    "left": 3547,
+    "top": 357,
+    "right": 4607,
+    "bottom": 513,
+    "range": "28-22"
+  },
+  {
+    "cluster": "Aa",
+    "orientation": "horizontal",
+    "direction": "down",
+    "left": 4757,
+    "top": 357,
+    "right": 6874,
+    "bottom": 513,
+    "range": "21-8"
+  },
+  {
+    "cluster": "Aa",
+    "orientation": "horizontal",
+    "direction": "down",
+    "left": 7024,
+    "top": 357,
+    "right": 8083,
+    "bottom": 513,
+    "range": "7-1"
+  },
+  {
     "cluster": "A",
     "orientation": "vertical",
     "direction": "right",

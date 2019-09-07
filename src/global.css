@@ -5,3 +5,18 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.booth-map {
+  font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 300;
+  font-size: 12pt;
+}
+
+.form-fields {
+  background-color: #fff;
+  box-shadow: 1px 1px 4px 1px rgba(0,0,0,0.3);
+  font-size: 14pt;
+  margin: 8px;
+  overflow: hidden;
+  z-index: 10;
+}

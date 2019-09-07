@@ -1,14 +1,30 @@
+import { SearchView } from '@models/Search';
+import { clearSearchView, setIsSearching } from '@store/app/actions';
+import { AppState } from '@store/app/types';
 import Hammer from 'hammerjs';
 import { assign } from 'lodash';
 import React, { Component, ReactNode } from 'react';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import styled from 'styled-components';
 import Transformable from './Transformable';
 
 const SCALE_WHEEL_MULTIPLIER = 0.0015;
 
-interface NavigationAreaProps {
+interface BaseProps {
   children: ReactNode;
 }
+
+interface StateToProps {
+  searchView?: SearchView;
+  isSearching: boolean;
+}
+
+interface DispatchToProps {
+  clearSearchView: () => void;
+}
+
+type NavigationAreaProps = BaseProps & StateToProps & DispatchToProps;
 
 interface NavigationAreaState {
   x?: number;
@@ -40,7 +56,7 @@ overflow: hidden;
 z-index: -1;
 `;
 
-export default class NavigationArea extends Component<NavigationAreaProps, NavigationAreaState> {
+class NavigationArea extends Component<NavigationAreaProps, NavigationAreaState> {
   private containerRef = React.createRef<HTMLDivElement>();
   private registeredListeners: ListenerRegistration[] = [];
   private mc: HammerManager;
@@ -61,6 +77,11 @@ export default class NavigationArea extends Component<NavigationAreaProps, Navig
   public componentDidMount() {
     this.mc = this.setupHammer();
     this.registerListeners();
+    this.maybeHandleSearchView();
+  }
+
+  public componentDidUpdate() {
+    this.maybeHandleSearchView();
   }
 
   public componentWillUnmount() {
@@ -70,7 +91,7 @@ export default class NavigationArea extends Component<NavigationAreaProps, Navig
   public render() {
     return (
       <Container ref={this.containerRef}>
-        <Transformable {...this.state} style={{ pointerEvents: 'none' }}>
+        <Transformable {...this.state}>
           {this.props.children}
         </Transformable>
       </Container>
@@ -79,6 +100,24 @@ export default class NavigationArea extends Component<NavigationAreaProps, Navig
 
   protected updateState(newState: NavigationAreaState) {
     this.setState(assign({}, this.state, newState));
+  }
+
+  private maybeHandleSearchView() {
+    if (!this.props.isSearching || !this.props.searchView) {
+      return;
+    }
+    const searchView = this.props.searchView;
+    this.props.clearSearchView();
+
+    const clientRect = this.containerRef.current.getBoundingClientRect();
+    const { scale } = this.state;
+    const centerX = (clientRect.left + (clientRect.width / 2)) / scale;
+    const centerY = (clientRect.top + (clientRect.height / 2)) / scale;
+    console.log(this.state, searchView, centerX, centerY);
+    this.updatePosition(
+      this.state.x - (searchView.x / scale) + centerX,
+      this.state.y - (searchView.y / scale) + centerY,
+    );
   }
 
   private setupHammer(): HammerManager {
@@ -92,7 +131,7 @@ export default class NavigationArea extends Component<NavigationAreaProps, Navig
   private registerListeners() {
     this.registerNativeListener('wheel', (evt: WheelEvent) => {
       this.multiplyScale(1.0 - (evt.deltaY * SCALE_WHEEL_MULTIPLIER));
-    });
+    }, { passive: true });
 
     this.registerHammerListener('pinchstart pinchmove', (evt: HammerInput) => {
       if (evt.type === 'pinchstart') {
@@ -131,19 +170,22 @@ export default class NavigationArea extends Component<NavigationAreaProps, Navig
     this.updateState({ x, y });
   }
 
-  private registerNativeListener(eventType: string, listener: EventListener) {
-    this.registerListener(EventManager.Native, eventType, listener);
+  private registerNativeListener(eventType: string, listener: EventListener, options?: AddEventListenerOptions) {
+    this.registerListener(EventManager.Native, eventType, listener, options);
   }
 
   private registerHammerListener(eventType: string, listener: HammerListener) {
     this.registerListener(EventManager.Hammer, eventType, listener);
   }
 
-  private registerListener(eventManager: EventManager, eventType: string, listener: RegisteredListener) {
+  private registerListener(eventManager: EventManager,
+                           eventType: string,
+                           listener: RegisteredListener,
+                           options?: AddEventListenerOptions) {
     if (eventManager === EventManager.Hammer) {
       this.mc.on(eventType, listener as HammerListener);
     } else if (eventManager === EventManager.Native) {
-      this.containerRef.current.addEventListener(eventType, listener as EventListener);
+      this.containerRef.current.addEventListener(eventType, listener as EventListener, options);
     } else {
       throw new Error(`Unknown eventManager ${eventManager}`);
     }
@@ -157,10 +199,29 @@ export default class NavigationArea extends Component<NavigationAreaProps, Navig
   private unregisterListeners() {
     this.registeredListeners.forEach((reg) => {
       if (reg.eventManager === EventManager.Native) {
-        this.containerRef.current.removeEventListener(reg.eventType, reg.listener as EventListener);
+        this.containerRef.current.removeEventListener(
+          reg.eventType,
+          reg.listener as EventListener,
+        );
       } else {
         this.mc.off(reg.eventType, reg.listener as HammerListener);
       }
     });
   }
 }
+
+const mapStateToProps = (state: AppState): StateToProps => ({
+  searchView: state.searchView,
+  isSearching: state.isSearching,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchToProps => ({
+  clearSearchView() {
+    dispatch(clearSearchView());
+  },
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(NavigationArea);

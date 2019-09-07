@@ -1,13 +1,33 @@
-import * as React from 'react';
+import store from '@store/app';
+import React, { ComponentType, Suspense } from 'react';
 import { hot } from 'react-hot-loader/root';
+import { Provider } from 'react-redux';
+import { HashRouter as Router, Route } from 'react-router-dom';
 import { isDevelopment } from '../utils/env';
+import Loading from './Loading';
 
-const MainPage = React.lazy(() => import('../pages/Main'));
-const Loading = <div>Loading...</div>;
-const App: React.FC = () => (
-  <React.Suspense fallback={Loading}>
-    <MainPage />
-  </React.Suspense>
+const lazyComponent = (loader: () => Promise<{ default: ComponentType<any> }>): React.FC<any> => {
+  const LazyComponent = React.lazy(loader);
+  return (props) => (
+    <Suspense fallback={<Loading />}>
+      <LazyComponent {...props} />
+    </Suspense>
+  );
+};
+const MainPage = lazyComponent(() => import('../pages/Main'));
+const MappingPage = lazyComponent(() => import('../pages/Mapping'));
+
+const App: React.FC = () => isDevelopment ? (
+  <Router>
+    <Route path='/' exact={true} component={MainPage} />
+    <Route path='/mapping' component={MappingPage} />
+  </Router>
+) : <MainPage />;
+
+const ConnectedApp: React.FC = () => (
+  <Provider store={store}>
+    <App />
+  </Provider>
 );
 
-export default isDevelopment ? hot(App) : App;
+export default isDevelopment ? hot(ConnectedApp) : ConnectedApp;

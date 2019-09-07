@@ -1,9 +1,9 @@
 import CSS from 'csstype';
-import React, { StyleHTMLAttributes } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
 interface CursorTrackerProps {
-  style: CSS.Properties;
+  style?: CSS.Properties;
 }
 
 interface CursorTrackerState {
@@ -49,7 +49,7 @@ width: 100%;
 height: 100%;
 `;
 
-export default class CursorTracker extends React.Component<CursorTrackerProps, CursorTrackerState> {
+export default class CursorTracker extends PureComponent<CursorTrackerProps, CursorTrackerState> {
   public state = {
     x: 0,
     y: 0,
