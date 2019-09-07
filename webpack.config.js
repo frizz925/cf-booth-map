@@ -19,12 +19,12 @@ module.exports = merge({
       use: 'babel-loader',
     }, {
       test: /\.(svg|png|jpg|jpeg|gif|woff|woff2|ttf|eot)$/,
-      use: {
+      use: isDev ? {
         loader: 'url-loader',
         options: {
           limit: 8192,
         },
-      },
+      } : 'file-loader',
     }],
   },
   resolve: {

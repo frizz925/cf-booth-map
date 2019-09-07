@@ -1,10 +1,9 @@
-import circles from '@data/circles.json';
 import mapping from '@data/mapping.json';
-import { CircleData } from '@models/Circle';
+import Circle from '@models/Circle';
 import {
   AppActionTypes, AppReducers, AppState,
   CLEAR_MARKED_BOOTHS, CLEAR_SEARCH_VIEW, MARK_BOOTH, PUSH_SEARCH_VIEW,
-  SET_IS_SEARCHING, SET_MARKED_BOOTHS, TOGGLE_DISPLAY_CIRCLE_NAME, TOGGLE_MARK_BOOTH, UNMARK_BOOTH,
+  SET_IS_SEARCHING, SET_MARKED_BOOTHS, TOGGLE_DISPLAY_CIRCLE_NAME, TOGGLE_MARK_BOOTH, UNMARK_BOOTH, UPDATE_CIRCLES,
 } from '@store/app/types';
 import mapCircleBooth from '@utils/mapCircleBooth';
 import parseBoothMap from '@utils/parseBoothMap';
@@ -12,22 +11,32 @@ import parseCircles from '@utils/parseCircles';
 import { assign } from 'lodash';
 
 const isSunday = new Date().getDay() === 0;
-const clusters = parseBoothMap(mapping);
-const filteredCircles = parseCircles(circles)
-  .filter((x: CircleData) => isSunday ? x.isSunday : x.isSaturday);
-const { byBooths, byCircles } = mapCircleBooth(clusters, filteredCircles);
-
 const initialState: AppState = {
   markedBooths: {},
   displayCircleName: true,
-  circles: filteredCircles,
-  clusters,
-  boothMapping: byBooths,
-  circleMapping: byCircles,
+  circles: [],
+  clusters: [],
+  boothMapping: {},
+  circleMapping: {},
   isSearching: false,
 };
 
 const reducers: AppReducers = {
+  [UPDATE_CIRCLES]: (state, { circles }) => {
+    const clusters = parseBoothMap(mapping);
+    const filteredCircles = parseCircles(circles)
+      .filter((x: Circle) => isSunday ? x.isSunday : x.isSaturday);
+    const { byBooths, byCircles } = mapCircleBooth(clusters, filteredCircles);
+
+    state.circles = filteredCircles;
+    state.clusters = clusters;
+    return assign(state, {
+      clusters,
+      circles: filteredCircles,
+      boothMapping: byBooths,
+      circleMapping: byCircles,
+    });
+  },
   [MARK_BOOTH]: (state, { boothNumber }) => {
     const { markedBooths } = state;
     if (markedBooths[boothNumber]) {

@@ -1,12 +1,19 @@
 import { MarkedBooths } from '@models/Booth';
+import { CircleData } from '@models/Circle';
 import { SearchView } from '@models/Search';
 import {
   AppActionTypes,
   CLEAR_MARKED_BOOTHS, CLEAR_SEARCH_VIEW,
   MARK_BOOTH, PUSH_SEARCH_VIEW,
   SET_IS_SEARCHING, SET_MARKED_BOOTHS,
-  TOGGLE_DISPLAY_CIRCLE_NAME, TOGGLE_MARK_BOOTH, UNMARK_BOOTH,
+  TOGGLE_DISPLAY_CIRCLE_NAME, TOGGLE_MARK_BOOTH,
+  UNMARK_BOOTH, UPDATE_CIRCLES,
 } from '@store/app/types';
+
+export const updateCircles = (circles: CircleData[]): AppActionTypes => ({
+  type: UPDATE_CIRCLES,
+  circles,
+});
 
 export const markBooth = (boothNumber: string): AppActionTypes => ({
   type: MARK_BOOTH,

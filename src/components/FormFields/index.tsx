@@ -46,9 +46,10 @@ class FormFields extends Component<FormFieldsProps> {
     super(props);
     this.fuse = new Fuse(props.circles, {
       tokenize: true,
-      matchAllTokens: true,
-      distance: 10,
+      shouldSort: true,
+      location: 0,
       threshold: 0.2,
+      distance: 100,
       keys: [{
         name: 'name',
         weight: 0.7,
