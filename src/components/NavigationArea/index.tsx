@@ -65,8 +65,8 @@ class NavigationArea extends Component<NavigationAreaProps, NavigationAreaState>
   constructor(props: NavigationAreaProps) {
     super(props);
     this.state = {
-      x: 0,
-      y: 0,
+      x: -1200,
+      y: -1200,
       z: 0,
       scale: 0.6,
       angle: 0.0,
