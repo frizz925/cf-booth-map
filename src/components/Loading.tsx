@@ -66,6 +66,7 @@ export default class Loading extends Component<{}, LoadingState> {
       } else {
         this.setState({ angle });
       }
+      window.requestAnimationFrame(this.rotateText);
     };
   }
 
