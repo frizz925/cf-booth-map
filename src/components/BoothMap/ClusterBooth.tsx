@@ -52,6 +52,7 @@ overflow: hidden;
 margin: 0;
 padding: 0;
 transition: background-color 0.5s, color 0.3s;
+cursor: pointer;
 `;
 
 const BackgroundContainer = styled.div`
