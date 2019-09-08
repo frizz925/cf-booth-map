@@ -1,4 +1,4 @@
-export interface SocialMedia {
+export interface Social {
   facebook?: string;
   twitter?: string;
   instagram?: string;
@@ -29,7 +29,7 @@ export default interface Circle {
   rating: string;
   works: Work[];
 
-  socialMedia: SocialMedia;
+  social: Social;
   sample?: string;
 }
 

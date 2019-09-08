@@ -22,7 +22,7 @@ const App: React.FC = () => isDevelopment ? (
   <Router>
     <Route path='/' exact={true} component={MainPage} />
     <Route path='/mapping' component={MappingPage} />
-    <Route path='/preview' component={PreviewPage} />
+    <Route path='/preview/:id' component={PreviewPage} />
   </Router>
 ) : <MainPage />;
 

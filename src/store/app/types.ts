@@ -13,6 +13,9 @@ export interface AppState {
 
   isSearching: boolean;
   searchView?: SearchView;
+
+  previewCircle?: Circle;
+  previewShown: boolean;
 }
 
 export const UPDATE_CIRCLES = Symbol();
@@ -25,6 +28,8 @@ export const TOGGLE_DISPLAY_CIRCLE_NAME = Symbol();
 export const SET_IS_SEARCHING = Symbol();
 export const PUSH_SEARCH_VIEW = Symbol();
 export const CLEAR_SEARCH_VIEW = Symbol();
+export const PREVIEW_CIRCLE = Symbol();
+export const PREVIEW_CIRCLE_CLOSE = Symbol();
 
 interface UpdateCirclesAction {
   type: typeof UPDATE_CIRCLES;
@@ -74,6 +79,15 @@ interface ClearSearchView {
   type: typeof CLEAR_SEARCH_VIEW;
 }
 
+interface PreviewCircle {
+  type: typeof PREVIEW_CIRCLE;
+  circle: Circle;
+}
+
+interface PreviewCircleClose {
+  type: typeof PREVIEW_CIRCLE_CLOSE;
+}
+
 export type AppActionTypes =
   UpdateCirclesAction |
   MarkBoothAction |
@@ -84,7 +98,9 @@ export type AppActionTypes =
   ToggleDisplayCircleName |
   SetIsSearching |
   PushSearchView |
-  ClearSearchView;
+  ClearSearchView |
+  PreviewCircle |
+  PreviewCircleClose;
 
 export type AppReducer<T extends AppActionTypes> = (state: AppState, action: T) => AppState|boolean;
 
@@ -99,4 +115,6 @@ export interface AppReducers {
   [SET_IS_SEARCHING]: AppReducer<SetIsSearching>;
   [PUSH_SEARCH_VIEW]: AppReducer<PushSearchView>;
   [CLEAR_SEARCH_VIEW]: AppReducer<ClearSearchView>;
+  [PREVIEW_CIRCLE]: AppReducer<PreviewCircle>;
+  [PREVIEW_CIRCLE_CLOSE]: AppReducer<PreviewCircleClose>;
 }

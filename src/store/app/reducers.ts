@@ -2,8 +2,10 @@ import mapping from '@data/mapping.json';
 import Circle from '@models/Circle';
 import {
   AppActionTypes, AppReducers, AppState,
-  CLEAR_MARKED_BOOTHS, CLEAR_SEARCH_VIEW, MARK_BOOTH, PUSH_SEARCH_VIEW,
-  SET_IS_SEARCHING, SET_MARKED_BOOTHS, TOGGLE_DISPLAY_CIRCLE_NAME, TOGGLE_MARK_BOOTH, UNMARK_BOOTH, UPDATE_CIRCLES,
+  CLEAR_MARKED_BOOTHS, CLEAR_SEARCH_VIEW, MARK_BOOTH,
+  PREVIEW_CIRCLE, PREVIEW_CIRCLE_CLOSE, PUSH_SEARCH_VIEW,
+  SET_IS_SEARCHING, SET_MARKED_BOOTHS,
+  TOGGLE_DISPLAY_CIRCLE_NAME, TOGGLE_MARK_BOOTH, UNMARK_BOOTH, UPDATE_CIRCLES,
 } from '@store/app/types';
 import mapCircleBooth from '@utils/mapCircleBooth';
 import parseBoothMap from '@utils/parseBoothMap';
@@ -19,6 +21,7 @@ const initialState: AppState = {
   boothMapping: {},
   circleMapping: {},
   isSearching: false,
+  previewShown: false,
 };
 
 const reducers: AppReducers = {
@@ -91,6 +94,15 @@ const reducers: AppReducers = {
   [CLEAR_SEARCH_VIEW]: (state) => {
     state.isSearching = false;
     state.searchView = undefined;
+    return state;
+  },
+  [PREVIEW_CIRCLE]: (state, { circle }) => {
+    state.previewCircle = circle;
+    state.previewShown = true;
+    return state;
+  },
+  [PREVIEW_CIRCLE_CLOSE]: (state) => {
+    state.previewShown = false;
     return state;
   },
 };

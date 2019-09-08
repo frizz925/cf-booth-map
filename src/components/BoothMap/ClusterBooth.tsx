@@ -1,15 +1,14 @@
 import Booth from '@models/Booth';
 import Circle from '@models/Circle';
 import { SearchView } from '@models/Search';
-import { pushSearchView } from '@store/app/actions';
+import { previewCircle, pushSearchView } from '@store/app/actions';
 import { AppState } from '@store/app/types';
 import getBoothNumber from '@utils/booth';
 import CSS from 'csstype';
+import { assign } from 'lodash';
 import React, { PureComponent, ReactNode } from 'react';
-import LazyLoad from 'react-lazyload';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Subject } from 'rxjs';
 import styled from 'styled-components';
 
 interface BaseProps {
@@ -31,6 +30,7 @@ interface StateToProps {
 
 interface DispatchToProps {
   pushSearchView: (searchView: SearchView) => void;
+  previewCircle: (circle: Circle) => void;
 }
 
 type ClusterBoothProps = BaseProps & StateToProps & DispatchToProps;
@@ -89,10 +89,11 @@ z-index: 2;
 `;
 
 interface Job {
-  el: HTMLDivElement;
-  imageUrl: string;
+  el: HTMLElement;
+  src: string;
 }
 
+const experimentalBoothBg = false;
 const counter = {
   value: 0,
   running: false,
@@ -112,37 +113,51 @@ const runQueue = () => {
       return;
     }
 
-    const { el, imageUrl } = job;
+    const { el, src } = job;
     const img = new Image();
     img.onload = () => {
-      el.style.backgroundImage = `url(${imageUrl})`;
+      el.style.backgroundImage = `url(${src})`;
       counter.value--;
+      observer.unobserve(el);
       process.nextTick(runQueue);
     };
-    img.src = imageUrl;
+    img.src = src;
     if (img.complete) {
       img.onload(null);
     }
-
     counter.value++;
   }
-
   counter.running = false;
 };
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (!e.isIntersecting) {
+      return;
+    }
+
+    const el = e.target as HTMLElement;
+    const src = el.getAttribute('data-src');
+    queue.push({ el, src });
+  });
+  process.nextTick(runQueue);
+});
 
 class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
   private ref = React.createRef<HTMLTableCellElement>();
   private bgRef = React.createRef<HTMLDivElement>();
 
+  private clickHandler: () => void;
   private inHandler: (evt: MouseEvent) => void;
   private outHandler: (evt: MouseEvent) => void;
-
-  private observer: IntersectionObserver;
 
   constructor(props: ClusterBoothProps) {
     super(props);
     this.state = {
       isHovered: false,
+    };
+    this.clickHandler = () => {
+      this.props.previewCircle(this.props.circle);
     };
     this.inHandler = () => {
       this.setState({ isHovered: true });
@@ -150,26 +165,15 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
     this.outHandler = () => {
       this.setState({ isHovered: false });
     };
-
-    this.observer = new IntersectionObserver((e) => {
-      if (e[0].isIntersecting) {
-        this.observer.disconnect();
-        const { circle } = this.props;
-        queue.push({
-          el: this.bgRef.current,
-          imageUrl: circle.imageUrl,
-        });
-        runQueue();
-      }
-    });
   }
 
   public componentDidMount() {
     this.maybeTriggerPanning();
+    this.ref.current.addEventListener('click', this.clickHandler);
     this.ref.current.addEventListener('mouseenter', this.inHandler);
     this.ref.current.addEventListener('mouseleave', this.outHandler);
-    if (this.props.circle) {
-      this.observer.observe(this.bgRef.current);
+    if (this.bgRef.current) {
+      observer.observe(this.bgRef.current);
     }
   }
 
@@ -178,15 +182,20 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
   }
 
   public componentWillUnmount() {
-    if (this.props.circle) {
-      this.observer.disconnect();
+    if (this.bgRef.current) {
+      observer.unobserve(this.bgRef.current);
     }
+    this.ref.current.removeEventListener('click', this.clickHandler);
     this.ref.current.removeEventListener('mouseenter', this.inHandler);
     this.ref.current.removeEventListener('mouseleave', this.outHandler);
   }
 
   public render() {
-    const { isMarked } = this.props;
+    const { circle, isMarked } = this.props;
+    const cellMarkedStyle = isMarked ? {
+      backgroundColor: '#1875d1',
+      color: '#fff',
+    } : null;
     const markedBgStyle = isMarked ? {
       opacity: 1,
     } : null;
@@ -198,20 +207,20 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
       className: this.props.className,
       colSpan: this.props.colSpan,
       rowSpan: this.props.rowSpan,
-      style: this.props.style,
+      style: experimentalBoothBg ? this.props.style : assign(cellMarkedStyle, this.props.style),
     };
     const content = this.props.displayCircleName ?
       this.props.children :
       getBoothNumber(this.props.booth);
-    return (
+    return experimentalBoothBg ? (
       <Cell {...cellProps} ref={this.ref}>
         <BackgroundContainer>
-          <Background ref={this.bgRef} />
+          {circle ? <Background ref={this.bgRef} data-src={circle.imageUrl} /> : null}
           <MarkedBackground style={markedBgStyle} />
           <Content style={contentStyle}>{content}</Content>
         </BackgroundContainer>
       </Cell>
-    );
+    ) : <Cell {...cellProps} ref={this.ref}>{content}</Cell>;
   }
 
   private maybeTriggerPanning() {
@@ -235,6 +244,9 @@ const mapStateToProps = (state: AppState, props: BaseProps): StateToProps => ({
 const mapDispatchToProps = (dispatch: Dispatch): DispatchToProps => ({
   pushSearchView(searchView: SearchView) {
     dispatch(pushSearchView(searchView));
+  },
+  previewCircle(circle: Circle) {
+    dispatch(previewCircle(circle));
   },
 });
 

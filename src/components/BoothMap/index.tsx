@@ -1,11 +1,16 @@
 import NavigationArea from '@components/NavigationArea';
+import Preview from '@components/Preview';
 import { Cluster } from '@models/Booth';
+import Circle from '@models/Circle';
 import { MappedBooth } from '@models/Mapped';
+import { previewCircleClose } from '@store/app/actions';
 import { AppState } from '@store/app/types';
 import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import styled from 'styled-components';
 import BoothCluster from './BoothCluster';
+import PreviewArea from './PreviewArea';
 import VisibilityButton from './VisibilityButton';
 
 interface BaseProps {
@@ -17,9 +22,14 @@ interface StateToProps {
   boothMapping: {
     [key: string]: MappedBooth,
   };
+  previewCircle?: Circle;
 }
 
-type BoothMapProps = BaseProps & StateToProps;
+interface DispatchToProps {
+  closePreview: () => void;
+}
+
+type BoothMapProps = BaseProps & StateToProps & DispatchToProps;
 
 const Container = styled.div``;
 
@@ -32,8 +42,17 @@ const UnclickableArea: React.FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 class BoothMap extends Component<BoothMapProps> {
+  private onPreviewClose: () => void;
+
+  constructor(props: BoothMapProps) {
+    super(props);
+    this.onPreviewClose = () => {
+      this.props.closePreview();
+    };
+  }
+
   public render() {
-    const { clusters, boothMapping } = this.props;
+    const { previewCircle, clusters, boothMapping } = this.props;
     const boothMaps = clusters.map((cluster, idx) => (
       <BoothCluster key={idx} cluster={cluster} boothMapping={boothMapping} />
     ));
@@ -48,6 +67,9 @@ class BoothMap extends Component<BoothMapProps> {
           </MappingArea>
         </NavigationArea>
         <VisibilityButton />
+        <PreviewArea>
+          {previewCircle ? <Preview circle={previewCircle} onClose={this.onPreviewClose} /> : null}
+        </PreviewArea>
       </Container>
     );
   }
@@ -56,6 +78,16 @@ class BoothMap extends Component<BoothMapProps> {
 const mapStateToProps = (state: AppState): StateToProps => ({
   clusters: state.clusters,
   boothMapping: state.boothMapping,
+  previewCircle: state.previewCircle,
 });
 
-export default connect(mapStateToProps)(BoothMap);
+const mapDispatchToProps = (dispatch: Dispatch): DispatchToProps => ({
+  closePreview() {
+    dispatch(previewCircleClose());
+  },
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(BoothMap);

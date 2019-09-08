@@ -13,11 +13,11 @@ export default function parseCircles(circles: CircleData[]): Circle[] {
     isSunday: !!circle.isSunday,
 
     imageUrl: CATALOG_BASE_URL + circle.src,
-    fandoms: circle.fandom.split(', '),
+    fandoms: circle.fandom.split(',').map((x) => x.trim()),
     rating: circle.rating,
     works: parseCircleWorks(circle),
 
-    socialMedia: {
+    social: {
       facebook: optional(circle.circle_facebook),
       twitter: optional(circle.circle_twitter),
       instagram: optional(circle.circle_instagram),
