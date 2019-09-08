@@ -51,6 +51,7 @@ font-size: 9pt;
 overflow: hidden;
 margin: 0;
 padding: 0;
+transition: background-color 0.5s, color 0.3s;
 `;
 
 const BackgroundContainer = styled.div`
