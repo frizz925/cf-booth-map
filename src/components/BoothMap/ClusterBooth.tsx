@@ -14,7 +14,7 @@ import styled from 'styled-components';
 interface BaseProps {
   boothNumber: string;
   booth: Booth;
-  circle: Circle;
+  circle?: Circle;
   className?: string;
   colSpan?: number;
   rowSpan?: number;
@@ -157,7 +157,9 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
       isHovered: false,
     };
     this.clickHandler = () => {
-      this.props.previewCircle(this.props.circle);
+      if (props.circle) {
+        props.previewCircle(props.circle);
+      }
     };
     this.inHandler = () => {
       this.setState({ isHovered: true });
@@ -172,7 +174,7 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
     this.ref.current.addEventListener('click', this.clickHandler);
     this.ref.current.addEventListener('mouseenter', this.inHandler);
     this.ref.current.addEventListener('mouseleave', this.outHandler);
-    if (this.bgRef.current) {
+    if (experimentalBoothBg && this.bgRef.current) {
       observer.observe(this.bgRef.current);
     }
   }
@@ -182,7 +184,7 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
   }
 
   public componentWillUnmount() {
-    if (this.bgRef.current) {
+    if (experimentalBoothBg && this.bgRef.current) {
       observer.unobserve(this.bgRef.current);
     }
     this.ref.current.removeEventListener('click', this.clickHandler);
