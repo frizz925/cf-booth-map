@@ -62,7 +62,7 @@ export default class Loading extends Component<{}, LoadingState> {
       const angle = (timestamp - this.lastTs) / ROTATING_TEXT_DURATION * 360;
       if (angle >= 360) {
         this.lastTs = timestamp;
-        this.setState({ angle: 0 });
+        this.setState({ angle: angle - 360 });
       } else {
         this.setState({ angle });
       }
