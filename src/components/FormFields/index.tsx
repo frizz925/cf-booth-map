@@ -141,7 +141,13 @@ class FormFields extends PureComponent<FormFieldsProps, FormFieldsState> {
       <FormContainer className='form-fields'>
         <FormLayout>
           <FormField>
-            <MainInput ref={this.inputRef} type='text' placeholder='Search for circle' onChange={this.onChange} />
+            <MainInput
+              ref={this.inputRef}
+              type='text'
+              placeholder='Search for circle'
+              onChange={this.onChange}
+              aria-label='Search for circle'
+            />
           </FormField>
           <FormField ref={this.clearRef} style={{ display: showClearButton ? 'table-cell' : 'none' }}>
             <StyledFontAwesomeIcon icon={faTimes} />
