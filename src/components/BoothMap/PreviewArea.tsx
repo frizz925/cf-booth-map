@@ -15,6 +15,7 @@ type PreviewAreaProps = BaseProps & StateToProps;
 
 const Container = styled.div`
 background-color: #fff;
+box-shadow: 0 0 4px 1px rgba(0,0,0,0.3);
 position: fixed;
 top: 100%;
 left: 0;
