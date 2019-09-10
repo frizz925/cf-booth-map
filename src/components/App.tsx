@@ -1,9 +1,9 @@
 import store from '@store/app';
+import { isDevelopment } from '@utils/env';
 import React, { ComponentType, Suspense } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { Provider } from 'react-redux';
 import { HashRouter as Router, Route } from 'react-router-dom';
-import { isDevelopment } from '../utils/env';
 import Loading from './Loading';
 
 const lazyComponent = (loader: () => Promise<{ default: ComponentType<any> }>): React.FC<any> => {
@@ -14,9 +14,9 @@ const lazyComponent = (loader: () => Promise<{ default: ComponentType<any> }>): 
     </Suspense>
   );
 };
-const MainPage = lazyComponent(() => import('../pages/Main'));
-const MappingPage = lazyComponent(() => import('../pages/Mapping'));
-const PreviewPage = lazyComponent(() => import('../pages/Preview'));
+const MainPage = lazyComponent(() => import('@pages/Main'));
+const MappingPage = lazyComponent(() => import('@pages/Mapping'));
+const PreviewPage = lazyComponent(() => import('@pages/Preview'));
 
 const App: React.FC = () => isDevelopment ? (
   <Router>

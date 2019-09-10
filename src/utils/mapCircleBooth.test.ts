@@ -1,5 +1,5 @@
-import * as circles from '../data/circles.json';
-import * as mapping from '../data/mapping.json';
+import * as circles from '@data/circles.json';
+import * as mapping from '@data/mapping.json';
 import mapCircleBooth from './mapCircleBooth';
 import parseBoothMap from './parseBoothMap';
 import parseCircles from './parseCircles';

@@ -43,6 +43,7 @@ const DrawerListItem: React.FC<DrawerItem> = (props) => {
       className={styles.drawerListItem}
       href={props.link || '#'}
       target={props.link ? '_blank' : null}
+      rel='noopener'
       onClick={props.onClick}
     >
       <span>

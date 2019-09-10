@@ -1,7 +1,7 @@
+import Booth, { Cluster } from '@models/Booth';
+import Circle from '@models/Circle';
+import { BoothMapping, CircleMapping } from '@models/Mapped';
 import { assign } from 'lodash';
-import Booth, { Cluster } from '../models/Booth';
-import Circle from '../models/Circle';
-import { BoothMapping, CircleMapping } from '../models/Mapped';
 import getBoothNumber from './booth';
 
 interface BoothCluster {

@@ -1,4 +1,4 @@
-import mapImage from '@assets/floor_map_cf13.png';
+import mapImage from '@assets/floor_map_cf13.webp';
 import React from 'react';
 import styled from 'styled-components';
 

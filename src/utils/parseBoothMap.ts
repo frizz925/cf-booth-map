@@ -1,6 +1,6 @@
+import Booth, { Cluster, ClusterData, Direction, Orientation } from '@models/Booth';
 import { pascalCase } from 'change-case';
 import { assign, range, rangeRight, zip } from 'lodash';
-import Booth, { Cluster, ClusterData, Direction, Orientation } from '../models/Booth';
 
 export default function parse(mapData: ClusterData[]): Cluster[] {
   const result: Cluster[] = [];

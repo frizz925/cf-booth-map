@@ -1,6 +1,5 @@
 // Styles
-import 'normalize.css';
-import './global.css';
+import('./styles');
 
 import { isProduction } from '@utils/env';
 import * as React from 'react';

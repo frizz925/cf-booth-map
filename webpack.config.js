@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
@@ -33,7 +34,7 @@ module.exports = merge({
         }
       ],
     }, {
-      test: /\.(svg|png|jpg|jpeg|gif|woff|woff2|ttf|eot)$/,
+      test: /\.(svg|png|jpg|jpeg|gif|woff|woff2|ttf|eot|webp)$/,
       use: isDev ? {
         loader: 'url-loader',
         options: {
@@ -55,6 +56,10 @@ module.exports = merge({
       chunksSortMode: 'dependency',
       title: 'Comic Frontier Booth Map',
       inject: true,
+    }),
+    new PreloadWebpackPlugin({
+      rel: 'prefetch',
+      include: 'allChunks',
     }),
     new FaviconsWebpackPlugin({
       logo: path.resolve(__dirname, 'assets/cf-booth-map.png'),
