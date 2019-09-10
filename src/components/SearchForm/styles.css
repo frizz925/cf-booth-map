@@ -24,6 +24,7 @@
 }
 
 :local(.formInput) {
+  font-size: 14pt;
   display: block;
   color: inherit;
   border: none;
@@ -42,7 +43,7 @@
   box-sizing: border-box;
   background-color: #fff;
   opacity: 0;
-  padding-top: 48px;
+  padding-top: 64px;
   overflow: hidden;
   visibility: hidden;
   z-index: 10;
@@ -56,13 +57,19 @@
 }
 
 :local(.formList) {
-  padding: 16px 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 :local(.formListItem) {
   border-bottom: 1.5px solid rgba(0,0,0,0.2);
   padding: 16px;
   cursor: pointer;
+}
+
+:local(.formListItem):first-child {
+  padding-top: 0;
 }
 
 :local(.formListItemTitle) {
