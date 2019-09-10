@@ -1,4 +1,4 @@
-import { MarkedBooths } from '@models/Booth';
+import { Cluster, MarkedBooths } from '@models/Booth';
 import Circle, { CircleData } from '@models/Circle';
 import { SearchView } from '@models/Search';
 import {
@@ -17,9 +17,10 @@ export const updateCircles = (circles: CircleData[]): AppActionTypes => ({
   circles,
 });
 
-export const markBooth = (boothNumber: string): AppActionTypes => ({
+export const markBooth = (boothNumber: string, cluster: Cluster): AppActionTypes => ({
   type: MARK_BOOTH,
   boothNumber,
+  cluster,
 });
 
 export const unmarkBooth = (boothNumber: string): AppActionTypes => ({
@@ -27,9 +28,10 @@ export const unmarkBooth = (boothNumber: string): AppActionTypes => ({
   boothNumber,
 });
 
-export const toggleMarkBooth = (boothNumber: string): AppActionTypes => ({
+export const toggleMarkBooth = (boothNumber: string, cluster: Cluster): AppActionTypes => ({
   type: TOGGLE_MARK_BOOTH,
   boothNumber,
+  cluster,
 });
 
 export const setMarkedBooths = (markedBooths: MarkedBooths, isSearching?: boolean): AppActionTypes => ({

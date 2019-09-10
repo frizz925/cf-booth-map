@@ -109,16 +109,21 @@ class SearchForm extends PureComponent<SearchFormProps, SearchFormState> {
         showClearButton: false,
         filteredCircles: [],
       });
-      this.props.clearMarkedBooths();
+      props.clearMarkedBooths();
     };
 
     this.onItemClick = (circle: Circle) => {
-      const markedBooths = {};
+      const { cluster } = props.circleMapping[circle.name];
+      const markedBooths: MarkedBooths = {};
       circle.boothNumbers.forEach((boothNumber) => {
-        markedBooths[boothNumber] = true;
+        markedBooths[boothNumber] = cluster;
       });
       props.setMarkedBooths(markedBooths);
-      this.reactiveState.showSearchExpanded = false;
+      this.setState({
+        showSearchExpanded: false,
+        filteredCircles: [],
+        value: circle.name,
+      });
     };
 
     this.subject.pipe(debounceTime(500)).subscribe((search) => {

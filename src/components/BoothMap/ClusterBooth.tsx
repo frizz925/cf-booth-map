@@ -12,6 +12,7 @@ import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
 interface BaseProps {
+  isMarked: boolean;
   boothNumber: string;
   booth: Booth;
   circle?: Circle;
@@ -24,7 +25,6 @@ interface BaseProps {
 
 interface StateToProps {
   displayCircleName: boolean;
-  isMarked: boolean;
   isSearching: boolean;
 }
 
@@ -237,9 +237,8 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
   }
 }
 
-const mapStateToProps = (state: AppState, props: BaseProps): StateToProps => ({
+const mapStateToProps = (state: AppState): StateToProps => ({
   displayCircleName: state.displayCircleName,
-  isMarked: !!state.markedBooths[props.boothNumber],
   isSearching: state.isSearching,
 });
 

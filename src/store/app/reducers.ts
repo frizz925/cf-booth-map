@@ -43,12 +43,12 @@ const reducers: AppReducers = {
       circleMapping: byCircles,
     });
   },
-  [MARK_BOOTH]: (state, { boothNumber }) => {
+  [MARK_BOOTH]: (state, { boothNumber, cluster }) => {
     const { markedBooths } = state;
     if (markedBooths[boothNumber]) {
       return false;
     }
-    markedBooths[boothNumber] = true;
+    markedBooths[boothNumber] = cluster;
     return state;
   },
   [UNMARK_BOOTH]: (state, { boothNumber }) => {
@@ -59,12 +59,12 @@ const reducers: AppReducers = {
     delete markedBooths[boothNumber];
     return state;
   },
-  [TOGGLE_MARK_BOOTH]: (state, { boothNumber }) => {
+  [TOGGLE_MARK_BOOTH]: (state, { boothNumber, cluster }) => {
     const { markedBooths } = state;
     if (markedBooths[boothNumber]) {
       delete markedBooths[boothNumber];
     } else {
-      markedBooths[boothNumber] = true;
+      markedBooths[boothNumber] = cluster;
     }
     return state;
   },

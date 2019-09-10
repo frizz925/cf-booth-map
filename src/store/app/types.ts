@@ -43,6 +43,7 @@ interface UpdateCirclesAction {
 interface MarkBoothAction {
   type: typeof MARK_BOOTH;
   boothNumber: string;
+  cluster: Cluster;
 }
 
 interface UnmarkBoothAction {
@@ -53,6 +54,7 @@ interface UnmarkBoothAction {
 interface ToggleMarkBoothAction {
   type: typeof TOGGLE_MARK_BOOTH;
   boothNumber: string;
+  cluster: Cluster;
 }
 
 interface SetMarkedBoothsAction {

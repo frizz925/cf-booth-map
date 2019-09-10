@@ -11,7 +11,7 @@ export enum Orientation {
 }
 
 export interface MarkedBooths {
-  [key: string]: boolean;
+  [key: string]: Cluster;
 }
 
 export default interface Booth {

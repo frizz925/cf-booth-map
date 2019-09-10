@@ -1,6 +1,6 @@
 import NavigationArea from '@components/NavigationArea';
 import Preview from '@components/Preview';
-import { Cluster } from '@models/Booth';
+import { Cluster, MarkedBooths } from '@models/Booth';
 import Circle from '@models/Circle';
 import { MappedBooth } from '@models/Mapped';
 import { previewCircleClose } from '@store/app/actions';
@@ -8,6 +8,7 @@ import { AppState } from '@store/app/types';
 import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { each } from 'lodash';
 import styled from 'styled-components';
 import BoothCluster from './BoothCluster';
 import PreviewArea from './PreviewArea';
@@ -23,6 +24,7 @@ interface StateToProps {
     [key: string]: MappedBooth,
   };
   previewCircle?: Circle;
+  markedBooths: MarkedBooths;
 }
 
 interface DispatchToProps {
@@ -52,9 +54,19 @@ class BoothMap extends Component<BoothMapProps> {
   }
 
   public render() {
-    const { previewCircle, clusters, boothMapping } = this.props;
+    const {
+      previewCircle,
+      clusters,
+      boothMapping,
+      markedBooths,
+    } = this.props;
     const boothMaps = clusters.map((cluster, idx) => (
-      <BoothCluster key={idx} cluster={cluster} boothMapping={boothMapping} />
+      <BoothCluster
+        key={idx}
+        cluster={cluster}
+        boothMapping={boothMapping}
+        markedBooths={markedBooths}
+      />
     ));
     return (
       <Container className='booth-map'>
@@ -79,6 +91,7 @@ const mapStateToProps = (state: AppState): StateToProps => ({
   clusters: state.clusters,
   boothMapping: state.boothMapping,
   previewCircle: state.previewCircle,
+  markedBooths: state.markedBooths,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchToProps => ({
