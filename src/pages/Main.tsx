@@ -8,10 +8,12 @@ display: block;
 const Container = styled.div``;
 
 const SearchForm = React.lazy(() => import('@components/SearchForm'));
+const Drawer = React.lazy(() => import('@components/Drawer'));
 const BoothMap = React.lazy(() => import('@components/BoothMap'));
 const Main: React.FC = () => (
   <Container>
     <SearchForm />
+    <Drawer />
     <BoothMap>
       <Image src={mapImage} alt='Floor plan'/>
     </BoothMap>

@@ -7,9 +7,10 @@ import styles from './styles.css';
 
 interface FormProps {
   onClear?: () => void;
-  onClose?: () => void;
   onChange?: (evt: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
+  onDrawer?: () => void;
+  onClose?: () => void;
   showSearchExpanded?: boolean;
   showClearButton?: boolean;
   value?: string;
@@ -37,7 +38,7 @@ class Form extends PureComponent<FormProps> {
     return (
       <div className={styles.formWrapper}>
         <div className={layoutClassName}>
-          <FormField onClick={this.props.onClose}>
+          <FormField onClick={showSearchExpanded ? this.props.onClose : this.props.onDrawer}>
             {!showSearchExpanded ? <StyledFontAwesomeIcon icon={faBars} /> : null}
             {showSearchExpanded ? <StyledFontAwesomeIcon icon={faArrowLeft} /> : null}
           </FormField>

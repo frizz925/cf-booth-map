@@ -4,7 +4,8 @@ import { SearchView } from '@models/Search';
 import {
   AppActionTypes,
   CLEAR_MARKED_BOOTHS, CLEAR_SEARCH_VIEW,
-  MARK_BOOTH, PREVIEW_CIRCLE,
+  CLOSE_DRAWER, MARK_BOOTH,
+  OPEN_DRAWER, PREVIEW_CIRCLE,
   PREVIEW_CIRCLE_CLOSE, PUSH_SEARCH_VIEW,
   SET_IS_SEARCHING, SET_MARKED_BOOTHS,
   TOGGLE_DISPLAY_CIRCLE_NAME, TOGGLE_MARK_BOOTH,
@@ -66,4 +67,12 @@ export const previewCircle = (circle: Circle): AppActionTypes => ({
 
 export const previewCircleClose = (): AppActionTypes => ({
   type: PREVIEW_CIRCLE_CLOSE,
+});
+
+export const openDrawer = (): AppActionTypes => ({
+  type: OPEN_DRAWER,
+});
+
+export const closeDrawer = (): AppActionTypes => ({
+  type: CLOSE_DRAWER,
 });

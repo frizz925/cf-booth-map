@@ -1,7 +1,7 @@
 import { MarkedBooths } from '@models/Booth';
 import Circle from '@models/Circle';
 import { CircleMapping } from '@models/Mapped';
-import { clearMarkedBooths, setMarkedBooths } from '@store/app/actions';
+import { clearMarkedBooths, openDrawer, setMarkedBooths } from '@store/app/actions';
 import { AppState } from '@store/app/types';
 import reactiveState from '@utils/reactiveState';
 import classNames from 'classnames';
@@ -34,6 +34,7 @@ interface StateToProps {
 interface DispatchToProps {
   setMarkedBooths: (markedBooths: MarkedBooths) => void;
   clearMarkedBooths: () => void;
+  openDrawer: () => void;
 }
 
 type SearchFormProps = StateToProps & DispatchToProps;
@@ -158,6 +159,7 @@ class SearchForm extends PureComponent<SearchFormProps, SearchFormState> {
           onFocus={this.onFocus}
           onClear={this.onClear}
           onChange={this.onChange}
+          onDrawer={this.props.openDrawer}
           onClose={this.onClose}
         />
         <List
@@ -186,6 +188,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchToProps => ({
   },
   clearMarkedBooths() {
     dispatch(clearMarkedBooths());
+  },
+  openDrawer() {
+    dispatch(openDrawer());
   },
 });
 

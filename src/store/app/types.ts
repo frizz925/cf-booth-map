@@ -16,6 +16,8 @@ export interface AppState {
 
   previewCircle?: Circle;
   previewShown: boolean;
+
+  drawerShown: boolean;
 }
 
 export const UPDATE_CIRCLES = Symbol();
@@ -30,6 +32,8 @@ export const PUSH_SEARCH_VIEW = Symbol();
 export const CLEAR_SEARCH_VIEW = Symbol();
 export const PREVIEW_CIRCLE = Symbol();
 export const PREVIEW_CIRCLE_CLOSE = Symbol();
+export const OPEN_DRAWER = Symbol();
+export const CLOSE_DRAWER = Symbol();
 
 interface UpdateCirclesAction {
   type: typeof UPDATE_CIRCLES;
@@ -88,6 +92,14 @@ interface PreviewCircleClose {
   type: typeof PREVIEW_CIRCLE_CLOSE;
 }
 
+interface OpenDrawer {
+  type: typeof OPEN_DRAWER;
+}
+
+interface CloseDrawer {
+  type: typeof CLOSE_DRAWER;
+}
+
 export type AppActionTypes =
   UpdateCirclesAction |
   MarkBoothAction |
@@ -100,7 +112,9 @@ export type AppActionTypes =
   PushSearchView |
   ClearSearchView |
   PreviewCircle |
-  PreviewCircleClose;
+  PreviewCircleClose |
+  OpenDrawer |
+  CloseDrawer;
 
 export type AppReducer<T extends AppActionTypes> = (state: AppState, action: T) => AppState|boolean;
 
@@ -117,4 +131,6 @@ export interface AppReducers {
   [CLEAR_SEARCH_VIEW]: AppReducer<ClearSearchView>;
   [PREVIEW_CIRCLE]: AppReducer<PreviewCircle>;
   [PREVIEW_CIRCLE_CLOSE]: AppReducer<PreviewCircleClose>;
+  [OPEN_DRAWER]: AppReducer<OpenDrawer>;
+  [CLOSE_DRAWER]: AppReducer<CloseDrawer>;
 }
