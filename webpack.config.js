@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
@@ -20,6 +21,17 @@ module.exports = merge({
       test: /\.(j|t)sx?$/,
       exclude: /node_modules/,
       use: 'babel-loader',
+    }, {
+      test: /\.css$/,
+      use: [
+        isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+        {
+          loader: 'css-loader',
+          options: {
+            modules: true,
+          },
+        }
+      ],
     }, {
       test: /\.(svg|png|jpg|jpeg|gif|woff|woff2|ttf|eot)$/,
       use: isDev ? {

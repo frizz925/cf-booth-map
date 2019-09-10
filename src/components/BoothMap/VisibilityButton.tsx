@@ -41,7 +41,6 @@ transition: color 0.3s;
 `;
 
 class VisibilityButton extends PureComponent<VisiblityButtonProps> {
-  private buttonRef = React.createRef<HTMLDivElement>();
   private onClick: () => void;
 
   constructor(props: VisiblityButtonProps) {
@@ -49,14 +48,6 @@ class VisibilityButton extends PureComponent<VisiblityButtonProps> {
     this.onClick = () => {
       this.props.toggleVisiblity();
     };
-  }
-
-  public componentDidMount() {
-    this.buttonRef.current.addEventListener('click', this.onClick);
-  }
-
-  public componentWillUnmount() {
-    this.buttonRef.current.removeEventListener('click', this.onClick);
   }
 
   public render() {
@@ -68,7 +59,7 @@ class VisibilityButton extends PureComponent<VisiblityButtonProps> {
       color: '#5d34af',
     } : null;
     return (
-      <StyledButton ref={this.buttonRef} style={buttonStyle}>
+      <StyledButton onClick={this.onClick} style={buttonStyle}>
         <StyledFontAwesomeIcon icon={faEye} style={iconStyle} />
       </StyledButton>
     );

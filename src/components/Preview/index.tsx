@@ -24,6 +24,10 @@ const ImageContainer = styled.div`
 margin-bottom: 24px;
 `;
 
+const Image = styled.img`
+max-width: 224px;
+`;
+
 const CircleName = styled.h3`
 margin: 0 0 4px 0;
 `;
@@ -60,7 +64,7 @@ class Preview extends PureComponent<PreviewProps> {
         <CloseButton onClick={this.props.onClose} />
         <Content>
           <ImageContainer>
-            <img src={circle.imageUrl} />
+            <Image src={circle.imageUrl} />
           </ImageContainer>
           <CircleName>{circle.name}</CircleName>
           <div>{circle.boothNumber}</div>

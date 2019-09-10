@@ -1,6 +1,6 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { PureComponent } from 'react';
+import React, { MouseEvent, PureComponent } from 'react';
 import styled from 'styled-components';
 
 interface CloseButtonProps {
@@ -18,19 +18,9 @@ cursor: pointer;
 `;
 
 class CloseButton extends PureComponent<CloseButtonProps> {
-  private ref = React.createRef<HTMLDivElement>();
-
-  public componentDidMount() {
-    this.ref.current.addEventListener('click', this.props.onClick);
-  }
-
-  public componentWillUnmount() {
-    this.ref.current.removeEventListener('click', this.props.onClick);
-  }
-
   public render() {
     return (
-      <Container ref={this.ref}>
+      <Container onClick={this.props.onClick}>
         <StyledIcon icon={faTimes} />
       </Container>
     );

@@ -6,7 +6,7 @@ import { AppState } from '@store/app/types';
 import getBoothNumber from '@utils/booth';
 import CSS from 'csstype';
 import { assign } from 'lodash';
-import React, { PureComponent, ReactNode } from 'react';
+import React, { PureComponent, ReactNode, TdHTMLAttributes } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import styled from 'styled-components';
@@ -150,8 +150,8 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
   private bgRef = React.createRef<HTMLDivElement>();
 
   private clickHandler: () => void;
-  private inHandler: (evt: MouseEvent) => void;
-  private outHandler: (evt: MouseEvent) => void;
+  private inHandler: () => void;
+  private outHandler: () => void;
 
   constructor(props: ClusterBoothProps) {
     super(props);
@@ -173,9 +173,6 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
 
   public componentDidMount() {
     this.maybeTriggerPanning();
-    this.ref.current.addEventListener('click', this.clickHandler);
-    this.ref.current.addEventListener('mouseenter', this.inHandler);
-    this.ref.current.addEventListener('mouseleave', this.outHandler);
     if (experimentalBoothBg && this.bgRef.current) {
       observer.observe(this.bgRef.current);
     }
@@ -189,9 +186,6 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
     if (experimentalBoothBg && this.bgRef.current) {
       observer.unobserve(this.bgRef.current);
     }
-    this.ref.current.removeEventListener('click', this.clickHandler);
-    this.ref.current.removeEventListener('mouseenter', this.inHandler);
-    this.ref.current.removeEventListener('mouseleave', this.outHandler);
   }
 
   public render() {
@@ -207,24 +201,28 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
       color: '#eee',
       fontWeight: 500,
     } : null;
-    const cellProps = {
+    const cellProps: TdHTMLAttributes<{}> & { ref: React.RefObject<HTMLTableCellElement> } = {
+      ref: this.ref,
       className: this.props.className,
       colSpan: this.props.colSpan,
       rowSpan: this.props.rowSpan,
       style: experimentalBoothBg ? this.props.style : assign(cellMarkedStyle, this.props.style),
+      onClick: this.clickHandler,
+      onMouseEnter: this.inHandler,
+      onMouseLeave: this.outHandler,
     };
     const content = this.props.displayCircleName ?
       this.props.children :
       getBoothNumber(this.props.booth);
     return experimentalBoothBg ? (
-      <Cell {...cellProps} ref={this.ref}>
+      <Cell {...cellProps}>
         <BackgroundContainer>
           {circle ? <Background ref={this.bgRef} data-src={circle.imageUrl} /> : null}
           <MarkedBackground style={markedBgStyle} />
           <Content style={contentStyle}>{content}</Content>
         </BackgroundContainer>
       </Cell>
-    ) : <Cell {...cellProps} ref={this.ref}>{content}</Cell>;
+    ) : <Cell {...cellProps}>{content}</Cell>;
   }
 
   private maybeTriggerPanning() {

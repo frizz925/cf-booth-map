@@ -7,11 +7,11 @@ display: block;
 `;
 const Container = styled.div``;
 
-const FormFields = React.lazy(() => import('../components/FormFields'));
-const BoothMap = React.lazy(() => import('../components/BoothMap'));
+const SearchForm = React.lazy(() => import('@components/SearchForm'));
+const BoothMap = React.lazy(() => import('@components/BoothMap'));
 const Main: React.FC = () => (
   <Container>
-    <FormFields />
+    <SearchForm />
     <BoothMap>
       <Image src={mapImage} alt='Floor plan'/>
     </BoothMap>

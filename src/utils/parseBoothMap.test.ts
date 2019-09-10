@@ -1,8 +1,9 @@
-import * as boothMapData from '../data/mapping.json';
+import * as boothMapData from '@data/mapping.json';
+import { ClusterData } from '@models/Booth';
 import parseBoothMap from './parseBoothMap';
 
 it('should parse booth map correctly', () => {
-  const result = parseBoothMap(boothMapData);
+  const result = parseBoothMap(boothMapData as ClusterData[]);
   expect(result.length).toBeGreaterThan(0);
   const lastResult = result[result.length - 1];
   expect(lastResult.name).toBe('A');

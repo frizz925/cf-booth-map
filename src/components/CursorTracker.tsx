@@ -1,5 +1,5 @@
 import CSS from 'csstype';
-import React, { PureComponent } from 'react';
+import React, { MouseEvent, PureComponent } from 'react';
 import styled from 'styled-components';
 
 interface CursorTrackerProps {
@@ -55,7 +55,6 @@ export default class CursorTracker extends PureComponent<CursorTrackerProps, Cur
     y: 0,
   };
 
-  private wrapperRef = React.createRef<HTMLDivElement>();
   private listener: (evt: MouseEvent) => void;
 
   constructor(props: CursorTrackerProps) {
@@ -67,14 +66,6 @@ export default class CursorTracker extends PureComponent<CursorTrackerProps, Cur
       const y = Math.round(evt.clientY - clientRect.top);
       this.setState({ x, y });
     };
-  }
-
-  public componentDidMount() {
-    this.wrapperRef.current.addEventListener('mousemove', this.listener);
-  }
-
-  public componentWillUnmount() {
-    this.wrapperRef.current.removeEventListener('mousemove', this.listener);
   }
 
   public render() {
@@ -90,7 +81,7 @@ export default class CursorTracker extends PureComponent<CursorTrackerProps, Cur
             <CounterNumber>{this.state.y}</CounterNumber>
           </Counter>
         </CounterWrapper>
-        <Wrapper ref={this.wrapperRef}>
+        <Wrapper onMouseMove={this.listener}>
           {this.props.children}
         </Wrapper>
       </Container>

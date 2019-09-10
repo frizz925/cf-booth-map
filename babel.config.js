@@ -3,9 +3,6 @@ const tsConfigPaths = require('./tsconfig.json')
   .paths;
 const moduleAliases = {};
 Object.keys(tsConfigPaths).forEach(key => {
-  if (key.indexOf('/*') <= 0) {
-    return;
-  }
   const alias = key.replace('/*', '');
   const path = tsConfigPaths[key][0]
     .replace('/*', '');
