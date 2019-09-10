@@ -1,4 +1,4 @@
-:local(.formWrapper) {
+:local(.formContainer) {
   position: absolute;
   top: 0;
   left: 0;
@@ -6,30 +6,36 @@
   z-index: 11;
 }
 
-:local(.formLayout) {
+:local(.formWrapper) {
   background-color: #fff;
   box-shadow: 1px 1px 4px 1px rgba(0,0,0,0.3);
   box-sizing: border-box;
+  width: 100%;
   border: 1px solid transparent;
   border-radius: 24px;
-  display: table;
-  width: 100%;
   transition: border-color 0.3s, box-shadow 0.3s;
   overflow: hidden;
 }
 
-:local(.formLayout.formExpanded) {
+:local(.formWrapper.formExpanded) {
   box-shadow: none;
   border: 1px solid rgba(0,0,0,0.4);
 }
 
+
+:local(.formLayout) {
+  display: table;
+  width: 100%;
+}
+
 :local(.formInput) {
+  background-color: transparent;
   font-size: 14pt;
   display: block;
   color: inherit;
   border: none;
   box-sizing: border-box;
-  padding: 12px 0;
+  padding: 0;
   width: 100%;
   outline: 0;
 }

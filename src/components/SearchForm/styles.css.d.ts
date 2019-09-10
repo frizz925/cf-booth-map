@@ -1,5 +1,6 @@
 export const formExpanded: string;
 
+export const formContainer: string;
 export const formWrapper: string;
 export const formLayout: string;
 export const formInput: string;

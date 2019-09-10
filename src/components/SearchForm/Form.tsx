@@ -18,7 +18,7 @@ interface FormProps {
 
 const FormField = styled.div`
 display: table-cell;
-vertical-align: top;
+vertical-align: middle;
 `;
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
@@ -34,31 +34,35 @@ class Form extends PureComponent<FormProps> {
     const expandedClassName = {
       [styles.formExpanded]: showSearchExpanded,
     };
+    const containerClassName = classNames(styles.formContainer, expandedClassName);
+    const wrapperClassName = classNames(styles.formWrapper, expandedClassName);
     const layoutClassName = classNames(styles.formLayout, expandedClassName);
     return (
-      <div className={styles.formWrapper}>
-        <div className={layoutClassName}>
-          <FormField onClick={showSearchExpanded ? this.props.onClose : this.props.onDrawer}>
-            {!showSearchExpanded ? <StyledFontAwesomeIcon icon={faBars} /> : null}
-            {showSearchExpanded ? <StyledFontAwesomeIcon icon={faArrowLeft} /> : null}
-          </FormField>
-          <FormField style={{ width: '100%' }}>
-            <input
-              type='text'
-              value={this.props.value}
-              className={styles.formInput}
-              placeholder='Search for circle'
-              onChange={this.props.onChange}
-              onFocus={this.props.onFocus}
-              aria-label='Search for circle'
-            />
-          </FormField>
-          <FormField
-            style={{ display: showClearButton ? 'table-cell' : 'none' }}
-            onClick={this.props.onClear}
-          >
-            <StyledFontAwesomeIcon icon={faTimes} />
-          </FormField>
+      <div className={containerClassName}>
+        <div className={wrapperClassName}>
+          <div className={layoutClassName}>
+            <FormField onClick={showSearchExpanded ? this.props.onClose : this.props.onDrawer}>
+              {!showSearchExpanded ? <StyledFontAwesomeIcon icon={faBars} /> : null}
+              {showSearchExpanded ? <StyledFontAwesomeIcon icon={faArrowLeft} /> : null}
+            </FormField>
+            <FormField style={{ width: '100%' }}>
+              <input
+                type='text'
+                value={this.props.value}
+                className={styles.formInput}
+                placeholder='Search for circle'
+                onChange={this.props.onChange}
+                onFocus={this.props.onFocus}
+                aria-label='Search for circle'
+              />
+            </FormField>
+            <FormField
+              style={{ display: showClearButton ? 'table-cell' : 'none' }}
+              onClick={this.props.onClear}
+            >
+              <StyledFontAwesomeIcon icon={faTimes} />
+            </FormField>
+          </div>
         </div>
       </div>
     );

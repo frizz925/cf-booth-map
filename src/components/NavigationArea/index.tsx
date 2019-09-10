@@ -1,6 +1,7 @@
 import { SearchView } from '@models/Search';
 import { clearSearchView } from '@store/app/actions';
 import { AppState } from '@store/app/types';
+import { isDevelopment } from '@utils/env';
 import Hammer from 'hammerjs';
 import { assign } from 'lodash';
 import React, { Component, ReactNode } from 'react';
@@ -86,6 +87,7 @@ class NavigationArea extends Component<NavigationAreaProps, NavigationAreaState>
 
   public componentWillUnmount() {
     this.unregisterListeners();
+    this.mc.destroy();
   }
 
   public render() {
@@ -122,6 +124,7 @@ class NavigationArea extends Component<NavigationAreaProps, NavigationAreaState>
   private setupHammer(): HammerManager {
     const mc = new Hammer.Manager(this.containerRef.current);
     mc.add(new Hammer.Pan({ threshold: 0, pointers: 0 }));
+    mc.add(new Hammer.Swipe({ threshold: 0, pointers: 0 }));
     mc.add(new Hammer.Rotate({ threshold: 0 })).recognizeWith(mc.get('pan'));
     mc.add(new Hammer.Pinch({ threshold: 0 })).recognizeWith([mc.get('pan'), mc.get('rotate')]);
     return mc;
