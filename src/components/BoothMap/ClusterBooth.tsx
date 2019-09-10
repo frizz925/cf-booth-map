@@ -190,10 +190,15 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
 
   public render() {
     const { circle, isMarked } = this.props;
+    const baseStyle = !circle ? {
+      cursor: 'auto',
+    } : null;
     const cellMarkedStyle = isMarked ? {
       backgroundColor: '#1875d1',
       color: '#fff',
     } : null;
+    const mergedStyle = Object.assign(baseStyle || {}, cellMarkedStyle);
+
     const markedBgStyle = isMarked ? {
       opacity: 1,
     } : null;
@@ -206,7 +211,7 @@ class ClusterBooth extends PureComponent<ClusterBoothProps, ClusterBoothState> {
       className: this.props.className,
       colSpan: this.props.colSpan,
       rowSpan: this.props.rowSpan,
-      style: experimentalBoothBg ? this.props.style : assign(cellMarkedStyle, this.props.style),
+      style: experimentalBoothBg ? this.props.style : assign(mergedStyle, this.props.style),
       onClick: this.clickHandler,
       onMouseEnter: this.inHandler,
       onMouseLeave: this.outHandler,

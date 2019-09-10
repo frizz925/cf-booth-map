@@ -1,3 +1,4 @@
+import LazyImage from '@components/LazyImage';
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import Circle from '@models/Circle';
 import React, { PureComponent } from 'react';
@@ -13,9 +14,6 @@ interface BaseProps {
 
 type PreviewProps = BaseProps;
 
-const Container = styled.div`
-`;
-
 const Content = styled.div`
 padding: 0 16px 16px 16px;
 `;
@@ -24,7 +22,7 @@ const ImageContainer = styled.div`
 margin-bottom: 24px;
 `;
 
-const Image = styled.img`
+const Image = styled(LazyImage)`
 max-width: 224px;
 `;
 
@@ -60,11 +58,11 @@ class Preview extends PureComponent<PreviewProps> {
       </Information>
     ) : null;
     return (
-      <Container>
+      <div>
         <CloseButton onClick={this.props.onClose} />
         <Content>
           <ImageContainer>
-            <Image src={circle.imageUrl} />
+            <Image src={circle.imageUrl} width={224} height={333} />
           </ImageContainer>
           <CircleName>{circle.name}</CircleName>
           <div>{circle.boothNumber}</div>
@@ -72,7 +70,7 @@ class Preview extends PureComponent<PreviewProps> {
           <Information label='Fandoms'>{fandomEls}</Information>
           {socialInfo}
         </Content>
-      </Container>
+      </div>
     );
   }
 }
