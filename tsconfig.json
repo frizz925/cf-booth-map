@@ -19,7 +19,7 @@
     "outDir": "./dist/",
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["src/assets/*"]
+      "*": ["src/*"]
     }
   },
   "include": ["src/**/*"],

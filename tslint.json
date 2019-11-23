@@ -3,8 +3,10 @@
   "extends": ["tslint:recommended"],
   "jsRules": {},
   "rules": {
+    "arrow-parens": [true, "ban-single-arg-parens"],
     "interface-name": false,
     "object-literal-sort-keys": false,
+    "semicolon": [true, "ignore-bound-class-methods"],
     "quotemark": [true, "single", "jsx-double"]
   },
   "rulesDirectory": []

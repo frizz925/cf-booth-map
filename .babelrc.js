@@ -1,5 +1,4 @@
 const tsConfigPaths = require('./tsconfig.json').compilerOptions.paths;
-const moduleResolver = require.resolve('babel-plugin-module-resolver');
 const moduleAliases = {};
 Object.keys(tsConfigPaths).forEach(name => {
   const configPath = tsConfigPaths[name][0];
@@ -9,18 +8,15 @@ Object.keys(tsConfigPaths).forEach(name => {
 });
 
 module.exports = {
-  presets: [
-    '@babel/preset-env',
-    '@babel/preset-typescript',
-    '@babel/preset-react',
-  ],
+  presets: ['@babel/preset-react', '@babel/preset-typescript', '@babel/preset-env'],
   plugins: [
     [
-      moduleResolver,
+      'babel-plugin-module-resolver',
       {
         root: ['.'],
         alias: moduleAliases,
       },
     ],
+    '@babel/plugin-proposal-class-properties',
   ],
 };
