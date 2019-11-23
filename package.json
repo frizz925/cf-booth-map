@@ -1,0 +1,43 @@
+{
+  "name": "cf-booth-map",
+  "version": "0.20",
+  "description": "Interactive booth map for Comic Frontier",
+  "main": "src/index.tsx",
+  "repository": "https://github.com/Frizz925/cf-booth-map",
+  "author": "Izra Faturrahman <Frizz925@hotmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack-dev-server"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.7.0",
+    "@babel/preset-typescript": "^7.7.2",
+    "@types/lodash": "^4.14.149",
+    "@types/node": "^12.12.11",
+    "@types/pixi.js": "^5.0.0",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.4",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "css-loader": "^3.2.0",
+    "eslint": "^6.6.0",
+    "file-loader": "^4.3.0",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^1.0.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2",
+    "url-loader": "^2.3.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "normalize.css": "^8.0.1",
+    "pixi.js": "^5.2.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
+}
