@@ -1,3 +1,4 @@
+import { IS_DEVELOPMENT } from '@utils/Constants';
 import merge from 'lodash/merge';
 import { Application, Container, Graphics, Sprite } from 'pixi.js';
 
@@ -37,7 +38,7 @@ export default class MapRenderer {
 
   private outerContainer: Container;
   private innerContainer: Container;
-  private pointer: Graphics;
+  private pointer?: Graphics;
 
   private app = new Application({
     width: window.innerWidth,
@@ -84,7 +85,10 @@ export default class MapRenderer {
     innerContainer.pivot.set(absOffsetX, absOffsetY);
     innerContainer.position.set(absOffsetX, absOffsetY);
     innerContainer.scale.set(scale);
-    pointer.position.set(absOffsetX, absOffsetY);
+
+    if (IS_DEVELOPMENT) {
+      pointer.position.set(absOffsetX, absOffsetY);
+    }
 
     const absOuterX = outerX - x;
     const absOuterY = outerY - y;
@@ -126,9 +130,11 @@ export default class MapRenderer {
     this.innerContainer = new Container();
     this.outerContainer.addChildAt(this.innerContainer, 0);
 
-    this.pointer = new Graphics();
-    this.pointer.beginFill(0xff0000).drawCircle(0, 0, 5);
-    this.innerContainer.addChild(this.pointer);
+    if (IS_DEVELOPMENT) {
+      this.pointer = new Graphics();
+      this.pointer.beginFill(0xff0000).drawCircle(0, 0, 5);
+      this.innerContainer.addChild(this.pointer);
+    }
   }
 
   private initTextures() {
