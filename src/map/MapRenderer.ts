@@ -3,8 +3,8 @@ import merge from 'lodash/merge';
 import { Application, Container, Graphics, Sprite } from 'pixi.js';
 
 const SCALE_EASE_STEP = 0.04;
-const VELOCITY_FRICTION = 0.98;
-const VELOCITY_SCALE_FRICTION = 0.92;
+const VELOCITY_FRICTION = 0.92;
+const VELOCITY_SCALE_FRICTION = 0.88;
 
 export interface AppState {
   x: number;

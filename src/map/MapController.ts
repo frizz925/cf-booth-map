@@ -10,10 +10,13 @@ export default class MapController {
   private panState = {
     startX: 0,
     startY: 0,
+    velocityX: 0,
+    velocityY: 0,
   };
 
   private pinchState = {
     startScale: 0,
+    scaleVelocity: 0,
   };
 
   constructor(renderer: MapRenderer) {
@@ -27,7 +30,12 @@ export default class MapController {
     const delta = -1 * Math.sign(evt.deltaY);
     const amount = SCALE_STEP * delta;
     const scale = state.scale * (1.0 + amount);
-    this.updateOffset(evt.clientX, evt.clientY, delta, scale, MAX_SCALE_VELOCITY * delta);
+
+    let scaleVelocity = MAX_SCALE_VELOCITY * delta;
+    if (Math.sign(scaleVelocity) === Math.sign(state.scaleVelocity)) {
+      scaleVelocity = state.scaleVelocity + scaleVelocity;
+    }
+    this.updateOffset(evt.clientX, evt.clientY, delta, scale, scaleVelocity);
   };
 
   public onMouseClick = (evt: MouseEvent) => {
@@ -48,6 +56,8 @@ export default class MapController {
     if (evt.type === 'panstart') {
       panState.startX = state.x;
       panState.startY = state.y;
+      panState.velocityX = state.velocityX;
+      panState.velocityY = state.velocityY;
     }
 
     let velocityX = 0;
@@ -55,6 +65,12 @@ export default class MapController {
     if (evt.type === 'panend') {
       velocityX = (evt.velocityX * VELOCITY_MULTIPLIER) / state.scale;
       velocityY = (evt.velocityY * VELOCITY_MULTIPLIER) / state.scale;
+      if (Math.sign(velocityX) === Math.sign(panState.velocityX)) {
+        velocityX = panState.velocityX + velocityX;
+      }
+      if (Math.sign(velocityY) === Math.sign(panState.velocityY)) {
+        velocityY = panState.velocityY + velocityY;
+      }
     }
 
     renderer.updateState({
@@ -73,11 +89,15 @@ export default class MapController {
 
     if (evt.type === 'pinchstart') {
       pinchState.startScale = state.scale;
+      pinchState.scaleVelocity = state.scaleVelocity;
     }
 
     let scaleVelocity = 0;
     if (evt.type === 'pinchend') {
       scaleVelocity = (evt.scale - 1.0) / (evt.deltaTime / 100);
+      if (Math.sign(scaleVelocity) === Math.sign(pinchState.scaleVelocity)) {
+        scaleVelocity = pinchState.scaleVelocity + scaleVelocity;
+      }
     }
 
     const delta = Math.sign(evt.scale);
