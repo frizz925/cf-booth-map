@@ -20,8 +20,7 @@ const webpackConfig = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-    filename: '[name].bundle.js',
-    chunkFilename: '[name].bundle.js',
+    filename: isDev ? '[name].bundle.js' : '[name].[hash:8].js',
   },
   module: {
     rules: [
