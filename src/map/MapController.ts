@@ -24,7 +24,6 @@ export default class MapController {
   }
 
   public onMouseWheel = (evt: WheelEvent) => {
-    evt.preventDefault();
     this.cancelAllAnimationFrames();
     const { state } = this.renderer;
     const delta = -1 * Math.sign(evt.deltaY);
@@ -35,16 +34,25 @@ export default class MapController {
     if (Math.sign(scaleVelocity) === Math.sign(state.scaleVelocity)) {
       scaleVelocity = state.scaleVelocity + scaleVelocity;
     }
-    this.updateOffset(evt.clientX, evt.clientY, delta, scale, scaleVelocity);
-  };
-
-  public onMouseClick = (evt: MouseEvent) => {
-    this.cancelAllAnimationFrames();
-    this.updateOffset(evt.clientX, evt.clientY, 0, this.renderer.state.scale, 0);
+    this.updateOffset(evt.clientX, evt.clientY, scale, scaleVelocity);
   };
 
   public onWindowResize = () => {
     this.renderer.render();
+  };
+
+  public onViewSingleTap = (evt: HammerInput) => {
+    this.cancelAllAnimationFrames();
+    this.updateOffset(evt.center.x, evt.center.y, this.renderer.state.scale, 0);
+  };
+
+  public onViewDoubleTap = (evt: HammerInput) => {
+    this.cancelAllAnimationFrames();
+    const { state } = this.renderer;
+    const scale = state.scale * (1.0 + SCALE_STEP);
+    const scaleVelocity = MAX_SCALE_VELOCITY;
+    console.log(scale);
+    this.updateOffset(evt.center.x, evt.center.y, scale, scaleVelocity);
   };
 
   public onViewPan = (evt: HammerInput) => {
@@ -100,21 +108,14 @@ export default class MapController {
       }
     }
 
-    const delta = Math.sign(evt.scale);
     const scale = pinchState.startScale * evt.scale;
-    this.updateOffset(evt.center.x, evt.center.y, delta, scale, scaleVelocity);
+    this.updateOffset(evt.center.x, evt.center.y, scale, scaleVelocity);
   };
 
-  private updateOffset(
-    x: number,
-    y: number,
-    delta: number,
-    scale: number,
-    scaleVelocity: number,
-  ) {
+  private updateOffset(x: number, y: number, scale: number, scaleVelocity: number) {
     const { state } = this.renderer;
-    const deltaX = delta >= 0 ? (x - state.offsetX - state.outerX) / state.scale : 0;
-    const deltaY = delta >= 0 ? (y - state.offsetY - state.outerY) / state.scale : 0;
+    const deltaX = (x - state.offsetX - state.outerX) / state.scale;
+    const deltaY = (y - state.offsetY - state.outerY) / state.scale;
     const offsetX = state.offsetX + deltaX;
     const offsetY = state.offsetY + deltaY;
 
