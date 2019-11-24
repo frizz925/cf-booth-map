@@ -11,10 +11,6 @@ const App = (context: AppContext, el: Element) => {
     circleRepository: new CircleRepository(),
   };
 
-  process.nextTick(() => {
-    props.circleRepository.fetch();
-  });
-
   ReactDOM.render(
     <Suspense fallback={<Loading />}>
       <AppContainer {...props} />

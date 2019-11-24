@@ -28,7 +28,7 @@ class AppContainer extends PureComponent<AppContainerProps> {
   public render() {
     const { props, searchStore } = this;
     const { circleRepository } = props;
-    return <SearchForm store={searchStore} circles={circleRepository.store} />;
+    return <SearchForm store={searchStore} repository={circleRepository} />;
   }
 }
 

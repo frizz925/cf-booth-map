@@ -1,5 +1,6 @@
 import Circle from '@models/Circle';
 import map from 'lodash/map';
+import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import * as styles from './styles.css';
 
@@ -8,6 +9,7 @@ interface Props {
   circles: Circle[];
 }
 
+@observer
 class SearchResults extends PureComponent<Props> {
   public render() {
     const { className, circles } = this.props;

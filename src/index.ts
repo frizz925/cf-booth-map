@@ -8,10 +8,16 @@ const context: AppContext = observable({
 });
 
 window.addEventListener('load', () => {
-  import('./app').then(({ default: app }) => {
-    app(context, document.getElementById('app'));
-  });
-  import('./map').then(({ default: map }) => {
-    map(context, document.getElementById('stage'));
-  });
+  import('./app').then(
+    ({ default: app }) => {
+      app(context, document.getElementById('app'));
+    },
+    err => console.error(err),
+  );
+  import('./map').then(
+    ({ default: map }) => {
+      map(context, document.getElementById('stage'));
+    },
+    err => console.error(err),
+  );
 });

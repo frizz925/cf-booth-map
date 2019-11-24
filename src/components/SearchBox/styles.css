@@ -47,6 +47,7 @@
   border: none;
   outline: none;
   padding: 0;
-  line-height: 42px;
+  line-height: 18px;
+  padding: 12px 0;
   color: rgba(0, 0, 0, 0.6);
 }
