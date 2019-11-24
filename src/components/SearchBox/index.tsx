@@ -19,29 +19,31 @@ export default class SearchBox extends PureComponent<SearchBoxProps> {
   public render() {
     const { className, docked, value, onClick, onClear, onTextChanged } = this.props;
     const containerClassNames = classNames(styles.container, className);
-    const formClassNames = classNames(styles.form, {
+    const floatingClassNames = classNames(styles.floatingContainer, {
       [styles.floating]: !docked,
       [styles.docked]: docked,
     });
     return (
       <div className={containerClassNames}>
-        <div className={formClassNames}>
-          <div className={styles.formButton} onClick={this.onActionClicked}>
-            <FontAwesomeIcon icon={docked ? faArrowLeft : faBars} />
-          </div>
-          <input
-            className={styles.searchInput}
-            type='value'
-            placeholder='Search for circle'
-            onClick={onClick}
-            onChange={e => onTextChanged(e.target.value)}
-            value={value}
-          />
-          <div className={styles.formButton} onClick={onClear}>
-            <FontAwesomeIcon
-              icon={faTimes}
-              style={{ visibility: value.length > 0 ? 'visible' : 'hidden' }}
+        <div className={floatingClassNames}>
+          <div className={styles.form}>
+            <div className={styles.formButton} onClick={this.onActionClicked}>
+              <FontAwesomeIcon icon={docked ? faArrowLeft : faBars} />
+            </div>
+            <input
+              className={styles.searchInput}
+              type='value'
+              placeholder='Search for circle'
+              onClick={onClick}
+              onChange={e => onTextChanged(e.target.value)}
+              value={value}
             />
+            <div className={styles.formButton} onClick={onClear}>
+              <FontAwesomeIcon
+                icon={faTimes}
+                style={{ visibility: value.length > 0 ? 'visible' : 'hidden' }}
+              />
+            </div>
           </div>
         </div>
       </div>

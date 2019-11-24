@@ -1,7 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+
 const isDev = process.env.NODE_ENV === 'development';
 const webpackEnvConfig = isDev
   ? require('./webpack.config.dev')
@@ -84,9 +87,13 @@ const webpackConfig = {
       filename: isDev ? '[name].bundle.css' : '[name].[hash:8].css',
       ignoreOrder: false,
     }),
+    new CopyPlugin([{ from: 'src/assets/modernizr-custom.js' }]),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.html',
+    }),
+    new HtmlWebpackTagsPlugin({
+      scripts: ['modernizr-custom.js'],
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

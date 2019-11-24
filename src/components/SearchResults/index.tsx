@@ -21,7 +21,7 @@ class SearchResults extends PureComponent<Props> {
 
   private renderCircle(circle: Circle): JSX.Element {
     return (
-      <div className={styles.searchResultItem}>
+      <div key={circle.id} className={styles.searchResultItem}>
         <h3>{circle.name}</h3>
         <span>{circle.boothNumber}</span>
       </div>

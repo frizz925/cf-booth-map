@@ -1,4 +1,5 @@
 export const container: string;
+export const floatingContainer: string;
 export const form: string;
 export const formButton: string;
 export const searchInput: string;

@@ -1,11 +1,11 @@
-import mapImage from '@assets/floor_map_cf13.webp';
+import mapImagePng from '@assets/floor_map_cf13.png';
+import mapImageWebp from '@assets/floor_map_cf13.webp';
 import AppContext from '@models/AppContext';
 import Hammer from 'hammerjs';
 import MapController from './MapController';
 import MapRenderer from './MapRenderer';
 
-const Map = (context: AppContext, stage: Element) => {
-  const renderer = new MapRenderer(mapImage);
+const setupRenderer = (context: AppContext, stage: Element, renderer: MapRenderer) => {
   renderer.attach(stage);
 
   const controller = new MapController(renderer);
@@ -29,6 +29,13 @@ const Map = (context: AppContext, stage: Element) => {
   mc.on('doubletap', controller.onViewDoubleTap);
   mc.on('panstart panmove panend', controller.onViewPan);
   mc.on('pinchstart pinchmove pinchend', controller.onViewPinch);
+};
+
+const Map = (context: AppContext, stage: Element) => {
+  Modernizr.on('webp', result => {
+    const mapImage = result ? mapImageWebp : mapImagePng;
+    setupRenderer(context, stage, new MapRenderer(mapImage));
+  });
 };
 
 export default Map;
