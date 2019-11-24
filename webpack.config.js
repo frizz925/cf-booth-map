@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const isDev = process.env.NODE_ENV === 'development';
 const webpackEnvConfig = isDev
   ? require('./webpack.config.dev')
@@ -14,9 +15,6 @@ const staticUrlLoader = {
 };
 
 const webpackConfig = {
-  entry: {
-    main: './src/index.tsx',
-  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
@@ -42,15 +40,21 @@ const webpackConfig = {
             },
           },
         ],
-        include: [path.resolve(__dirname, 'src/@components')],
+        exclude: [
+          path.resolve(__dirname, 'src/styles'),
+          path.resolve(__dirname, 'node_modules'),
+        ],
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-        exclude: [path.resolve(__dirname, 'src/@components')],
+        use: [isDev ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
+        include: [
+          path.resolve(__dirname, 'src/styles'),
+          path.resolve(__dirname, 'node_modules'),
+        ],
       },
       {
-        test: /\.(png|jpg|jpeg|woff|woff2|eot|ttf)$/,
+        test: /\.(png|jpg|jpeg|webp|woff|woff2|eot|ttf)$/,
         use: isDev ? staticUrlLoader : 'file-loader',
       },
     ],
@@ -61,10 +65,25 @@ const webpackConfig = {
   },
   optimization: {
     splitChunks: {
-      chunks: 'all',
+      cacheGroups: {
+        commons: {
+          name: 'vendors',
+          chunks: 'initial',
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+        },
+        default: {
+          chunks: 'all',
+          priority: -20,
+        },
+      },
     },
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: isDev ? '[name].bundle.css' : '[name].[hash:8].css',
+      ignoreOrder: false,
+    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.html',

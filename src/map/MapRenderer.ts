@@ -1,6 +1,10 @@
-import { IS_DEVELOPMENT } from '@utils/Constants';
+import { IS_DEVELOPMENT, IS_PRODUCTION } from '@utils/Constants';
 import merge from 'lodash/merge';
-import { Application, Container, Graphics, Sprite } from 'pixi.js';
+import { Application, Container, Graphics, Sprite, utils } from 'pixi.js';
+
+if (IS_PRODUCTION) {
+  utils.skipHello();
+}
 
 const SCALE_EASE_STEP = 0.04;
 const VELOCITY_FRICTION = 0.92;

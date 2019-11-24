@@ -1,6 +1,12 @@
+const TerserJSPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 module.exports = {
   mode: 'production',
-  performance: {
-    hints: false,
+  entry: './src/index.ts',
+  optimization: {
+    minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()],
   },
+  plugins: [new CleanWebpackPlugin()],
 };

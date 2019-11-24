@@ -6,5 +6,5 @@
   "semi": true,
   "useTabs": false,
   "singleQuote": true,
-  "jsxSingleQuote": false
+  "jsxSingleQuote": true
 }

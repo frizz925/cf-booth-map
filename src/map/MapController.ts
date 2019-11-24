@@ -1,8 +1,8 @@
 import MapRenderer from './MapRenderer';
 
-const SCALE_STEP = 0.1;
+const SCALE_STEP = 0.05;
 const VELOCITY_MULTIPLIER = 20.0;
-const MAX_SCALE_VELOCITY = 2.0;
+const MAX_SCALE_VELOCITY = 3.0;
 
 export default class MapController {
   private renderer: MapRenderer;
@@ -23,6 +23,10 @@ export default class MapController {
     this.renderer = renderer;
   }
 
+  public onWindowResize = () => {
+    this.renderer.render();
+  };
+
   public onMouseWheel = (evt: WheelEvent) => {
     this.cancelAllAnimationFrames();
     const { state } = this.renderer;
@@ -30,15 +34,16 @@ export default class MapController {
     const amount = SCALE_STEP * delta;
     const scale = state.scale * (1.0 + amount);
 
-    let scaleVelocity = MAX_SCALE_VELOCITY * delta;
+    let scaleVelocity = (MAX_SCALE_VELOCITY / 3) * delta;
     if (Math.sign(scaleVelocity) === Math.sign(state.scaleVelocity)) {
       scaleVelocity = state.scaleVelocity + scaleVelocity;
+      scaleVelocity =
+        delta > 0
+          ? Math.min(scaleVelocity, MAX_SCALE_VELOCITY)
+          : Math.max(scaleVelocity, -MAX_SCALE_VELOCITY);
     }
-    this.updateOffset(evt.clientX, evt.clientY, scale, scaleVelocity);
-  };
 
-  public onWindowResize = () => {
-    this.renderer.render();
+    this.updateOffset(evt.clientX, evt.clientY, scale, scaleVelocity);
   };
 
   public onViewSingleTap = (evt: HammerInput) => {
@@ -51,7 +56,6 @@ export default class MapController {
     const { state } = this.renderer;
     const scale = state.scale * (1.0 + SCALE_STEP);
     const scaleVelocity = MAX_SCALE_VELOCITY;
-    console.log(scale);
     this.updateOffset(evt.center.x, evt.center.y, scale, scaleVelocity);
   };
 

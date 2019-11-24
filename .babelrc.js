@@ -10,13 +10,9 @@ Object.keys(tsConfigPaths).forEach(name => {
 module.exports = {
   presets: ['@babel/preset-react', '@babel/preset-typescript', '@babel/preset-env'],
   plugins: [
-    [
-      'babel-plugin-module-resolver',
-      {
-        root: ['.'],
-        alias: moduleAliases,
-      },
-    ],
+    ['babel-plugin-module-resolver', { root: ['.'], alias: moduleAliases }],
+    ['@babel/plugin-proposal-decorators', { legacy: true }],
     '@babel/plugin-proposal-class-properties',
+    'react-hot-loader/babel',
   ],
 };

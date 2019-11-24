@@ -1,0 +1,46 @@
+.container {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+}
+
+.form {
+  display: table;
+  background-color: #fff;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 21px;
+  border: 1px solid transparent;
+  transition: border-color 250ms, box-shadow 250ms;
+  transition-timing-function: ease-in-out;
+}
+
+.form.docked {
+  border-color: rgba(0, 0, 0, 0.4);
+}
+
+.form.floating {
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
+.formButton {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0;
+  width: 42px;
+  height: 42px;
+  line-height: 42px;
+}
+
+.searchInput {
+  display: table-cell;
+  box-sizing: border-box;
+  vertical-align: middle;
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 0;
+  line-height: 42px;
+  color: rgba(0, 0, 0, 0.6);
+}
