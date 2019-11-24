@@ -2,10 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
+const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
-const isDev = process.env.NODE_ENV === 'development';
+const NODE_ENV = process.env.NODE_ENV || 'production';
+const ASSET_PATH = process.env.ASSET_PATH || '/';
+
+const isDev = NODE_ENV === 'development';
 const webpackEnvConfig = isDev
   ? require('./webpack.config.dev')
   : require('./webpack.config.prod');
@@ -20,7 +24,7 @@ const staticUrlLoader = {
 const webpackConfig = {
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
+    publicPath: ASSET_PATH,
     filename: isDev ? '[name].bundle.js' : '[name].[hash:8].js',
   },
   module: {
@@ -43,18 +47,12 @@ const webpackConfig = {
             },
           },
         ],
-        exclude: [
-          path.resolve(__dirname, 'src/styles'),
-          path.resolve(__dirname, 'node_modules'),
-        ],
+        exclude: [path.resolve(__dirname, 'node_modules')],
       },
       {
         test: /\.css$/,
         use: [isDev ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
-        include: [
-          path.resolve(__dirname, 'src/styles'),
-          path.resolve(__dirname, 'node_modules'),
-        ],
+        include: [path.resolve(__dirname, 'node_modules')],
       },
       {
         test: /\.(png|jpg|jpeg|webp|woff|woff2|eot|ttf)$/,
@@ -87,16 +85,26 @@ const webpackConfig = {
       filename: isDev ? '[name].bundle.css' : '[name].[hash:8].css',
       ignoreOrder: false,
     }),
-    new CopyPlugin([{ from: 'src/assets/modernizr-custom.js' }]),
+    new CopyPlugin([
+      { from: 'src/assets/modernizr-custom.js', to: 'js' },
+      { from: 'src/css', to: 'css' },
+      { from: 'src/data', to: 'data' },
+    ]),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.html',
+      inject: 'head',
     }),
     new HtmlWebpackTagsPlugin({
-      scripts: ['modernizr-custom.js'],
+      scripts: ['js/modernizr-custom.js'],
+      links: ['css/main.css'],
+    }),
+    new HtmlBeautifyPlugin({
+      replace: [' type="text/javascript"'],
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
+      'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
     }),
   ],
 };

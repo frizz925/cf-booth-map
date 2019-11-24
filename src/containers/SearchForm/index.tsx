@@ -12,6 +12,7 @@ import * as styles from './styles.css';
 export interface SearchFormStore {
   focused: boolean;
   searchText: string;
+  selectedCircle?: Circle;
 }
 
 interface SearchFormProps {
@@ -28,15 +29,20 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   private querySubscription: Subscription;
 
   public componentDidMount() {
-    const { repository } = this.props;
+    const { store, repository } = this.props;
     repository.fetch().then(
-      circles => this.updateCircles(circles),
+      circles => {
+        this.updateCircles(circles);
+        store.selectedCircle = circles[0];
+      },
       err => console.error(err),
     );
 
     this.querySubscription = this.querySubject.subscribe(query => {
-      const filtered = repository.findCircles(query);
-      this.updateCircles(filtered);
+      repository.find(query).then(
+        circles => this.updateCircles(circles),
+        err => console.error(err),
+      );
     });
   }
 
@@ -68,7 +74,11 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
           onClear={this.onSearchBoxClear}
           onTextChanged={this.onSearchBoxTextChanged}
         />
-        <SearchResults className={searchResultsClassNames} circles={circles} />
+        <SearchResults
+          className={searchResultsClassNames}
+          circles={circles}
+          onSelected={this.onResultSelected}
+        />
       </div>
     );
   }
@@ -88,7 +98,6 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
       return;
     }
     store.focused = false;
-    store.searchText = '';
   };
 
   private onSearchBoxClick = () => {
@@ -107,5 +116,11 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   private onSearchBoxTextChanged = (value: string) => {
     this.props.store.searchText = value;
     this.querySubject.next(value);
+  };
+
+  private onResultSelected = (circle: Circle) => {
+    const { store } = this.props;
+    store.selectedCircle = circle;
+    store.focused = false;
   };
 }

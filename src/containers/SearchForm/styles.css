@@ -6,7 +6,7 @@
   z-index: 2;
 
   background-color: transparent;
-  transition: background-color 250ms;
+  transition: background-color 320ms;
   transition-timing-function: ease-in-out;
 }
 
@@ -19,21 +19,20 @@
   position: absolute;
   box-sizing: border-box;
 
-  top: 0;
+  top: 100%;
   left: 0;
   width: 100%;
   height: 100%;
   padding-top: 58px;
   z-index: 1;
 
-  opacity: 0;
   visibility: hidden;
-  transition: opacity 250ms, visibility 0s linear 1s;
-  transition-timing-function: ease-in-out;
+  transition: top 320ms, visibility 0s linear 350ms;
+  transition-timing-function: ease;
 }
 
 .searchResultsContainer.focused {
-  opacity: 1;
+  top: 0%;
   visibility: visible;
-  transition: opacity 250ms, visibility 0s linear 0s;
+  transition: top 320ms, visibility 0s linear 0s;
 }

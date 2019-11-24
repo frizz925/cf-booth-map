@@ -7,10 +7,11 @@ import * as styles from './styles.css';
 interface Props {
   className?: string;
   circles: Circle[];
+  onSelected: (circle: Circle) => void;
 }
 
 @observer
-class SearchResults extends PureComponent<Props> {
+export default class SearchResults extends PureComponent<Props> {
   public render() {
     const { className, circles } = this.props;
     const circleElements = map(circles, circle => this.renderCircle(circle));
@@ -22,13 +23,16 @@ class SearchResults extends PureComponent<Props> {
   }
 
   private renderCircle(circle: Circle): JSX.Element {
+    const { onSelected } = this.props;
     return (
-      <div key={circle.id} className={styles.searchResultItem}>
+      <div
+        key={circle.id}
+        className={styles.searchResultItem}
+        onClick={() => onSelected(circle)}
+      >
         <h3>{circle.name}</h3>
         <span>{circle.boothNumber}</span>
       </div>
     );
   }
 }
-
-export default SearchResults;

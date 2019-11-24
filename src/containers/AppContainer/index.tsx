@@ -1,3 +1,4 @@
+import CircleCard from '@containers/CircleCard';
 import SearchForm, { SearchFormStore } from '@containers/SearchForm';
 import AppContext from '@models/AppContext';
 import CircleRepository from '@repositories/CircleRepository';
@@ -11,9 +12,16 @@ interface AppContainerProps {
   circleRepository: CircleRepository;
 }
 
+interface BaseStore {
+  cardShown: boolean;
+}
+
+type AppStore = BaseStore & SearchFormStore;
+
 class AppContainer extends PureComponent<AppContainerProps> {
   @observable
-  private searchStore: SearchFormStore = {
+  private store: AppStore = {
+    cardShown: true,
     focused: false,
     searchText: '',
   };
@@ -21,14 +29,20 @@ class AppContainer extends PureComponent<AppContainerProps> {
   constructor(props: AppContainerProps) {
     super(props);
     autorun(() => {
-      props.context.mapDisabled = this.searchStore.focused;
+      props.context.mapDisabled = this.store.focused || this.store.cardShown;
     });
   }
 
   public render() {
-    const { props, searchStore } = this;
+    const { props, store } = this;
     const { circleRepository } = props;
-    return <SearchForm store={searchStore} repository={circleRepository} />;
+    const { cardShown: shown } = store;
+    return (
+      <div>
+        <SearchForm store={store} repository={circleRepository} />
+        <CircleCard store={store} shown={shown} />
+      </div>
+    );
   }
 }
 

@@ -1,7 +1,7 @@
 .container {
   box-sizing: border-box;
   width: 100%;
-  padding: 8px;
+  padding: 8px 4px;
 }
 
 .floatingContainer {
@@ -37,6 +37,7 @@
   width: 42px;
   height: 42px;
   line-height: 42px;
+  cursor: pointer;
 }
 
 .searchInput {

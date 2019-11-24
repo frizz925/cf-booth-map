@@ -1,7 +1,7 @@
 import '@assets/modernizr-custom';
 import AppContext from '@models/AppContext';
 import { observable } from 'mobx';
-import './styles';
+import 'normalize.css';
 
 const context: AppContext = observable({
   mapDisabled: false,

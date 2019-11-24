@@ -23,7 +23,6 @@
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
       "@containers/*": ["src/containers/*"],
-      "@data/*": ["src/data/*"],
       "@models/*": ["src/models/*"],
       "@repositories/*": ["src/repositories/*"],
       "@utils/*": ["src/utils/*"]
