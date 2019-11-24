@@ -1,4 +1,5 @@
-import MapRenderer from './MapRenderer';
+import merge from 'lodash/merge';
+import MapRenderer, { AppState } from './MapRenderer';
 
 const SCALE_STEP = 0.05;
 const VELOCITY_MULTIPLIER = 20.0;
@@ -28,7 +29,6 @@ export default class MapController {
   };
 
   public onMouseWheel = (evt: WheelEvent) => {
-    this.cancelAllAnimationFrames();
     const { state } = this.renderer;
     const delta = -1 * Math.sign(evt.deltaY);
     const amount = SCALE_STEP * delta;
@@ -43,25 +43,27 @@ export default class MapController {
           : Math.max(scaleVelocity, -MAX_SCALE_VELOCITY);
     }
 
-    this.updateOffset(evt.clientX, evt.clientY, scale, scaleVelocity);
+    this.updateOffset(evt.clientX, evt.clientY, { scale, scaleVelocity });
   };
 
   public onViewSingleTap = (evt: HammerInput) => {
-    this.cancelAllAnimationFrames();
-    this.updateOffset(evt.center.x, evt.center.y, this.renderer.state.scale, 0);
+    this.updateOffset(evt.center.x, evt.center.y);
   };
 
   public onViewDoubleTap = (evt: HammerInput) => {
-    this.cancelAllAnimationFrames();
     const { state } = this.renderer;
-    const scale = state.scale * (1.0 + SCALE_STEP);
-    const scaleVelocity = MAX_SCALE_VELOCITY;
-    this.updateOffset(evt.center.x, evt.center.y, scale, scaleVelocity);
+    const toggle = state.zoomToggle;
+    const delta = toggle ? -1 : 1;
+    const scale = state.scale * (1.0 + 4 * SCALE_STEP * delta);
+    const scaleVelocity = MAX_SCALE_VELOCITY * delta;
+    this.updateOffset(evt.center.x, evt.center.y, {
+      scale,
+      scaleVelocity,
+      zoomToggle: !toggle,
+    });
   };
 
   public onViewPan = (evt: HammerInput) => {
-    this.cancelAllAnimationFrames();
-
     const { panState, renderer } = this;
     const { state } = renderer;
 
@@ -94,8 +96,6 @@ export default class MapController {
   };
 
   public onViewPinch = (evt: HammerInput) => {
-    this.cancelAllAnimationFrames();
-
     const { pinchState, renderer } = this;
     const { state } = renderer;
 
@@ -113,10 +113,10 @@ export default class MapController {
     }
 
     const scale = pinchState.startScale * evt.scale;
-    this.updateOffset(evt.center.x, evt.center.y, scale, scaleVelocity);
+    this.updateOffset(evt.center.x, evt.center.y, { scale, scaleVelocity });
   };
 
-  private updateOffset(x: number, y: number, scale: number, scaleVelocity: number) {
+  private updateOffset(x: number, y: number, newState?: Partial<AppState>) {
     const { state } = this.renderer;
     const deltaX = (x - state.offsetX - state.outerX) / state.scale;
     const deltaY = (y - state.offsetY - state.outerY) / state.scale;
@@ -127,22 +127,12 @@ export default class MapController {
     const outerX = state.outerX + deltaX * absDeltaScale;
     const outerY = state.outerY + deltaY * absDeltaScale;
 
-    this.renderer.updateState({
+    const updatedState = {
       offsetX,
       offsetY,
       outerX,
       outerY,
-      scale,
-      scaleVelocity,
-    });
-  }
-
-  private cancelAllAnimationFrames() {
-    const { state } = this.renderer;
-    const { velocityRAF } = state;
-    if (velocityRAF) {
-      window.cancelAnimationFrame(velocityRAF);
-    }
-    state.velocityRAF = 0;
+    };
+    this.renderer.updateState(merge(updatedState, newState));
   }
 }

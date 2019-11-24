@@ -1,6 +1,5 @@
 import Circle from '@models/Circle';
 import parseCircle, { RawCircle } from '@models/parsers/parseCircle';
-import map from 'lodash/map';
 import { observable } from 'mobx';
 
 export default class CircleRepository {
@@ -9,7 +8,11 @@ export default class CircleRepository {
 
   public fetch() {
     import('@data/circles.json').then((circles: RawCircle[]) => {
-      const parsed = map(circles, circle => parseCircle(circle));
+      const parsed = circles
+        .map(circle => parseCircle(circle))
+        .sort((a, b) => {
+          return a.name > b.name ? 1 : -1;
+        });
       this.store.push(...parsed);
     });
   }

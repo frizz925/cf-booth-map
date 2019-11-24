@@ -22,6 +22,7 @@ export interface AppState {
   offsetY: number;
   scale: number;
   scaleVelocity: number;
+  zoomToggle: boolean;
 }
 
 export default class MapRenderer {
@@ -36,6 +37,7 @@ export default class MapRenderer {
     offsetY: 0,
     scale: 1.0,
     scaleVelocity: 0,
+    zoomToggle: false,
   };
 
   private mapImage: string;
@@ -70,6 +72,8 @@ export default class MapRenderer {
   }
 
   public update() {
+    this.cancelAllAnimationFrames();
+
     const { innerContainer, outerContainer, pointer, state } = this;
     const {
       x,
@@ -151,5 +155,13 @@ export default class MapRenderer {
         y: mapSprite.height / 2 - window.innerHeight / 2,
       });
     });
+  }
+
+  private cancelAllAnimationFrames() {
+    const { velocityRAF } = this.state;
+    if (velocityRAF) {
+      window.cancelAnimationFrame(velocityRAF);
+    }
+    this.state.velocityRAF = 0;
   }
 }
