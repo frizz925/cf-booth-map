@@ -6,7 +6,13 @@ export const title: string;
 export const number: string;
 
 export const body: string;
+export const image: string;
+export const details: string;
 export const info: string;
+
+export const socialList: string;
+export const socialLink: string;
 
 // Modifiers
 export const shown: string;
+export const pulled: string;

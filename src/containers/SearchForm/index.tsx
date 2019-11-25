@@ -10,6 +10,8 @@ import { Subject, Subscription } from 'rxjs';
 import * as styles from './styles.css';
 
 export interface SearchFormStore {
+  cardShown: boolean;
+  cardPulled: boolean;
   focused: boolean;
   searchText: string;
   selectedCircle?: Circle;
@@ -29,12 +31,9 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   private querySubscription: Subscription;
 
   public componentDidMount() {
-    const { store, repository } = this.props;
+    const { repository } = this.props;
     repository.fetch().then(
-      circles => {
-        this.updateCircles(circles);
-        store.selectedCircle = circles[0];
-      },
+      circles => this.updateCircles(circles),
       err => console.error(err),
     );
 
@@ -105,6 +104,7 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
     if (store.focused) {
       return;
     }
+    store.cardPulled = false;
     store.focused = true;
   };
 
@@ -120,7 +120,8 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
 
   private onResultSelected = (circle: Circle) => {
     const { store } = this.props;
-    store.selectedCircle = circle;
     store.focused = false;
+    store.selectedCircle = circle;
+    store.cardShown = true;
   };
 }

@@ -1,23 +1,31 @@
 import Loading from '@components/Loading';
-import AppContext from '@models/AppContext';
+import { AppContainerProps, AppStore } from '@containers/AppContainer';
 import CircleParser from '@models/parsers/CircleParser';
 import CircleRepositoryApi from '@repositories/CircleRepositoryApi';
 import axios from 'axios';
+import { observable } from 'mobx';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 
 const AppContainer = React.lazy(() => import('@containers/AppContainer'));
-const App = (context: AppContext, el: Element) => {
+const App = (el: Element) => {
   const { protocol, host } = window.location;
   const circleClient = axios.create({
     baseURL: `${protocol}//${host}/`,
   });
   const circleParser = new CircleParser('https://catalog.comifuro.net/');
   const circleRepository = new CircleRepositoryApi(circleClient, circleParser);
+  const store = observable({
+    cardShown: false,
+    cardPulled: false,
+    focused: false,
+    searchText: '',
+    selectedCircle: null,
+  } as AppStore);
 
-  const props = {
-    context,
+  const props: AppContainerProps = {
     circleRepository,
+    store,
   };
 
   ReactDOM.render(

@@ -1,7 +1,7 @@
 import Category from '@models/Category';
 import Circle from '@models/Circle';
 import Day from '@models/Day';
-import Social from '@models/Social';
+import Social, { SocialType } from '@models/Social';
 import map from 'lodash/map';
 import reduce from 'lodash/reduce';
 import Parser from './Parser';
@@ -96,14 +96,11 @@ const sanitizeBoothNumber = (boothNumber: string): string => {
 };
 
 const parseFandoms = (fandoms: string): string[] => {
-  return map(fandoms.trim().split(', '), fandom => {
+  return map(fandoms.trim().split(','), fandom => {
     if (!fandom) {
       return fandom;
     }
-    return map(fandom.split(' '), token => {
-      if (!token) {
-        return token;
-      }
+    return map(fandom.trim().split(' '), token => {
       return token[0].toUpperCase() + token.substring(1);
     })
       .join(' ')
@@ -128,12 +125,24 @@ const parseCategories = (circle: RawCircle): Category[] => {
 
 const parseSocials = (circle: RawCircle): Social[] => {
   const mappings = [
-    { name: 'Facebook', url: circle.circle_facebook, normalizer: normalizeFacebook },
-    { name: 'Twitter', url: circle.circle_twitter, normalizer: normalizeTwitter },
-    { name: 'Instagram', url: circle.circle_instagram, normalizer: normalizeInstagram },
+    {
+      type: SocialType.Facebook,
+      url: circle.circle_facebook,
+      normalizer: normalizeFacebook,
+    },
+    {
+      type: SocialType.Twitter,
+      url: circle.circle_twitter,
+      normalizer: normalizeTwitter,
+    },
+    {
+      type: SocialType.Instagram,
+      url: circle.circle_instagram,
+      normalizer: normalizeInstagram,
+    },
   ].filter(mapping => mapping.url && mapping.url !== '-');
-  return map(mappings, ({ name, url, normalizer }) => ({
-    name,
+  return map(mappings, ({ type, url, normalizer }) => ({
+    type,
     url: normalizer(url),
   }));
 };

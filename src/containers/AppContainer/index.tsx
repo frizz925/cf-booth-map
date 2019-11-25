@@ -1,46 +1,43 @@
-import CircleCard from '@containers/CircleCard';
+import CircleCard, { CircleCardStore } from '@containers/CircleCard';
 import SearchForm, { SearchFormStore } from '@containers/SearchForm';
-import AppContext from '@models/AppContext';
 import CircleRepository from '@repositories/CircleRepository';
 import { IS_DEVELOPMENT } from '@utils/Constants';
-import { autorun, observable } from 'mobx';
+import { autorun } from 'mobx';
+import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import { hot } from 'react-hot-loader/root';
-
-interface AppContainerProps {
-  context: AppContext;
-  circleRepository: CircleRepository;
-}
 
 interface BaseStore {
   cardShown: boolean;
 }
 
-type AppStore = BaseStore & SearchFormStore;
+export type AppStore = BaseStore & SearchFormStore & CircleCardStore;
 
+export interface AppContainerProps {
+  store: AppStore;
+  circleRepository: CircleRepository;
+}
+
+@observer
 class AppContainer extends PureComponent<AppContainerProps> {
-  @observable
-  private store: AppStore = {
-    cardShown: true,
-    focused: false,
-    searchText: '',
-  };
-
   constructor(props: AppContainerProps) {
     super(props);
     autorun(() => {
-      props.context.mapDisabled = this.store.focused || this.store.cardShown;
+      if (props.store.cardPulled) {
+        props.store.focused = false;
+      }
+      if (props.store.focused) {
+        props.store.cardPulled = false;
+      }
     });
   }
 
   public render() {
-    const { props, store } = this;
-    const { circleRepository } = props;
-    const { cardShown: shown } = store;
+    const { store, circleRepository } = this.props;
     return (
       <div>
         <SearchForm store={store} repository={circleRepository} />
-        <CircleCard store={store} shown={shown} />
+        <CircleCard store={store} />
       </div>
     );
   }

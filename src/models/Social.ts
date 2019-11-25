@@ -1,4 +1,11 @@
+export enum SocialType {
+  Facebook = 'Facebook',
+  Twitter = 'Twitter',
+  Instagram = 'Instagram',
+  Web = 'Website',
+}
+
 export default interface Social {
-  name: string;
+  type: SocialType;
   url: string;
 }
