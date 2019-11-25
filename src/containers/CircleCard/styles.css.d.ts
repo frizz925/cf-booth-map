@@ -16,3 +16,4 @@ export const socialLink: string;
 // Modifiers
 export const shown: string;
 export const pulled: string;
+export const pulling: string;

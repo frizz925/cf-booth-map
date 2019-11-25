@@ -24,7 +24,13 @@
   transition: bottom 250ms;
 }
 
+.container.pulling {
+  transition: none !important;
+  z-index: 3;
+}
+
 .container.pulled {
+  transition: bottom 250ms;
   bottom: 0%;
   z-index: 3;
 }

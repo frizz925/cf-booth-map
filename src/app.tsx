@@ -15,9 +15,10 @@ const App = (el: Element) => {
   });
   const circleParser = new CircleParser('https://catalog.comifuro.net/');
   const circleRepository = new CircleRepositoryApi(circleClient, circleParser);
-  const store = observable({
+  const store: AppStore = observable({
     cardShown: false,
     cardPulled: false,
+    cardPulling: false,
     focused: false,
     searchText: '',
     selectedCircle: null,

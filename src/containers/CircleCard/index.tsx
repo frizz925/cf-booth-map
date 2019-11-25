@@ -4,15 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
 import { SocialType } from '@models/Social';
 import classNames from 'classnames';
+import Hammer from 'hammerjs';
 import map from 'lodash/map';
-import { autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import * as styles from './styles.css';
 
+const PULL_DELTA_THRESHOLD = 80;
+const PULL_VELOCITY_THRESHOLD = 0.5;
+
 export interface CircleCardStore {
   cardShown: boolean;
   cardPulled: boolean;
+  cardPulling: boolean;
   selectedCircle: Circle;
 }
 
@@ -66,15 +70,21 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
   private containerRef = React.createRef<HTMLDivElement>();
   private headerRef = React.createRef<HTMLDivElement>();
 
+  private mc: HammerManager;
+  private panState = {
+    startBottom: 0,
+    currentBottom: 0,
+    wasPulled: false,
+  };
+
   public componentDidMount() {
     this.updateCard();
-    autorun(() => {
-      this.updateCard();
-    });
+    this.registerListener();
   }
 
   public componentDidUpdate() {
     this.updateCard();
+    this.registerListener();
   }
 
   public updateCard() {
@@ -87,13 +97,13 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     if (!container) {
       return;
     }
-    let containerBottom = 0;
+    let bottom = 0;
     if (!selected || !shown) {
-      containerBottom = -container.clientHeight;
+      bottom = -container.clientHeight;
     } else if (shown && !pulled) {
-      containerBottom = -(container.clientHeight - this.headerRef.current.clientHeight);
+      bottom = -(container.clientHeight - this.headerRef.current.clientHeight);
     }
-    container.style.setProperty('bottom', `${containerBottom}px`);
+    this.updateContainerPosition(bottom);
   }
 
   public render() {
@@ -102,15 +112,20 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
   }
 
   public renderCard(circle: Circle): JSX.Element {
-    const { cardShown: shown, cardPulled: pulled } = this.props.store;
+    const {
+      cardShown: shown,
+      cardPulled: pulled,
+      cardPulling: pulling,
+    } = this.props.store;
     const containerClassNames = classNames(styles.container, {
       [styles.shown]: shown,
       [styles.pulled]: pulled,
+      [styles.pulling]: pulling,
     });
     return (
       <div ref={this.containerRef} className={containerClassNames}>
         <div ref={this.headerRef} className={styles.header}>
-          <div className={styles.puller} onClick={this.onPull}>
+          <div className={styles.puller}>
             <span />
             <span />
           </div>
@@ -159,12 +174,55 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     );
   }
 
-  private onPull = () => {
-    const { store } = this.props;
-    const { cardPulled } = store;
-    if (cardPulled) {
-      store.cardShown = false;
+  private registerListener() {
+    if (this.mc) {
+      return;
     }
-    store.cardPulled = !cardPulled;
+    const header = this.headerRef.current;
+    if (!header) {
+      return;
+    }
+    this.mc = new Hammer.Manager(header);
+    this.mc.add(new Hammer.Pan({ threshold: 0, pointers: 1 }));
+    this.mc.on('panstart panup pandown panend', this.onPanMove);
+  }
+
+  private onPanMove = (evt: HammerInput) => {
+    const { props, panState } = this;
+    const { store } = props;
+    const container = this.containerRef.current;
+    if (!container) {
+      return;
+    }
+    if (evt.type === 'panstart') {
+      panState.startBottom = panState.currentBottom;
+      store.cardPulling = true;
+    } else if (evt.type === 'panend') {
+      if (
+        Math.abs(evt.deltaY) >= PULL_DELTA_THRESHOLD ||
+        Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD
+      ) {
+        if (Math.sign(evt.deltaY) <= 0) {
+          store.cardPulled = panState.wasPulled = true;
+        } else if (store.cardPulled) {
+          store.cardPulled = panState.wasPulled = false;
+        } else if (!panState.wasPulled) {
+          store.cardShown = false;
+        }
+      }
+      store.cardPulling = false;
+      return;
+    }
+    const bottom = panState.startBottom - evt.deltaY;
+    this.updateContainerPosition(bottom);
   };
+
+  private updateContainerPosition(bottom: number) {
+    const container = this.containerRef.current;
+    if (!container) {
+      return;
+    }
+    this.panState.currentBottom = bottom;
+    container.style.setProperty('bottom', `${bottom}px`);
+  }
 }
