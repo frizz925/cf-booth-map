@@ -37,8 +37,9 @@
 
 .header {
   flex-grow: 0;
-  width: 100%;
   box-sizing: border-box;
+  text-align: center;
+  width: 100%;
   padding: 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   z-index: 2;
@@ -51,7 +52,6 @@
 
 .header > .number {
   display: block;
-  margin-top: 4px;
   color: rgba(0, 0, 0, 0.4);
 }
 

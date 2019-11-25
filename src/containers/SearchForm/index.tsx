@@ -32,11 +32,6 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
 
   public componentDidMount() {
     const { repository } = this.props;
-    repository.fetch().then(
-      circles => this.updateCircles(circles),
-      err => console.error(err),
-    );
-
     this.querySubscription = this.querySubject.subscribe(query => {
       repository.find(query).then(
         circles => this.updateCircles(circles),

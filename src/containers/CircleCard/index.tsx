@@ -10,7 +10,7 @@ import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import * as styles from './styles.css';
 
-const PULL_DELTA_THRESHOLD = 80;
+const PULL_DELTA_THRESHOLD = 40;
 const PULL_VELOCITY_THRESHOLD = 0.5;
 
 export interface CircleCardStore {

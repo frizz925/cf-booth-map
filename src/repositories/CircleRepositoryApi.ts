@@ -11,7 +11,6 @@ export default class CircleRepositoryApi implements CircleRepository {
   private parser: Parser<RawCircle, Circle>;
 
   private fuse: Fuse<Circle, {}>;
-  private lastResults: Circle[] = [];
 
   constructor(client: AxiosInstance, parser: Parser<RawCircle, Circle>) {
     this.client = client;
@@ -28,15 +27,17 @@ export default class CircleRepositoryApi implements CircleRepository {
         .sort((a, b) => {
           return a.name > b.name ? 1 : -1;
         });
-      this.lastResults = results;
       this.updateFuse(results);
       return results;
     });
   }
 
   public find(query: string): Promise<Circle[]> {
-    if (!this.fuse || !query) {
-      return Promise.resolve(this.lastResults);
+    if (!query) {
+      return Promise.resolve([]);
+    }
+    if (!this.fuse) {
+      return this.fetch().then(() => this.find(query));
     }
     return Promise.resolve(this.fuse.search(query));
   }
