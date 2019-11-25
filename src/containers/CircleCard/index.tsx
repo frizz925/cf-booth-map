@@ -80,11 +80,17 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
   public componentDidMount() {
     this.updateCard();
     this.registerListener();
+    window.addEventListener('resize', this.onWindowResize);
   }
 
   public componentDidUpdate() {
     this.updateCard();
     this.registerListener();
+  }
+
+  public componentWillUnmount() {
+    this.mc.destroy();
+    window.removeEventListener('resize', this.onWindowResize);
   }
 
   public updateCard() {
@@ -186,6 +192,10 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     this.mc.add(new Hammer.Pan({ threshold: 0, pointers: 1 }));
     this.mc.on('panstart panup pandown panend', this.onPanMove);
   }
+
+  private onWindowResize = () => {
+    this.updateCard();
+  };
 
   private onPanMove = (evt: HammerInput) => {
     const { props, panState } = this;
