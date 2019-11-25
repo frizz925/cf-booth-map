@@ -7,7 +7,7 @@ import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import { Subject, Subscription } from 'rxjs';
-import * as styles from './styles.css';
+import * as styles from './styles.scss';
 
 export interface SearchFormStore {
   cardShown: boolean;
@@ -102,6 +102,7 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
     if (store.focused) {
       return;
     }
+    store.cardPulled = false;
     store.focused = true;
   };
 
@@ -121,6 +122,7 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   private onResultSelected = (circle: Circle) => {
     const { store } = this.props;
     store.selectedCircle = circle;
+    store.focused = false;
     store.cardPulled = true;
     store.cardShown = true;
   };

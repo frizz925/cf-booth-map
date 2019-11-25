@@ -1,9 +1,11 @@
+@import 'modules/variables';
+
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: 'Roboto', Helvetica, Arial, sans-serif;
-  color: rgba(0, 0, 0, 0.6);
+  font-family: $font-family;
+  color: $font-color;
 }
 
 #renderer {

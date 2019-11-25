@@ -20,6 +20,28 @@ const staticUrlLoader = {
     limit: 8092,
   },
 };
+const styleLoader = isDev ? 'style-loader' : MiniCssExtractPlugin.loader;
+const cssModuleLoader = {
+  loader: 'css-loader',
+  options: {
+    importLoaders: 1,
+    modules: true,
+  },
+};
+const sassLoader = {
+  loader: 'sass-loader',
+  options: {
+    sassOptions: {
+      sourceMap: isDev,
+      includePaths: ['./node_modules', './src/scss'],
+    },
+  },
+};
+
+const cssModulePaths = [
+  path.resolve(__dirname, 'src/components'),
+  path.resolve(__dirname, 'src/containers'),
+];
 
 const webpackConfig = {
   output: {
@@ -36,23 +58,24 @@ const webpackConfig = {
         exclude: [path.resolve(__dirname, 'node_modules')],
       },
       {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1,
-              modules: true,
-            },
-          },
-        ],
-        exclude: [path.resolve(__dirname, 'node_modules')],
+        test: /\.s[ca]ss$/,
+        use: [styleLoader, cssModuleLoader, sassLoader],
+        include: cssModulePaths,
+      },
+      {
+        test: /\.s[ca]ss$/,
+        use: [styleLoader, 'css-loader', sassLoader],
+        exclude: cssModulePaths,
       },
       {
         test: /\.css$/,
-        use: [isDev ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
-        include: [path.resolve(__dirname, 'node_modules')],
+        use: [styleLoader, cssModuleLoader],
+        include: cssModulePaths,
+      },
+      {
+        test: /\.css$/,
+        use: [styleLoader, 'css-loader'],
+        exclude: cssModulePaths,
       },
       {
         test: /\.(png|jpg|jpeg|webp|woff|woff2|eot|ttf)$/,
@@ -87,7 +110,6 @@ const webpackConfig = {
     }),
     new CopyPlugin([
       { from: 'src/assets/modernizr-custom.js', to: 'js' },
-      { from: 'src/css', to: 'css' },
       { from: 'src/data', to: 'data' },
     ]),
     new HtmlWebpackPlugin({
@@ -97,7 +119,6 @@ const webpackConfig = {
     }),
     new HtmlWebpackTagsPlugin({
       scripts: ['js/modernizr-custom.js'],
-      links: ['css/main.css'],
     }),
     new HtmlBeautifyPlugin({
       replace: [' type="text/javascript"'],

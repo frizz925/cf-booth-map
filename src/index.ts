@@ -1,5 +1,5 @@
-import '@assets/modernizr-custom';
 import 'normalize.css';
+import './scss/main.scss';
 
 window.addEventListener('load', () => {
   import('./app').then(

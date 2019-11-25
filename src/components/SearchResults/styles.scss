@@ -1,3 +1,5 @@
+@import 'modules/variables';
+
 .searchResultList {
   width: 100%;
   height: 100%;
@@ -9,7 +11,7 @@
 .searchResultItem {
   cursor: pointer;
   padding: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid $separator-color;
 }
 
 .searchResultItem > h3 {
@@ -23,5 +25,5 @@
   margin-top: 2px;
   font-size: 0.8em;
   font-weight: 300;
-  color: rgba(0, 0, 0, 0.4);
+  color: $font-light-color;
 }

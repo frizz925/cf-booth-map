@@ -2,7 +2,7 @@ import { faArrowLeft, faHamburger, faTimes } from '@fortawesome/free-solid-svg-i
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import React, { PureComponent } from 'react';
-import * as styles from './styles.css';
+import * as styles from './styles.scss';
 
 export interface SearchBoxProps {
   className?: string;
@@ -38,11 +38,12 @@ export default class SearchBox extends PureComponent<SearchBoxProps> {
               onChange={e => onTextChanged(e.target.value)}
               value={value}
             />
-            <div className={styles.formButton} onClick={onClear}>
-              <FontAwesomeIcon
-                icon={faTimes}
-                style={{ opacity: value.length > 0 ? 1 : 0 }}
-              />
+            <div
+              className={styles.formButton}
+              onClick={onClear}
+              style={{ visibility: value.length > 0 ? 'visible' : 'hidden' }}
+            >
+              <FontAwesomeIcon icon={faTimes} />
             </div>
           </div>
         </div>

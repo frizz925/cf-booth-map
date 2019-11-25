@@ -1,0 +1,40 @@
+@import 'modules/variables';
+
+.searchBoxContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+
+  background-color: transparent;
+  transition: background-color $transition-duration;
+  transition-timing-function: $transition-timing-function;
+}
+
+.searchBoxContainer.focused {
+  background-color: $background-color;
+}
+
+.searchResultsContainer {
+  background-color: $background-color;
+  position: absolute;
+  box-sizing: border-box;
+
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-top: 58px;
+  z-index: 1;
+
+  visibility: hidden;
+  transition: top $transition-duration, visibility 0s linear $transition-duration;
+  transition-timing-function: $transition-timing-function;
+}
+
+.searchResultsContainer.focused {
+  top: 0%;
+  visibility: visible;
+  transition: top $transition-duration, visibility 0s linear 0s;
+}
