@@ -2,7 +2,6 @@ import CircleCard, { CircleCardStore } from '@containers/CircleCard';
 import SearchForm, { SearchFormStore } from '@containers/SearchForm';
 import CircleRepository from '@repositories/CircleRepository';
 import { IS_DEVELOPMENT } from '@utils/Constants';
-import { autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import { hot } from 'react-hot-loader/root';
@@ -22,14 +21,6 @@ export interface AppContainerProps {
 class AppContainer extends PureComponent<AppContainerProps> {
   constructor(props: AppContainerProps) {
     super(props);
-    autorun(() => {
-      if (props.store.cardPulled) {
-        props.store.focused = false;
-      }
-      if (props.store.focused) {
-        props.store.cardPulled = false;
-      }
-    });
   }
 
   public render() {

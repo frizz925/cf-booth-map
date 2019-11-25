@@ -27,7 +27,7 @@
   z-index: 1;
 
   visibility: hidden;
-  transition: top 320ms, visibility 0s linear 350ms;
+  transition: top 320ms, visibility 0s linear 320ms;
   transition-timing-function: ease;
 }
 

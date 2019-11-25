@@ -95,12 +95,15 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     window.removeEventListener('resize', this.onWindowResize);
   }
 
+  @action
   public updateCard() {
+    const { props, panState } = this;
     const {
       cardShown: shown,
       cardPulled: pulled,
       selectedCircle: selected,
-    } = this.props.store;
+    } = props.store;
+    panState.wasPulled = props.store.cardPulled;
     const container = this.containerRef.current;
     if (!container) {
       return;
@@ -115,15 +118,11 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
   }
 
   public render() {
-    const { selectedCircle: circle } = this.props.store;
-    return circle ? this.renderCard(circle) : '';
-  }
-
-  public renderCard(circle: Circle): JSX.Element {
     const {
       cardShown: shown,
       cardPulled: pulled,
       cardPulling: pulling,
+      selectedCircle: circle,
     } = this.props.store;
     const containerClassNames = classNames(styles.container, {
       [styles.shown]: shown,
@@ -137,15 +136,21 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
             <span />
             <span />
           </div>
-          <div className={styles.title}>{circle.name}</div>
-          <div className={styles.number}>{circle.boothNumber}</div>
+          <div className={styles.title}>{circle ? circle.name : ''}</div>
+          <div className={styles.number}>{circle ? circle.boothNumber : ''}</div>
         </div>
-        <div className={styles.body}>
-          <div className={styles.image}>
-            <img src={circle.imageUrl} alt={circle.name} />
-          </div>
-          <div className={styles.details}>{this.renderInfo(circle)}</div>
+        {circle ? this.renderCard(circle) : null}
+      </div>
+    );
+  }
+
+  public renderCard(circle: Circle): JSX.Element {
+    return (
+      <div className={styles.body}>
+        <div className={styles.image}>
+          <img src={circle.imageUrl} alt={circle.name} />
         </div>
+        <div className={styles.details}>{this.renderInfo(circle)}</div>
       </div>
     );
   }

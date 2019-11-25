@@ -64,7 +64,7 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
           value={searchText}
           onAction={this.onSearchBoxAction}
           onBack={this.onSearchBoxBack}
-          onClick={this.onSearchBoxClick}
+          onFocus={this.onSearchBoxFocus}
           onClear={this.onSearchBoxClear}
           onTextChanged={this.onSearchBoxTextChanged}
         />
@@ -97,12 +97,11 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   };
 
   @action
-  private onSearchBoxClick = () => {
+  private onSearchBoxFocus = () => {
     const { store } = this.props;
     if (store.focused) {
       return;
     }
-    store.cardPulled = false;
     store.focused = true;
   };
 
@@ -121,8 +120,8 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   @action
   private onResultSelected = (circle: Circle) => {
     const { store } = this.props;
-    store.focused = false;
     store.selectedCircle = circle;
+    store.cardPulled = true;
     store.cardShown = true;
   };
 }

@@ -10,14 +10,14 @@ export interface SearchBoxProps {
   value: string;
   onAction: () => void;
   onBack: () => void;
-  onClick: () => void;
+  onFocus: () => void;
   onClear: () => void;
   onTextChanged: (value: string) => void;
 }
 
 export default class SearchBox extends PureComponent<SearchBoxProps> {
   public render() {
-    const { className, docked, value, onClick, onClear, onTextChanged } = this.props;
+    const { className, docked, value, onFocus, onClear, onTextChanged } = this.props;
     const containerClassNames = classNames(styles.container, className);
     const floatingClassNames = classNames(styles.floatingContainer, {
       [styles.floating]: !docked,
@@ -34,14 +34,14 @@ export default class SearchBox extends PureComponent<SearchBoxProps> {
               className={styles.searchInput}
               type='value'
               placeholder='Search for circle'
-              onClick={onClick}
+              onFocus={onFocus}
               onChange={e => onTextChanged(e.target.value)}
               value={value}
             />
             <div className={styles.formButton} onClick={onClear}>
               <FontAwesomeIcon
                 icon={faTimes}
-                style={{ visibility: value.length > 0 ? 'visible' : 'hidden' }}
+                style={{ opacity: value.length > 0 ? 1 : 0 }}
               />
             </div>
           </div>
