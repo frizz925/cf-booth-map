@@ -12,6 +12,7 @@ import * as styles from './styles.css';
 
 const PULL_DELTA_THRESHOLD = 80;
 const PULL_VELOCITY_THRESHOLD = 0.5;
+const SHOWN_HEIGHT_THRESHOLD = 35;
 
 export interface CircleCardStore {
   cardShown: boolean;
@@ -204,10 +205,13 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     if (!container) {
       return;
     }
+
+    const bottom = panState.startBottom - evt.deltaY;
     if (evt.type === 'panstart') {
       panState.startBottom = panState.currentBottom;
       store.cardPulling = true;
     } else if (evt.type === 'panend') {
+      store.cardPulling = false;
       const reachThreshold =
         Math.abs(evt.deltaY) >= PULL_DELTA_THRESHOLD ||
         Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD;
@@ -216,20 +220,25 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
           store.cardPulled = panState.wasPulled = true;
         }
       } else {
-        if (store.cardPulled && reachThreshold) {
+        if (-bottom >= container.clientHeight - SHOWN_HEIGHT_THRESHOLD) {
+          store.cardShown = false;
+          store.cardPulled = panState.wasPulled = false;
+        } else if (store.cardPulled && reachThreshold) {
           store.cardPulled = panState.wasPulled = false;
         } else if (!panState.wasPulled) {
           store.cardShown = false;
         }
       }
-      store.cardPulling = false;
       return;
     }
-    const bottom = panState.startBottom - evt.deltaY;
+
     this.updateContainerPosition(bottom);
   };
 
   private updateContainerPosition(bottom: number) {
+    if (bottom > 0) {
+      return;
+    }
     const container = this.containerRef.current;
     if (!container) {
       return;
