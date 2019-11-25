@@ -1,3 +1,4 @@
+import LazyImage from '@components/LazyImage';
 import {
   faFacebookSquare,
   faInstagram,
@@ -165,7 +166,7 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     return (
       <div className={styles.body}>
         <div className={styles.image}>
-          <img src={circle.imageUrl} alt={circle.name} />
+          <LazyImage src={circle.imageUrl} alt={circle.name} width={160} height={240} />
         </div>
         <div className={styles.details}>{this.renderInfo(circle)}</div>
       </div>

@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react';
 import * as styles from './styles.scss';
 
 interface Props {
+  isLoading: boolean;
   className?: string;
   circles: Circle[];
   onSelected: (circle: Circle) => void;
@@ -13,16 +14,25 @@ interface Props {
 @observer
 export default class SearchResults extends PureComponent<Props> {
   public render() {
-    const { className, circles } = this.props;
-    const circleElements = map(circles, circle => this.renderCircle(circle));
+    const { className, circles, isLoading } = this.props;
     return (
       <div className={className}>
-        <div className={styles.searchResultList}>{circleElements}</div>
+        <div className={styles.searchResultList}>
+          {isLoading ? this.renderLoader() : this.renderCircles(circles)}
+        </div>
       </div>
     );
   }
 
-  private renderCircle(circle: Circle): JSX.Element {
+  public renderLoader() {
+    return <div className={styles.searchResultItem}>Loading...</div>;
+  }
+
+  public renderCircles(circles: Circle[]): JSX.Element[] {
+    return map(circles, circle => this.renderCircle(circle));
+  }
+
+  public renderCircle(circle: Circle): JSX.Element {
     const { onSelected } = this.props;
     return (
       <div

@@ -13,6 +13,7 @@ export interface SearchFormStore {
   cardShown: boolean;
   cardPulled: boolean;
   focused: boolean;
+  searching: boolean;
   searchText: string;
   selectedCircle?: Circle;
 }
@@ -39,8 +40,12 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   public componentDidMount() {
     const { store, repository } = this.props;
     this.querySubscription = this.querySubject.subscribe(query => {
+      store.searching = true;
       repository.find(query).then(
-        circles => this.updateCircles(circles),
+        circles => {
+          this.updateCircles(circles);
+          store.searching = false;
+        },
         err => console.error(err),
       );
     });
@@ -62,7 +67,7 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
 
   public render() {
     const { props, circles } = this;
-    const { focused, searchText } = props.store;
+    const { focused, searching, searchText } = props.store;
     const focusedClassName = (focused && styles.focused) || '';
     const containerClassNames = classNames(styles.container, focusedClassName);
     const searchBoxClassNames = classNames(styles.searchBoxContainer, focusedClassName);
@@ -84,6 +89,7 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
         />
         <SearchResults
           className={searchResultsClassNames}
+          isLoading={searching}
           circles={circles}
           onSelected={this.onResultSelected}
         />

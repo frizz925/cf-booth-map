@@ -1,4 +1,6 @@
+import 'core-js/stable';
 import 'normalize.css';
+import 'regenerator-runtime/runtime';
 import './scss/main.scss';
 
 window.addEventListener('load', () => {

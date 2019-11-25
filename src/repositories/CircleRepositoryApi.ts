@@ -32,14 +32,19 @@ export default class CircleRepositoryApi implements CircleRepository {
     });
   }
 
-  public find(query: string): Promise<Circle[]> {
+  public async find(query: string): Promise<Circle[]> {
     if (!query) {
-      return Promise.resolve([]);
+      return [];
     }
     if (!this.fuse) {
-      return this.fetch().then(() => this.find(query));
+      await this.fetch();
+      return this.find(query);
     }
-    return Promise.resolve(this.fuse.search(query));
+    return new Promise(resolve => {
+      process.nextTick(() => {
+        resolve(this.fuse.search(query));
+      });
+    });
   }
 
   private updateFuse(circles: Circle[]) {

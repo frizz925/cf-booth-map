@@ -15,18 +15,19 @@ const App = (el: Element) => {
   });
   const circleParser = new CircleParser('https://catalog.comifuro.net/');
   const circleRepository = new CircleRepositoryApi(circleClient, circleParser);
-  const store: AppStore = observable({
+  const store: AppStore = {
     cardShown: false,
     cardPulled: false,
     cardPulling: false,
     focused: false,
+    searching: false,
     searchText: '',
     selectedCircle: null,
-  } as AppStore);
+  };
 
   const props: AppContainerProps = {
     circleRepository,
-    store,
+    store: observable(store),
   };
 
   ReactDOM.render(
