@@ -10,7 +10,7 @@ import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import * as styles from './styles.css';
 
-const PULL_DELTA_THRESHOLD = 40;
+const PULL_DELTA_THRESHOLD = 80;
 const PULL_VELOCITY_THRESHOLD = 0.5;
 
 export interface CircleCardStore {
@@ -208,13 +208,15 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
       panState.startBottom = panState.currentBottom;
       store.cardPulling = true;
     } else if (evt.type === 'panend') {
-      if (
+      const reachThreshold =
         Math.abs(evt.deltaY) >= PULL_DELTA_THRESHOLD ||
-        Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD
-      ) {
-        if (Math.sign(evt.deltaY) <= 0) {
+        Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD;
+      if (Math.sign(evt.deltaY) <= 0) {
+        if (reachThreshold) {
           store.cardPulled = panState.wasPulled = true;
-        } else if (store.cardPulled) {
+        }
+      } else {
+        if (store.cardPulled && reachThreshold) {
           store.cardPulled = panState.wasPulled = false;
         } else if (!panState.wasPulled) {
           store.cardShown = false;
