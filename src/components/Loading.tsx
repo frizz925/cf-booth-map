@@ -11,7 +11,7 @@ const contentStyle: CSS.Properties = {
   display: 'inline-block',
   padding: '8px 16px',
   borderRadius: '6px',
-  backgroundColor: '#fff',
+  backgroundColor: '#333',
   boxShadow: '1px 1px 3px rgba(0,0,0,0.3)',
 };
 

@@ -43,6 +43,8 @@
 }
 
 .searchInput {
+  background-color: $background-color;
+  color: $font-color;
   flex-grow: 1;
   box-sizing: border-box;
   vertical-align: middle;
@@ -50,5 +52,4 @@
   outline: none;
   line-height: 18px;
   padding: 12px 0;
-  color: $font-color;
 }

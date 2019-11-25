@@ -53,7 +53,7 @@ export default class LazyImage extends PureComponent<LazyImageProps, LazyImageSt
     const { width, height } = this.props;
     return (
       <div style={{ width, height }}>
-        <Ring color='rgba(0, 0, 0, 0.7)' />
+        <Ring color='rgba(255, 255, 255, 0.7)' />
       </div>
     );
   }
