@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - lts/*
+env:
+  global:
+    - PATH=$HOME/.local/bin:$PATH
+before_install:
+  - pip3 install --user awscli
+install:
+  - yarn
+script:
+  - yarn build
+after_success:
+  - aws s3 sync --delete dist s3://$WEBSITE_BUCKET/
+cache:
+  yarn: true
