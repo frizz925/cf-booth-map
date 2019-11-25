@@ -6,6 +6,7 @@ import { SocialType } from '@models/Social';
 import classNames from 'classnames';
 import Hammer from 'hammerjs';
 import map from 'lodash/map';
+import { action } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import * as styles from './styles.css';
@@ -198,6 +199,7 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     this.updateCard();
   };
 
+  @action
   private onPanMove = (evt: HammerInput) => {
     const { props, panState } = this;
     const { store } = props;

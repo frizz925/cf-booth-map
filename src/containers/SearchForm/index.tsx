@@ -3,7 +3,7 @@ import SearchResults from '@components/SearchResults';
 import Circle from '@models/Circle';
 import CircleRepository from '@repositories/CircleRepository';
 import classNames from 'classnames';
-import { observable } from 'mobx';
+import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import { Subject, Subscription } from 'rxjs';
@@ -86,6 +86,7 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
     // TODO: Create drawer
   };
 
+  @action
   private onSearchBoxBack = () => {
     const { store } = this.props;
     if (!store.focused) {
@@ -94,6 +95,7 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
     store.focused = false;
   };
 
+  @action
   private onSearchBoxClick = () => {
     const { store } = this.props;
     if (store.focused) {
@@ -103,16 +105,19 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
     store.focused = true;
   };
 
+  @action
   private onSearchBoxClear = () => {
     this.props.store.searchText = '';
     this.querySubject.next('');
   };
 
+  @action
   private onSearchBoxTextChanged = (value: string) => {
     this.props.store.searchText = value;
     this.querySubject.next(value);
   };
 
+  @action
   private onResultSelected = (circle: Circle) => {
     const { store } = this.props;
     store.focused = false;
