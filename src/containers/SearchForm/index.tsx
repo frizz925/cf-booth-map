@@ -82,8 +82,9 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
     this.circles.push(...circles);
   }
 
+  @action
   private onSearchBoxAction = () => {
-    // TODO: Create drawer
+    this.props.store.searchText = 'Hamburger';
   };
 
   @action

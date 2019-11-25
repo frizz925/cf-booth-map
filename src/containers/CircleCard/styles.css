@@ -1,6 +1,6 @@
 .container {
   background-color: #fff;
-  box-shadow: 0px -1px 3px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0px -1px 3px 0 transparent;
 
   display: flex;
   flex-direction: column;
@@ -14,14 +14,15 @@
   border-radius: 21px 21px 0 0;
   overflow: hidden;
 
-  transition: bottom 250ms;
+  transition: bottom 250ms, box-shadow 0s linear 250ms;
   transition-timing-function: ease;
   user-select: none;
   z-index: 0;
 }
 
 .container.shown {
-  transition: bottom 250ms;
+  box-shadow: 0px -1px 3px 0 rgba(0, 0, 0, 0.3);
+  transition: bottom 250ms, box-shadow 0s;
 }
 
 .container.pulling {
