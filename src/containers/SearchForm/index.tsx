@@ -3,7 +3,7 @@ import SearchResults from '@components/SearchResults';
 import Circle from '@models/Circle';
 import CircleRepository from '@repositories/CircleRepository';
 import classNames from 'classnames';
-import { action, observable } from 'mobx';
+import { action, autorun, IReactionDisposer, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import { Subject, Subscription } from 'rxjs';
@@ -29,20 +29,34 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
 
   private querySubject = new Subject<string>();
   private querySubscription: Subscription;
+  private queryDisposer: IReactionDisposer;
+
+  private prevState = {
+    cardShown: false,
+    cardPulled: false,
+  };
 
   public componentDidMount() {
-    const { repository } = this.props;
+    const { store, repository } = this.props;
     this.querySubscription = this.querySubject.subscribe(query => {
       repository.find(query).then(
         circles => this.updateCircles(circles),
         err => console.error(err),
       );
     });
+    this.queryDisposer = autorun(() => {
+      this.querySubject.next(store.searchText);
+    });
   }
 
   public componentWillUnmount() {
     if (this.querySubscription) {
       this.querySubscription.unsubscribe();
+      this.querySubscription = null;
+    }
+    if (this.queryDisposer) {
+      this.queryDisposer();
+      this.queryDisposer = null;
     }
   }
 
@@ -89,20 +103,27 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
 
   @action
   private onSearchBoxBack = () => {
-    const { store } = this.props;
+    const { props, prevState } = this;
+    const { store } = props;
     if (!store.focused) {
       return;
     }
     store.focused = false;
+    store.cardPulled = prevState.cardPulled;
+    store.cardShown = prevState.cardShown;
   };
 
   @action
   private onSearchBoxFocus = () => {
-    const { store } = this.props;
+    const { props, prevState } = this;
+    const { store } = props;
     if (store.focused) {
       return;
     }
+    prevState.cardPulled = store.cardPulled;
+    prevState.cardShown = store.cardShown;
     store.cardPulled = false;
+    store.cardShown = false;
     store.focused = true;
   };
 
@@ -115,7 +136,6 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   @action
   private onSearchBoxTextChanged = (value: string) => {
     this.props.store.searchText = value;
-    this.querySubject.next(value);
   };
 
   @action

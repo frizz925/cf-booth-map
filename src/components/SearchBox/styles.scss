@@ -3,26 +3,26 @@
 .container {
   box-sizing: border-box;
   width: 100%;
-  padding: 8px 4px;
+  padding: 8px;
 }
 
 .floatingContainer {
   background-color: $background-color;
   box-sizing: border-box;
   width: 100%;
-  border-radius: 21px;
+  border-radius: 8px;
   border: 1px solid transparent;
   transition: border-color $transition-duration, box-shadow $transition-duration;
   transition-timing-function: $transition-timing-function;
   overflow: hidden;
-}
 
-.floatingContainer.docked {
-  border-color: $border-color;
-}
+  &.docked {
+    border-color: $border-color;
+  }
 
-.floatingContainer.floating {
-  box-shadow: 1px 1px 3px 1px $shadow-color;
+  &.floating {
+    box-shadow: 1px 1px 3px 1px $shadow-color;
+  }
 }
 
 .form {

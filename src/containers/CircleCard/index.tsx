@@ -1,4 +1,8 @@
-import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import {
+  faFacebookSquare,
+  faInstagram,
+  faTwitterSquare,
+} from '@fortawesome/free-brands-svg-icons';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
@@ -33,20 +37,24 @@ interface InfoMapping {
 
 const defaultSocialIcon = faGlobe;
 const socialIcons = {
-  [SocialType.Facebook]: faFacebook,
-  [SocialType.Twitter]: faTwitter,
+  [SocialType.Facebook]: faFacebookSquare,
+  [SocialType.Twitter]: faTwitterSquare,
   [SocialType.Instagram]: faInstagram,
   [SocialType.Web]: defaultSocialIcon,
 };
 
 const infoMapping: InfoMapping[] = [
   {
-    title: 'Categories',
-    render: ({ categories }) => categories,
+    title: 'Day(s)',
+    render: ({ day }) => day,
   },
   {
     title: 'Fandoms',
     render: ({ fandoms }) => fandoms,
+  },
+  {
+    title: 'Categories',
+    render: ({ categories }) => categories,
   },
   {
     title: 'Rating',
@@ -69,6 +77,7 @@ const infoMapping: InfoMapping[] = [
 
 @observer
 export default class CircleCard extends PureComponent<CircleCardProps> {
+  private overlayRef = React.createRef<HTMLDivElement>();
   private containerRef = React.createRef<HTMLDivElement>();
   private headerRef = React.createRef<HTMLDivElement>();
 
@@ -124,22 +133,30 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
       cardPulling: pulling,
       selectedCircle: circle,
     } = this.props.store;
-    const containerClassNames = classNames(styles.container, {
+    const classModifiers = {
       [styles.shown]: shown,
       [styles.pulled]: pulled,
       [styles.pulling]: pulling,
-    });
+    };
+    const overlayClassNames = classNames(styles.overlay, classModifiers);
+    const containerClassNames = classNames(styles.container, classModifiers);
     return (
-      <div ref={this.containerRef} className={containerClassNames}>
-        <div ref={this.headerRef} className={styles.header}>
-          <div className={styles.puller}>
-            <span />
-            <span />
+      <div>
+        <div
+          ref={this.overlayRef}
+          className={overlayClassNames}
+          onClick={this.onOverlayClick}
+        />
+        <div ref={this.containerRef} className={containerClassNames}>
+          <div ref={this.headerRef} className={styles.header}>
+            <div className={styles.puller}>
+              <span />
+            </div>
+            <div className={styles.title}>{circle ? circle.name : ''}</div>
+            <div className={styles.number}>{circle ? circle.boothNumber : ''}</div>
           </div>
-          <div className={styles.title}>{circle ? circle.name : ''}</div>
-          <div className={styles.number}>{circle ? circle.boothNumber : ''}</div>
+          {circle ? this.renderCard(circle) : null}
         </div>
-        {circle ? this.renderCard(circle) : null}
       </div>
     );
   }
@@ -242,14 +259,27 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     this.updateContainerPosition(bottom);
   };
 
+  @action
+  private onOverlayClick = () => {
+    this.props.store.cardPulled = false;
+  };
+
   private updateContainerPosition(bottom: number) {
     if (bottom > 0) {
       return;
     }
+    const overlay = this.overlayRef.current;
     const container = this.containerRef.current;
-    if (!container) {
+    const header = this.headerRef.current;
+    if (!overlay || !container || !header) {
       return;
     }
+    const opacity = Math.min(
+      Math.max(0, 1.0 + bottom / (container.clientHeight - header.clientHeight)),
+      1.0,
+    );
+    overlay.style.setProperty('opacity', '' + opacity);
+
     this.panState.currentBottom = bottom;
     container.style.setProperty('bottom', `${bottom}px`);
   }

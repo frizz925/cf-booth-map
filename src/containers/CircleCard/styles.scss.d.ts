@@ -1,7 +1,8 @@
+export const overlay: string;
 export const container: string;
-export const puller: string;
 
 export const header: string;
+export const puller: string;
 export const title: string;
 export const number: string;
 

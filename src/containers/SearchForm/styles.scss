@@ -10,10 +10,10 @@
   background-color: transparent;
   transition: background-color $transition-duration;
   transition-timing-function: $transition-timing-function;
-}
 
-.searchBoxContainer.focused {
-  background-color: $background-color;
+  &.focused {
+    background-color: $background-color;
+  }
 }
 
 .searchResultsContainer {
@@ -31,10 +31,10 @@
   visibility: hidden;
   transition: top $transition-duration, visibility 0s linear $transition-duration;
   transition-timing-function: $transition-timing-function;
-}
 
-.searchResultsContainer.focused {
-  top: 0%;
-  visibility: visible;
-  transition: top $transition-duration, visibility 0s linear 0s;
+  &.focused {
+    top: 0%;
+    visibility: visible;
+    transition: top $transition-duration, visibility 0s linear 0s;
+  }
 }

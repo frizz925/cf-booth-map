@@ -1,7 +1,7 @@
 enum Day {
-  Saturday,
-  Sunday,
-  Both,
+  Saturday = 'Sat',
+  Sunday = 'Sun',
+  Both = 'Sat-Sun',
 }
 
 export default Day;
