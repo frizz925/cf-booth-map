@@ -15,4 +15,6 @@ locals {
     "172.64.0.0/13",
     "131.0.72.0/22",
   ]
+
+  hostname = "${var.subdomain}.${var.cloudflare_zone}"
 }

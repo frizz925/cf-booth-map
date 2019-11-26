@@ -1,9 +1,5 @@
-output "website_endpoint" {
-  value = "${aws_s3_bucket.site_bucket.website_endpoint}"
-}
-
-output "website_domain" {
-  value = "${aws_s3_bucket.site_bucket.website_domain}"
+output "hostname" {
+  value = "${cloudflare_record.site_record.hostname}"
 }
 
 output "user_name" {

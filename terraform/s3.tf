@@ -1,7 +1,6 @@
 resource "aws_s3_bucket" "site_bucket" {
-  bucket = "${var.hostname}"
+  bucket = "${local.hostname}"
   acl    = "private"
-  policy = "${data.aws_iam_policy_document.site_bucket.json}"
 
   website {
     index_document = "index.html"
@@ -10,9 +9,14 @@ resource "aws_s3_bucket" "site_bucket" {
 
   tags = {
     Name        = "Comic Frontier Booth Map"
-    HostName    = "${var.hostname}"
+    HostName    = "${local.hostname}"
     Environment = "${var.environment}"
   }
+}
+
+resource "aws_s3_bucket_policy" "site_bucket" {
+  bucket = "${aws_s3_bucket.site_bucket.id}"
+  policy = "${data.aws_iam_policy_document.site_bucket.json}"
 }
 
 data "aws_iam_policy_document" "site_bucket" {
@@ -24,7 +28,7 @@ data "aws_iam_policy_document" "site_bucket" {
     ]
 
     resources = [
-      "arn:aws:s3:::${var.hostname}/*"
+      "${aws_s3_bucket.site_bucket.arn}/*"
     ]
 
     principals {
@@ -49,7 +53,7 @@ data "aws_iam_policy_document" "site_bucket" {
     ]
 
     resources = [
-      "arn:aws:s3:::${var.hostname}/*"
+      "${aws_s3_bucket.site_bucket.arn}/*"
     ]
 
     principals {

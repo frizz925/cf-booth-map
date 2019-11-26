@@ -3,7 +3,7 @@ resource "aws_iam_user" "cd_user" {
   path = "/cf-booth-map/"
 
   tags = {
-    description = "User for Continuous Delivery"
+    description = "User for Continuous Deployment"
   }
 }
 
