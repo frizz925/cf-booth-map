@@ -8,6 +8,10 @@
     visibility: visible;
     opacity: 1;
   }
+
+  &.pulling {
+    transition: none !important;
+  }
 }
 
 .container {
@@ -29,6 +33,10 @@
 
   &.opened {
     left: 0%;
+  }
+
+  &.pulling {
+    transition: none !important;
   }
 }
 

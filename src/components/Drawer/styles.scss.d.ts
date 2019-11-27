@@ -14,3 +14,4 @@ export const menuItemTitle: string;
 
 // Modifiers
 export const opened: string;
+export const pulling: string;
