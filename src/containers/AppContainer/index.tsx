@@ -1,6 +1,6 @@
 import DrawerContainer from '@components/Drawer';
 import CardContainer, { CardContainerStore } from '@containers/CardContainer';
-import SearchContainer, { SearchFormStore } from '@containers/SearchContainer';
+import SearchContainer, { SearchContainerStore } from '@containers/SearchContainer';
 import CircleRepository from '@repositories/CircleRepository';
 import { IS_DEVELOPMENT } from '@utils/Constants';
 import { observer } from 'mobx-react';
@@ -12,7 +12,7 @@ interface BaseStore {
   drawerShown: boolean;
 }
 
-export type AppStore = BaseStore & SearchFormStore & CardContainerStore;
+export type AppStore = BaseStore & SearchContainerStore & CardContainerStore;
 
 export interface AppContainerProps {
   store: AppStore;
