@@ -1,6 +1,5 @@
 import Circle from '@models/Circle';
 import map from 'lodash/map';
-import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import * as styles from './styles.scss';
 
@@ -11,7 +10,6 @@ interface Props {
   onSelected: (circle: Circle) => void;
 }
 
-@observer
 export default class SearchResults extends PureComponent<Props> {
   public render() {
     const { className, circles, isLoading } = this.props;
