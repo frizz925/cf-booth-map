@@ -1,5 +1,5 @@
-import DrawerContainer from '@components/Drawer';
 import CardContainer, { CardContainerStore } from '@containers/CardContainer';
+import DrawerContainer, { DrawerContainerStore } from '@containers/DrawerContainer';
 import SearchContainer, { SearchContainerStore } from '@containers/SearchContainer';
 import CircleRepository from '@repositories/CircleRepository';
 import { IS_DEVELOPMENT } from '@utils/Constants';
@@ -9,10 +9,12 @@ import { hot } from 'react-hot-loader/root';
 
 interface BaseStore {
   cardShown: boolean;
-  drawerShown: boolean;
 }
 
-export type AppStore = BaseStore & SearchContainerStore & CardContainerStore;
+export type AppStore = BaseStore &
+  DrawerContainerStore &
+  SearchContainerStore &
+  CardContainerStore;
 
 export interface AppContainerProps {
   store: AppStore;
@@ -29,7 +31,7 @@ class AppContainer extends PureComponent<AppContainerProps> {
     const { store, circleRepository } = this.props;
     return (
       <div>
-        <DrawerContainer />
+        <DrawerContainer store={store} />
         <SearchContainer store={store} repository={circleRepository} />
         <CardContainer store={store} />
       </div>

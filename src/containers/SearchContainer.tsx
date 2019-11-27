@@ -5,15 +5,16 @@ import { action, autorun, IReactionDisposer } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import { Subject, Subscription } from 'rxjs';
+import { CardContainerStore } from './CardContainer';
+import { DrawerContainerStore } from './DrawerContainer';
 
-export interface SearchContainerStore {
-  cardShown: boolean;
-  cardPulled: boolean;
+interface BaseStore {
   focused: boolean;
   searching: boolean;
   searchText: string;
-  selectedCircle?: Circle;
 }
+
+export type SearchContainerStore = BaseStore & CardContainerStore & DrawerContainerStore;
 
 export interface SearchContainerProps {
   store: SearchContainerStore;
@@ -110,7 +111,7 @@ export default class SearchContainer extends PureComponent<
 
   @action
   private onAction = () => {
-    this.props.store.searchText = 'Hamburger';
+    this.props.store.drawerOpened = true;
   };
 
   @action

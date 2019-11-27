@@ -17,7 +17,7 @@ import * as styles from './styles.scss';
 
 const PULL_DELTA_THRESHOLD = 80;
 const PULL_VELOCITY_THRESHOLD = 0.5;
-const SHOWN_HEIGHT_THRESHOLD = 35;
+const VISIBLE_HEIGHT_THRESHOLD = 0;
 
 export interface CircleCardProps {
   circle?: Circle;
@@ -137,7 +137,12 @@ export default class CircleCard extends PureComponent<CircleCardProps, CircleCar
       [styles.pulled]: pulled,
       [styles.pulling]: pulling,
     };
-    const overlayClassNames = classNames(styles.overlay, classModifiers);
+    const overlayClassNames = classNames(
+      'overlay-generic',
+      { 'overlay-visible': shown },
+      styles.overlay,
+      classModifiers,
+    );
     const containerClassNames = classNames(styles.container, classModifiers);
     return (
       <div>
@@ -225,7 +230,8 @@ export default class CircleCard extends PureComponent<CircleCardProps, CircleCar
     const { props, panState } = this;
     const { pulled, onCardPulled, onCardHidden, onCardTabbed } = props;
     const container = this.containerRef.current;
-    if (!container) {
+    const header = this.headerRef.current;
+    if (!container || !header) {
       return;
     }
     const bottom = panState.startBottom - evt.deltaY;
@@ -243,7 +249,9 @@ export default class CircleCard extends PureComponent<CircleCardProps, CircleCar
           onCardPulled();
         }
       } else {
-        if (-bottom >= container.clientHeight - SHOWN_HEIGHT_THRESHOLD) {
+        const hiddenThreshold =
+          container.clientHeight - header.clientHeight / 2 + VISIBLE_HEIGHT_THRESHOLD;
+        if (-bottom >= hiddenThreshold) {
           panState.wasPulled = false;
           onCardHidden();
         } else if (pulled && reachThreshold) {

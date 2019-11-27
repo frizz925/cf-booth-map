@@ -16,7 +16,7 @@ const App = (el: Element) => {
   const circleParser = new CircleParser('https://catalog.comifuro.net/');
   const circleRepository = new CircleRepositoryApi(circleClient, circleParser);
   const store: AppStore = {
-    drawerShown: false,
+    drawerOpened: false,
     cardShown: false,
     cardPulled: false,
     focused: false,
