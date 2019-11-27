@@ -1,4 +1,4 @@
-import { faArrowLeft, faHamburger, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import React, { PureComponent } from 'react';
@@ -28,7 +28,7 @@ export default class SearchBox extends PureComponent<SearchBoxProps> {
         <div className={floatingClassNames}>
           <div className={styles.form}>
             <div className={styles.formButton} onClick={this.onActionClicked}>
-              <FontAwesomeIcon icon={docked ? faArrowLeft : faHamburger} />
+              <FontAwesomeIcon icon={docked ? faArrowLeft : faBars} />
             </div>
             <input
               className={styles.searchInput}

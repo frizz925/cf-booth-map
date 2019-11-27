@@ -1,5 +1,6 @@
-import CircleCard, { CircleCardStore } from '@containers/CircleCard';
-import SearchForm, { SearchFormStore } from '@containers/SearchForm';
+import DrawerContainer from '@components/Drawer';
+import CardContainer, { CardContainerStore } from '@containers/CardContainer';
+import SearchContainer, { SearchFormStore } from '@containers/SearchContainer';
 import CircleRepository from '@repositories/CircleRepository';
 import { IS_DEVELOPMENT } from '@utils/Constants';
 import { observer } from 'mobx-react';
@@ -8,9 +9,10 @@ import { hot } from 'react-hot-loader/root';
 
 interface BaseStore {
   cardShown: boolean;
+  drawerShown: boolean;
 }
 
-export type AppStore = BaseStore & SearchFormStore & CircleCardStore;
+export type AppStore = BaseStore & SearchFormStore & CardContainerStore;
 
 export interface AppContainerProps {
   store: AppStore;
@@ -27,8 +29,9 @@ class AppContainer extends PureComponent<AppContainerProps> {
     const { store, circleRepository } = this.props;
     return (
       <div>
-        <SearchForm store={store} repository={circleRepository} />
-        <CircleCard store={store} />
+        <DrawerContainer />
+        <SearchContainer store={store} repository={circleRepository} />
+        <CardContainer store={store} />
       </div>
     );
   }

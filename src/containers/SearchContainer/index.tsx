@@ -1,15 +1,12 @@
-import SearchBox from '@components/SearchBox';
-import SearchResults from '@components/SearchResults';
+import SearchForm from '@components/SearchForm';
 import Circle from '@models/Circle';
 import CircleRepository from '@repositories/CircleRepository';
-import classNames from 'classnames';
-import { action, autorun, IReactionDisposer, observable } from 'mobx';
+import { action, autorun, IReactionDisposer } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import { Subject, Subscription } from 'rxjs';
-import * as styles from './styles.scss';
 
-export interface SearchFormStore {
+export interface SearchContainerStore {
   cardShown: boolean;
   cardPulled: boolean;
   focused: boolean;
@@ -18,15 +15,23 @@ export interface SearchFormStore {
   selectedCircle?: Circle;
 }
 
-interface SearchFormProps {
-  store: SearchFormStore;
+export interface SearchContainerProps {
+  store: SearchContainerStore;
   repository: CircleRepository;
 }
 
+interface SearchContainerState {
+  circles: Circle[];
+}
+
 @observer
-export default class SearchForm extends PureComponent<SearchFormProps> {
-  @observable
-  private circles: Circle[] = [];
+export default class SearchContainer extends PureComponent<
+  SearchContainerProps,
+  SearchContainerState
+> {
+  public state = {
+    circles: [] as Circle[],
+  };
 
   private querySubject = new Subject<string>();
   private querySubscription: Subscription;
@@ -66,61 +71,31 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   }
 
   public render() {
-    const { props, circles } = this;
+    const { props, state } = this;
+    const { circles } = state;
     const { focused, searching, searchText } = props.store;
-    const focusedClassName = (focused && styles.focused) || '';
-    const containerClassNames = classNames(styles.container, focusedClassName);
-    const searchBoxClassNames = classNames(styles.searchBoxContainer, focusedClassName);
-    const searchResultsClassNames = classNames(
-      styles.searchResultsContainer,
-      focusedClassName,
-    );
     return (
-      <div className={containerClassNames}>
-        <SearchBox
-          className={searchBoxClassNames}
-          docked={focused}
-          value={searchText}
-          onAction={this.onSearchBoxAction}
-          onBack={this.onSearchBoxBack}
-          onFocus={this.onSearchBoxFocus}
-          onClear={this.onSearchBoxClear}
-          onTextChanged={this.onSearchBoxTextChanged}
-        />
-        <SearchResults
-          className={searchResultsClassNames}
-          isLoading={searching}
-          circles={circles}
-          onSelected={this.onResultSelected}
-        />
-      </div>
+      <SearchForm
+        circles={circles}
+        focused={focused}
+        searching={searching}
+        searchText={searchText}
+        onFocus={this.onFocus}
+        onAction={this.onAction}
+        onBack={this.onBack}
+        onClear={this.onClear}
+        onTextChanged={this.onTextChanged}
+        onResultSelected={this.onResultSelected}
+      />
     );
   }
 
   private updateCircles(circles: Circle[]) {
-    this.circles.length = 0;
-    this.circles.push(...circles);
+    this.setState({ circles });
   }
 
   @action
-  private onSearchBoxAction = () => {
-    this.props.store.searchText = 'Hamburger';
-  };
-
-  @action
-  private onSearchBoxBack = () => {
-    const { props, prevState } = this;
-    const { store } = props;
-    if (!store.focused) {
-      return;
-    }
-    store.focused = false;
-    store.cardPulled = prevState.cardPulled;
-    store.cardShown = prevState.cardShown;
-  };
-
-  @action
-  private onSearchBoxFocus = () => {
+  private onFocus = () => {
     const { props, prevState } = this;
     const { store } = props;
     if (store.focused) {
@@ -134,13 +109,30 @@ export default class SearchForm extends PureComponent<SearchFormProps> {
   };
 
   @action
-  private onSearchBoxClear = () => {
+  private onAction = () => {
+    this.props.store.searchText = 'Hamburger';
+  };
+
+  @action
+  private onBack = () => {
+    const { props, prevState } = this;
+    const { store } = props;
+    if (!store.focused) {
+      return;
+    }
+    store.focused = false;
+    store.cardPulled = prevState.cardPulled;
+    store.cardShown = prevState.cardShown;
+  };
+
+  @action
+  private onClear = () => {
     this.props.store.searchText = '';
     this.querySubject.next('');
   };
 
   @action
-  private onSearchBoxTextChanged = (value: string) => {
+  private onTextChanged = (value: string) => {
     this.props.store.searchText = value;
   };
 

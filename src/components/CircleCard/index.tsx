@@ -12,7 +12,6 @@ import classNames from 'classnames';
 import Hammer from 'hammerjs';
 import map from 'lodash/map';
 import { action } from 'mobx';
-import { observer } from 'mobx-react';
 import React, { PureComponent } from 'react';
 import * as styles from './styles.scss';
 
@@ -20,15 +19,19 @@ const PULL_DELTA_THRESHOLD = 80;
 const PULL_VELOCITY_THRESHOLD = 0.5;
 const SHOWN_HEIGHT_THRESHOLD = 35;
 
-export interface CircleCardStore {
-  cardShown: boolean;
-  cardPulled: boolean;
-  cardPulling: boolean;
-  selectedCircle: Circle;
+export interface CircleCardProps {
+  circle?: Circle;
+  shown: boolean;
+  pulled: boolean;
+
+  onOverlayClick: () => void;
+  onCardPulled: () => void;
+  onCardHidden: () => void;
+  onCardTabbed: () => void;
 }
 
-export interface CircleCardProps {
-  store: CircleCardStore;
+interface CircleCardState {
+  pulling: boolean;
 }
 
 interface InfoMapping {
@@ -76,18 +79,22 @@ const infoMapping: InfoMapping[] = [
   },
 ];
 
-@observer
-export default class CircleCard extends PureComponent<CircleCardProps> {
+export default class CircleCard extends PureComponent<CircleCardProps, CircleCardState> {
+  public state = {
+    pulling: false,
+  };
+
   private overlayRef = React.createRef<HTMLDivElement>();
   private containerRef = React.createRef<HTMLDivElement>();
   private headerRef = React.createRef<HTMLDivElement>();
 
-  private mc: HammerManager;
   private panState = {
     startBottom: 0,
     currentBottom: 0,
     wasPulled: false,
   };
+
+  private mc: HammerManager;
 
   public componentDidMount() {
     this.updateCard();
@@ -105,21 +112,16 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     window.removeEventListener('resize', this.onWindowResize);
   }
 
-  @action
   public updateCard() {
     const { props, panState } = this;
-    const {
-      cardShown: shown,
-      cardPulled: pulled,
-      selectedCircle: selected,
-    } = props.store;
-    panState.wasPulled = props.store.cardPulled;
+    const { shown, pulled } = props;
+    panState.wasPulled = props.pulled;
     const container = this.containerRef.current;
     if (!container) {
       return;
     }
     let bottom = 0;
-    if (!selected || !shown) {
+    if (!shown) {
       bottom = -container.clientHeight;
     } else if (shown && !pulled) {
       bottom = -(container.clientHeight - this.headerRef.current.clientHeight);
@@ -128,12 +130,8 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
   }
 
   public render() {
-    const {
-      cardShown: shown,
-      cardPulled: pulled,
-      cardPulling: pulling,
-      selectedCircle: circle,
-    } = this.props.store;
+    const { shown, pulled, circle, onOverlayClick } = this.props;
+    const { pulling } = this.state;
     const classModifiers = {
       [styles.shown]: shown,
       [styles.pulled]: pulled,
@@ -146,7 +144,7 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
         <div
           ref={this.overlayRef}
           className={overlayClassNames}
-          onClick={this.onOverlayClick}
+          onClick={onOverlayClick}
         />
         <div ref={this.containerRef} className={containerClassNames}>
           <div ref={this.headerRef} className={styles.header}>
@@ -156,13 +154,13 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
             <div className={styles.title}>{circle ? circle.name : ''}</div>
             <div className={styles.number}>{circle ? circle.boothNumber : ''}</div>
           </div>
-          {circle ? this.renderCard(circle) : null}
+          {circle ? this.renderCardBody(circle) : null}
         </div>
       </div>
     );
   }
 
-  public renderCard(circle: Circle): JSX.Element {
+  public renderCardBody(circle: Circle) {
     return (
       <div className={styles.body}>
         <div className={styles.image}>
@@ -195,7 +193,7 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
     }).filter(el => !!el);
   }
 
-  public renderList(items: string[]): JSX.Element {
+  public renderList(items: string[]) {
     return (
       <ul>
         {map(items, (item, idx) => (
@@ -225,44 +223,39 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
   @action
   private onPanMove = (evt: HammerInput) => {
     const { props, panState } = this;
-    const { store } = props;
+    const { pulled, onCardPulled, onCardHidden, onCardTabbed } = props;
     const container = this.containerRef.current;
     if (!container) {
       return;
     }
-
     const bottom = panState.startBottom - evt.deltaY;
     if (evt.type === 'panstart') {
       panState.startBottom = panState.currentBottom;
-      store.cardPulling = true;
+      this.setState({ pulling: true });
     } else if (evt.type === 'panend') {
-      store.cardPulling = false;
+      this.setState({ pulling: false });
       const reachThreshold =
         Math.abs(evt.deltaY) >= PULL_DELTA_THRESHOLD ||
         Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD;
       if (Math.sign(evt.deltaY) <= 0) {
         if (reachThreshold) {
-          store.cardPulled = panState.wasPulled = true;
+          panState.wasPulled = true;
+          onCardPulled();
         }
       } else {
         if (-bottom >= container.clientHeight - SHOWN_HEIGHT_THRESHOLD) {
-          store.cardShown = false;
-          store.cardPulled = panState.wasPulled = false;
-        } else if (store.cardPulled && reachThreshold) {
-          store.cardPulled = panState.wasPulled = false;
+          panState.wasPulled = false;
+          onCardHidden();
+        } else if (pulled && reachThreshold) {
+          panState.wasPulled = false;
+          onCardTabbed();
         } else if (!panState.wasPulled) {
-          store.cardShown = false;
+          onCardHidden();
         }
       }
       return;
     }
-
     this.updateContainerPosition(bottom);
-  };
-
-  @action
-  private onOverlayClick = () => {
-    this.props.store.cardPulled = false;
   };
 
   private updateContainerPosition(bottom: number) {
@@ -280,7 +273,6 @@ export default class CircleCard extends PureComponent<CircleCardProps> {
       1.0,
     );
     overlay.style.setProperty('opacity', '' + opacity);
-
     this.panState.currentBottom = bottom;
     container.style.setProperty('bottom', `${bottom}px`);
   }
