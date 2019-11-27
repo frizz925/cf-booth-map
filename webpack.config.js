@@ -8,6 +8,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
+const APP_VERSION = process.env.APP_VERSION;
 
 const isDev = NODE_ENV === 'development';
 const webpackEnvConfig = isDev
@@ -126,6 +127,7 @@ const webpackConfig = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
       'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
+      'process.env.APP_VERSION': JSON.stringify(APP_VERSION),
     }),
   ],
 };
