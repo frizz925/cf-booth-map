@@ -1,0 +1,7 @@
+@mixin clickable {
+  cursor: pointer;
+
+  &:active {
+    background-color: $active-bg-color;
+  }
+}

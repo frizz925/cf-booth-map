@@ -1,4 +1,5 @@
 @import 'modules/variables';
+@import 'modules/mixins';
 
 .overlay {
   z-index: 5;
@@ -64,9 +65,10 @@
 }
 
 .menuItem {
+  @include clickable;
+
   display: flex;
   padding: 12px 8px;
-  cursor: pointer;
   color: inherit;
   text-decoration: none;
 }

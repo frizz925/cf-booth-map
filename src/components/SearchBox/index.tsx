@@ -26,25 +26,23 @@ export default class SearchBox extends PureComponent<SearchBoxProps> {
     return (
       <div className={containerClassNames}>
         <div className={floatingClassNames}>
-          <div className={styles.form}>
-            <div className={styles.formButton} onClick={this.onActionClicked}>
-              <FontAwesomeIcon icon={docked ? faArrowLeft : faBars} />
-            </div>
-            <input
-              className={styles.searchInput}
-              type='value'
-              placeholder='Search for circle'
-              onFocus={onFocus}
-              onChange={e => onTextChanged(e.target.value)}
-              value={value}
-            />
-            <div
-              className={styles.formButton}
-              onClick={onClear}
-              style={{ visibility: value.length > 0 ? 'visible' : 'hidden' }}
-            >
-              <FontAwesomeIcon icon={faTimes} />
-            </div>
+          <div className={styles.formButton} onClick={this.onActionClicked}>
+            <FontAwesomeIcon icon={docked ? faArrowLeft : faBars} />
+          </div>
+          <input
+            className={styles.searchInput}
+            type='value'
+            placeholder='Search for circle'
+            onFocus={onFocus}
+            onChange={e => onTextChanged(e.target.value)}
+            value={value}
+          />
+          <div
+            className={styles.formButton}
+            onClick={onClear}
+            style={{ visibility: value.length > 0 ? 'visible' : 'hidden' }}
+          >
+            <FontAwesomeIcon icon={faTimes} />
           </div>
         </div>
       </div>

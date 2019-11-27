@@ -1,4 +1,5 @@
 @import 'modules/variables';
+@import 'modules/mixins';
 
 .searchResultList {
   width: 100%;
@@ -9,7 +10,8 @@
 }
 
 .searchResultItem {
-  cursor: pointer;
+  @include clickable;
+
   padding: 12px;
   border-bottom: 1px solid $separator-color;
 
