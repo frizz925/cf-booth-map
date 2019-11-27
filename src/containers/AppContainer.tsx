@@ -23,10 +23,6 @@ export interface AppContainerProps {
 
 @observer
 class AppContainer extends PureComponent<AppContainerProps> {
-  constructor(props: AppContainerProps) {
-    super(props);
-  }
-
   public render() {
     const { store, circleRepository } = this.props;
     return (

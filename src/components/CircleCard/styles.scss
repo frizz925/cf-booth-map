@@ -120,7 +120,7 @@
     font-size: 0.8em;
     font-weight: 300;
     color: $font-light-color;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
 
   & > ul {
@@ -130,15 +130,15 @@
   }
 
   & > ul > li {
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
 }
 
 .socialLink {
   display: block;
   float: left;
-  padding: 0 4px;
-  font-size: 2em;
+  padding: 0 6px;
+  font-size: 1.7em;
   color: inherit;
 
   &:first-child {
