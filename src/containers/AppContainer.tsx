@@ -1,38 +1,20 @@
-import CardContainer, { CardContainerStore } from '@containers/CardContainer';
-import DrawerContainer, { DrawerContainerStore } from '@containers/DrawerContainer';
-import SearchContainer, { SearchContainerStore } from '@containers/SearchContainer';
-import CircleRepository from '@repositories/CircleRepository';
+import CardContainer from '@containers/CardContainer';
+import DrawerContainer from '@containers/DrawerContainer';
+import SearchContainer from '@containers/SearchContainer';
+import AppPresenter from '@presenters/AppPresenter';
 import { IS_DEVELOPMENT } from '@utils/Constants';
-import { observer } from 'mobx-react';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { hot } from 'react-hot-loader/root';
 
-interface BaseStore {
-  cardShown: boolean;
-}
-
-export type AppStore = BaseStore &
-  DrawerContainerStore &
-  SearchContainerStore &
-  CardContainerStore;
-
-export interface AppContainerProps {
-  store: AppStore;
-  circleRepository: CircleRepository;
-}
-
-@observer
-class AppContainer extends PureComponent<AppContainerProps> {
-  public render() {
-    const { store, circleRepository } = this.props;
-    return (
-      <div>
-        <DrawerContainer store={store} />
-        <SearchContainer store={store} repository={circleRepository} />
-        <CardContainer store={store} />
-      </div>
-    );
-  }
-}
+const AppContainer = ({ presenter }: { presenter: AppPresenter }) => {
+  const { cardPresenter, drawerPresenter, searchPresenter } = presenter;
+  return (
+    <div>
+      <DrawerContainer presenter={drawerPresenter} />
+      <SearchContainer presenter={searchPresenter} />
+      <CardContainer presenter={cardPresenter} />
+    </div>
+  );
+};
 
 export default IS_DEVELOPMENT ? hot(AppContainer) : AppContainer;

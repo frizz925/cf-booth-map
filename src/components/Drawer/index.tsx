@@ -4,7 +4,7 @@ import { APP_VERSION } from '@utils/Constants';
 import classNames from 'classnames';
 import Hammer from 'hammerjs';
 import map from 'lodash/map';
-import React, { PureComponent } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as styles from './styles.scss';
 
 export interface DrawerItem {
@@ -20,113 +20,89 @@ export interface DrawerProps {
   onClose: () => void;
 }
 
-interface DrawerState {
-  pulling: boolean;
-}
+const getLinkTarget = (link: string) => {
+  return link.indexOf('://') > 0 ? '_blank' : '';
+};
 
-export default class Drawer extends PureComponent<DrawerProps, DrawerState> {
-  public state = {
-    pulling: false,
-  };
+const renderItems = (items?: DrawerItem[]) => {
+  return map(items || [], item => (
+    <a
+      key={item.href}
+      href={item.href}
+      className={styles.menuItem}
+      target={getLinkTarget(item.href)}
+    >
+      <span className={styles.menuItemIcon}>
+        <FontAwesomeIcon icon={item.icon} />
+      </span>
+      <span className={styles.menuItemTitle}>{item.title}</span>
+    </a>
+  ));
+};
 
-  private overlayRef = React.createRef<HTMLDivElement>();
-  private containerRef = React.createRef<HTMLDivElement>();
-  private panState = {
-    startX: 0,
-  };
+export default (props: DrawerProps) => {
+  const { opened, topItems, bottomItems, onClose } = props;
 
-  private mc: HammerManager;
+  const [pulling, setPulling] = useState(false);
+  const overlayRef = useRef<HTMLDivElement>();
+  const containerRef = useRef<HTMLDivElement>();
+  const startX = useRef(0);
 
-  public componentDidMount() {
-    this.mc = this.registerHammer();
-  }
-
-  public componentWillUnmount() {
-    if (this.mc) {
-      this.mc.destroy();
-      this.mc = null;
-    }
-  }
-
-  public render() {
-    const { props, state } = this;
-    const { pulling } = state;
-    const { opened, topItems, bottomItems, onClose } = props;
-    const overlayClassNames = classNames('overlay-generic', styles.overlay, {
-      'overlay-visible': opened,
-      [styles.opened]: opened,
-      [styles.pulling]: pulling,
-    });
-    const containerClassNames = classNames(styles.container, {
-      [styles.opened]: opened,
-      [styles.pulling]: pulling,
-    });
-    return (
-      <div>
-        <div ref={this.overlayRef} className={overlayClassNames} onClick={onClose} />
-        <div ref={this.containerRef} className={containerClassNames}>
-          <div className={styles.header}>
-            <h3 className={styles.title}>Comic Frontier Booth Map</h3>
-            <div className={styles.version}>{APP_VERSION}</div>
-          </div>
-          <div className={styles.menuList}>
-            {this.renderItems(topItems)}
-            <div className={styles.menuSpacer} />
-            {this.renderItems(bottomItems)}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  private registerHammer(): HammerManager {
-    const mc = new Hammer.Manager(this.containerRef.current);
-    mc.add(new Hammer.Swipe());
-    mc.add(new Hammer.Pan({ pointers: 0, threshold: 0 })).recognizeWith(mc.get('swipe'));
-    mc.on('panstart panmove panend', this.handlePan);
-    return mc;
-  }
-
-  private handlePan = (evt: HammerInput) => {
-    const { props, overlayRef, containerRef, panState } = this;
+  const handlePan = (evt: HammerInput) => {
     const overlay = overlayRef.current;
     const container = containerRef.current;
     const rect = container.getBoundingClientRect();
     if (evt.type === 'panstart') {
-      panState.startX = rect.left;
-      this.setState({ pulling: true });
+      startX.current = rect.left;
+      setPulling(true);
     } else if (evt.type === 'panend') {
       if (-rect.left >= rect.width / 2) {
-        props.onClose();
+        onClose();
       }
       container.style.removeProperty('left');
       overlay.style.removeProperty('opacity');
-      this.setState({ pulling: false });
+      setPulling(false);
       return;
     }
-    const left = Math.max(-rect.width, Math.min(panState.startX + evt.deltaX, 0));
+    const left = Math.max(-rect.width, Math.min(startX.current + evt.deltaX, 0));
     container.style.setProperty('left', `${left}px`);
     const opacity = 1.0 - Math.min(Math.max(0, -left / rect.width), 1.0);
     overlay.style.setProperty('opacity', '' + opacity);
   };
 
-  private renderItems(items?: DrawerItem[]) {
-    return map(items || [], (item, idx) => (
-      <a
-        key={idx}
-        href={item.href}
-        className={styles.menuItem}
-        target={this.getLinkTarget(item.href)}
-      >
-        <span className={styles.menuItemIcon}>
-          <FontAwesomeIcon icon={item.icon} />
-        </span>
-        <span className={styles.menuItemTitle}>{item.title}</span>
-      </a>
-    ));
-  }
+  useEffect(() => {
+    const mc = new Hammer.Manager(containerRef.current);
+    mc.add(new Hammer.Swipe());
+    mc.add(new Hammer.Pan({ pointers: 0, threshold: 0 })).recognizeWith(mc.get('swipe'));
+    mc.on('panstart panmove panend', handlePan);
+    return () => {
+      mc.destroy();
+    };
+  }, []);
 
-  private getLinkTarget(link: string): string {
-    return link.indexOf('://') > 0 ? '_blank' : '';
-  }
-}
+  const overlayClassNames = classNames('overlay-generic', styles.overlay, {
+    'overlay-visible': opened,
+    [styles.opened]: opened,
+    [styles.pulling]: pulling,
+  });
+  const containerClassNames = classNames(styles.container, {
+    [styles.opened]: opened,
+    [styles.pulling]: pulling,
+  });
+  return (
+    <div>
+      <div ref={overlayRef} className={overlayClassNames} onClick={onClose} />
+      <div ref={containerRef} className={containerClassNames}>
+        <div className={styles.header}>
+          <h3 className={styles.title}>Comic Frontier Booth Map</h3>
+          <div className={styles.version}>{APP_VERSION}</div>
+        </div>
+        <div className={styles.menuList}>
+          {renderItems(topItems)}
+          <div className={styles.menuSpacer} />
+          {renderItems(bottomItems)}
+        </div>
+      </div>
+    </div>
+  );
+};

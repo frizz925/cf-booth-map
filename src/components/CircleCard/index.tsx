@@ -9,10 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
 import { SocialType } from '@models/Social';
 import classNames from 'classnames';
-import Hammer from 'hammerjs';
 import map from 'lodash/map';
-import { action } from 'mobx';
-import React, { PureComponent } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as styles from './styles.scss';
 
 const PULL_DELTA_THRESHOLD = 80;
@@ -28,10 +26,6 @@ export interface CircleCardProps {
   onCardPulled: () => void;
   onCardHidden: () => void;
   onCardTabbed: () => void;
-}
-
-interface CircleCardState {
-  pulling: boolean;
 }
 
 interface InfoMapping {
@@ -79,44 +73,64 @@ const infoMapping: InfoMapping[] = [
   },
 ];
 
-export default class CircleCard extends PureComponent<CircleCardProps, CircleCardState> {
-  public state = {
-    pulling: false,
-  };
+const renderCardBody = (circle: Circle) => (
+  <div className={styles.body}>
+    <div className={styles.image}>
+      <LazyImage src={circle.imageUrl} alt={circle.name} width={160} height={240} />
+    </div>
+    <div className={styles.details}>{renderInfo(circle)}</div>
+  </div>
+);
 
-  private overlayRef = React.createRef<HTMLDivElement>();
-  private containerRef = React.createRef<HTMLDivElement>();
-  private headerRef = React.createRef<HTMLDivElement>();
+const renderInfo = (circle: Circle) =>
+  map(infoMapping, ({ title, render }, idx) => {
+    let rendered = render(circle);
+    if (typeof rendered === 'string') {
+      rendered = <span>{rendered}</span>;
+    } else if (rendered instanceof Array) {
+      if (typeof rendered[0] === 'string') {
+        rendered = renderList(rendered as string[]);
+      }
+    } else if (!rendered) {
+      return null;
+    }
 
-  private panState = {
+    return (
+      <div key={idx} className={styles.info}>
+        <span>{title}</span>
+        {rendered}
+      </div>
+    );
+  }).filter(el => !!el);
+
+const renderList = (items: string[]) => {
+  return (
+    <ul>
+      {map(items, (item, idx) => (
+        <li key={idx}>{item}</li>
+      ))}
+    </ul>
+  );
+};
+
+export default (props: CircleCardProps) => {
+  const [pulling, setPulling] = useState(false);
+
+  const propsRef = useRef(props);
+  const overlayRef = useRef<HTMLDivElement>();
+  const containerRef = useRef<HTMLDivElement>();
+  const headerRef = useRef<HTMLDivElement>();
+  const panStateRef = useRef({
     startBottom: 0,
     currentBottom: 0,
     wasPulled: false,
-  };
+  });
 
-  private mc: HammerManager;
-
-  public componentDidMount() {
-    this.updateCard();
-    this.registerListener();
-    window.addEventListener('resize', this.onWindowResize);
-  }
-
-  public componentDidUpdate() {
-    this.updateCard();
-    this.registerListener();
-  }
-
-  public componentWillUnmount() {
-    this.mc.destroy();
-    window.removeEventListener('resize', this.onWindowResize);
-  }
-
-  public updateCard() {
-    const { props, panState } = this;
-    const { shown, pulled } = props;
-    panState.wasPulled = props.pulled;
-    const container = this.containerRef.current;
+  const updateCard = () => {
+    const { shown, pulled } = propsRef.current;
+    const panState = panStateRef.current;
+    const container = containerRef.current;
+    panState.wasPulled = pulled;
     if (!container) {
       return;
     }
@@ -124,122 +138,22 @@ export default class CircleCard extends PureComponent<CircleCardProps, CircleCar
     if (!shown) {
       bottom = -container.clientHeight;
     } else if (shown && !pulled) {
-      bottom = -(container.clientHeight - this.headerRef.current.clientHeight);
+      bottom = -(container.clientHeight - headerRef.current.clientHeight);
     }
-    this.updateContainerPosition(bottom);
-  }
-
-  public render() {
-    const { shown, pulled, circle, onOverlayClick } = this.props;
-    const { pulling } = this.state;
-    const classModifiers = {
-      [styles.shown]: shown,
-      [styles.pulled]: pulled,
-      [styles.pulling]: pulling,
-    };
-    const overlayClassNames = classNames(
-      'overlay-generic',
-      { 'overlay-visible': shown },
-      styles.overlay,
-      classModifiers,
-    );
-    const containerClassNames = classNames(styles.container, classModifiers);
-    return (
-      <div>
-        <div
-          ref={this.overlayRef}
-          className={overlayClassNames}
-          onClick={onOverlayClick}
-        />
-        <div ref={this.containerRef} className={containerClassNames}>
-          <div ref={this.headerRef} className={styles.header}>
-            <div className={styles.puller}>
-              <span />
-            </div>
-            <div className={styles.title}>{circle ? circle.name : ''}</div>
-            <div className={styles.number}>{circle ? circle.boothNumber : ''}</div>
-          </div>
-          {circle ? this.renderCardBody(circle) : null}
-        </div>
-      </div>
-    );
-  }
-
-  public renderCardBody(circle: Circle) {
-    return (
-      <div className={styles.body}>
-        <div className={styles.image}>
-          <LazyImage src={circle.imageUrl} alt={circle.name} width={160} height={240} />
-        </div>
-        <div className={styles.details}>{this.renderInfo(circle)}</div>
-      </div>
-    );
-  }
-
-  public renderInfo(circle: Circle): JSX.Element[] {
-    return map(infoMapping, ({ title, render }, idx) => {
-      let rendered = render(circle);
-      if (typeof rendered === 'string') {
-        rendered = <span>{rendered}</span>;
-      } else if (rendered instanceof Array) {
-        if (typeof rendered[0] === 'string') {
-          rendered = this.renderList(rendered as string[]);
-        }
-      } else if (!rendered) {
-        return null;
-      }
-
-      return (
-        <div key={idx} className={styles.info}>
-          <span>{title}</span>
-          {rendered}
-        </div>
-      );
-    }).filter(el => !!el);
-  }
-
-  public renderList(items: string[]) {
-    return (
-      <ul>
-        {map(items, (item, idx) => (
-          <li key={idx}>{item}</li>
-        ))}
-      </ul>
-    );
-  }
-
-  private registerListener() {
-    if (this.mc) {
-      return;
-    }
-    const header = this.headerRef.current;
-    if (!header) {
-      return;
-    }
-    this.mc = new Hammer.Manager(header);
-    this.mc.add(new Hammer.Pan({ threshold: 0, pointers: 1 }));
-    this.mc.on('panstart panup pandown panend', this.onPanMove);
-  }
-
-  private onWindowResize = () => {
-    this.updateCard();
+    updateContainerPosition(bottom);
   };
 
-  @action
-  private onPanMove = (evt: HammerInput) => {
-    const { props, panState } = this;
-    const { pulled, onCardPulled, onCardHidden, onCardTabbed } = props;
-    const container = this.containerRef.current;
-    const header = this.headerRef.current;
-    if (!container || !header) {
-      return;
-    }
+  const onPanMove = (evt: HammerInput) => {
+    const { pulled, onCardPulled, onCardHidden, onCardTabbed } = propsRef.current;
+    const panState = panStateRef.current;
+    const container = containerRef.current;
+    const header = headerRef.current;
     const bottom = panState.startBottom - evt.deltaY;
     if (evt.type === 'panstart') {
       panState.startBottom = panState.currentBottom;
-      this.setState({ pulling: true });
+      setPulling(true);
     } else if (evt.type === 'panend') {
-      this.setState({ pulling: false });
+      setPulling(false);
       const reachThreshold =
         Math.abs(evt.deltaY) >= PULL_DELTA_THRESHOLD ||
         Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD;
@@ -263,25 +177,72 @@ export default class CircleCard extends PureComponent<CircleCardProps, CircleCar
       }
       return;
     }
-    this.updateContainerPosition(bottom);
+    updateContainerPosition(bottom);
   };
 
-  private updateContainerPosition(bottom: number) {
+  const updateContainerPosition = (bottom: number) => {
     if (bottom > 0) {
       return;
     }
-    const overlay = this.overlayRef.current;
-    const container = this.containerRef.current;
-    const header = this.headerRef.current;
-    if (!overlay || !container || !header) {
-      return;
-    }
+    const panState = panStateRef.current;
+    const overlay = overlayRef.current;
+    const container = containerRef.current;
+    const header = headerRef.current;
     const opacity = Math.min(
       Math.max(0, 1.0 + bottom / (container.clientHeight - header.clientHeight)),
       1.0,
     );
-    overlay.style.setProperty('opacity', '' + opacity);
-    this.panState.currentBottom = bottom;
+    overlay.style.setProperty('opacity', `${opacity}`);
+    panState.currentBottom = bottom;
     container.style.setProperty('bottom', `${bottom}px`);
-  }
-}
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', updateCard);
+    const mc = new Hammer.Manager(headerRef.current);
+    mc.add(new Hammer.Pan({ threshold: 0, pointers: 1 }));
+    mc.on('panstart panup pandown panend', onPanMove);
+    return () => {
+      mc.destroy();
+      window.removeEventListener('resize', updateCard);
+    };
+  }, []);
+
+  useEffect(() => {
+    propsRef.current = props;
+    updateCard();
+  }, [props, pulling]);
+
+  const render = useCallback(() => {
+    const { circle, shown, pulled, onOverlayClick } = props;
+    const classModifiers = {
+      [styles.shown]: shown,
+      [styles.pulled]: pulled,
+      [styles.pulling]: pulling,
+    };
+    const overlayClassNames = classNames(
+      'overlay-generic',
+      { 'overlay-visible': shown },
+      styles.overlay,
+      classModifiers,
+    );
+    const containerClassNames = classNames(styles.container, classModifiers);
+    return (
+      <div>
+        <div ref={overlayRef} className={overlayClassNames} onClick={onOverlayClick} />
+        <div ref={containerRef} className={containerClassNames}>
+          <div ref={headerRef} className={styles.header}>
+            <div className={styles.puller}>
+              <span />
+            </div>
+            <div className={styles.title}>{circle ? circle.name : ''}</div>
+            <div className={styles.number}>{circle ? circle.boothNumber : ''}</div>
+          </div>
+          {circle ? renderCardBody(circle) : null}
+        </div>
+      </div>
+    );
+  }, [props, pulling]);
+
+  return render();
+};

@@ -1,60 +1,31 @@
 import CircleCard from '@components/CircleCard';
 import Circle from '@models/Circle';
-import { action } from 'mobx';
-import { observer } from 'mobx-react';
-import React, { PureComponent } from 'react';
+import CardPresenter from '@presenters/CardPresenter';
+import React, { useEffect, useState } from 'react';
 
-export interface CardContainerStore {
-  cardShown: boolean;
-  cardPulled: boolean;
-  selectedCircle?: Circle;
-}
+export default ({ presenter }: { presenter: CardPresenter }) => {
+  const [shown, setShown] = useState(presenter.shown.value);
+  const [pulled, setPulled] = useState(presenter.pulled.value);
+  const [circle, setCircle] = useState<Circle | undefined>();
 
-export interface CardContainerProps {
-  store: CardContainerStore;
-}
+  useEffect(() => {
+    const subscribers = [
+      presenter.shown.subscribe(setShown),
+      presenter.pulled.subscribe(setPulled),
+      presenter.circle.subscribe(setCircle),
+    ];
+    return () => subscribers.forEach(s => s.unsubscribe());
+  });
 
-@observer
-export default class CardContainer extends PureComponent<CardContainerProps> {
-  public render() {
-    const { selectedCircle, cardShown, cardPulled } = this.props.store;
-    return (
-      <CircleCard
-        circle={selectedCircle}
-        shown={cardShown}
-        pulled={cardPulled}
-        onOverlayClick={this.onOverlayClick}
-        onCardPulled={this.onCardPulled}
-        onCardHidden={this.onCardHidden}
-        onCardTabbed={this.onCardTabbed}
-      />
-    );
-  }
-
-  @action
-  private onOverlayClick = () => {
-    const { store } = this.props;
-    store.cardPulled = false;
-  };
-
-  @action
-  private onCardPulled = () => {
-    const { store } = this.props;
-    store.cardShown = true;
-    store.cardPulled = true;
-  };
-
-  @action
-  private onCardHidden = () => {
-    const { store } = this.props;
-    store.cardPulled = false;
-    store.cardShown = false;
-  };
-
-  @action
-  private onCardTabbed = () => {
-    const { store } = this.props;
-    store.cardShown = true;
-    store.cardPulled = false;
-  };
-}
+  return (
+    <CircleCard
+      circle={circle}
+      shown={shown}
+      pulled={pulled}
+      onOverlayClick={() => presenter.tab()}
+      onCardPulled={() => presenter.pull()}
+      onCardHidden={() => presenter.hide()}
+      onCardTabbed={() => presenter.tab()}
+    />
+  );
+};

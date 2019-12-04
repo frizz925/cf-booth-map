@@ -1,9 +1,11 @@
 import Loading from '@components/Loading';
-import { AppContainerProps, AppStore } from '@containers/AppContainer';
 import CircleParser from '@models/parsers/CircleParser';
+import AppPresenter from '@presenters/AppPresenter';
+import CardPresenter from '@presenters/CardPresenter';
+import DrawerPresenter from '@presenters/DrawerPresenter';
+import SearchPresenter from '@presenters/SearchPresenter';
 import CircleRepositoryApi from '@repositories/CircleRepositoryApi';
 import axios from 'axios';
-import { observable } from 'mobx';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -15,24 +17,15 @@ const App = (el: Element) => {
   });
   const circleParser = new CircleParser('https://catalog.comifuro.net/');
   const circleRepository = new CircleRepositoryApi(circleClient, circleParser);
-  const store: AppStore = {
-    drawerOpened: false,
-    cardShown: false,
-    cardPulled: false,
-    focused: false,
-    searching: false,
-    searchText: '',
-    selectedCircle: null,
-  };
-
-  const props: AppContainerProps = {
-    circleRepository,
-    store: observable(store),
-  };
+  const presenter = new AppPresenter(
+    new CardPresenter(),
+    new DrawerPresenter(),
+    new SearchPresenter(circleRepository),
+  );
 
   ReactDOM.render(
     <Suspense fallback={<Loading />}>
-      <AppContainer {...props} />
+      <AppContainer presenter={presenter} />
     </Suspense>,
     el,
   );
