@@ -10,7 +10,7 @@ import Circle from '@models/Circle';
 import { SocialType } from '@models/Social';
 import classNames from 'classnames';
 import map from 'lodash/map';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as styles from './styles.scss';
 
 const PULL_DELTA_THRESHOLD = 80;
@@ -208,12 +208,12 @@ export default (props: CircleCardProps) => {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     propsRef.current = props;
     updateCard();
-  }, [props, pulling]);
+  });
 
-  const render = useCallback(() => {
+  const render = () => {
     const { circle, shown, pulled, onOverlayClick } = props;
     const classModifiers = {
       [styles.shown]: shown,
@@ -242,7 +242,7 @@ export default (props: CircleCardProps) => {
         </div>
       </div>
     );
-  }, [props, pulling]);
+  };
 
   return render();
 };
