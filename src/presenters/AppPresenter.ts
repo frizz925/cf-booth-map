@@ -42,7 +42,6 @@ export default class AppPresenter {
 
     pagePresenter.opened.subscribe(opened => {
       if (opened) {
-        cardPresenter.shown.next(false);
         cardPresenter.pulled.next(false);
         drawerPresenter.opened.next(false);
         searchPresenter.focused.next(false);
