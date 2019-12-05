@@ -10,12 +10,16 @@ export default class CardPresenter {
     return !!this.circle;
   }
 
+  private prevCircle?: Circle;
+
   constructor() {
     this.circle.subscribe(circle => {
       if (circle) {
+        this.prevCircle = circle;
         this.pull();
-      } else {
+      } else if (this.prevCircle) {
         this.hide();
+        this.prevCircle = null;
       }
     });
   }
