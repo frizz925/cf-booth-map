@@ -17,7 +17,7 @@ git(repoPath).revparse(['HEAD'], (err, hash) => {
   }
   const now = new Date();
   const year = now.getUTCFullYear();
-  const month = zeropad(now.getUTCMonth());
+  const month = zeropad(now.getUTCMonth() + 1);
   const date = zeropad(now.getUTCDate());
   const shortHash = hash.substring(0, 7);
   process.env.APP_VERSION = `v${year}${month}${date}-${shortHash}`;
