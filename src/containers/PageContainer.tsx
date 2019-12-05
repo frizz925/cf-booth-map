@@ -1,4 +1,3 @@
-import Loading from '@components/Loading';
 import PageScreen from '@components/PageScreen';
 import PagePresenter from '@presenters/PagePresenter';
 import React, { lazy, Suspense, useEffect } from 'react';
@@ -24,6 +23,8 @@ const pageDefinitions: PageDefinitions = {
     page: SettingsPage,
   },
 };
+
+const Loading = () => <div>Loading...</div>;
 
 export default ({ presenter }: { presenter: PagePresenter }) => {
   const history = useHistory();
