@@ -29,7 +29,8 @@
   left: 0;
   bottom: -100%;
   width: 100%;
-  height: calc(100% - 70px);
+  height: 100%;
+  max-height: calc(100% - 60px);
   border-radius: 12px 12px 0 0;
   overflow: hidden;
 
