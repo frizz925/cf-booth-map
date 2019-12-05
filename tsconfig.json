@@ -24,6 +24,7 @@
       "@components/*": ["src/components/*"],
       "@containers/*": ["src/containers/*"],
       "@models/*": ["src/models/*"],
+      "@pages/*": ["src/pages/*"],
       "@presenters/*": ["src/presenters/*"],
       "@repositories/*": ["src/repositories/*"],
       "@utils/*": ["src/utils/*"]

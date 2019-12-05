@@ -1,13 +1,16 @@
 import CardPresenter from './CardPresenter';
 import DrawerPresenter from './DrawerPresenter';
+import PagePresenter from './PagePresenter';
 import SearchPresenter from './SearchPresenter';
 
 export default class AppPresenter {
+  public readonly pagePresenter: PagePresenter;
   public readonly cardPresenter: CardPresenter;
   public readonly drawerPresenter: DrawerPresenter;
   public readonly searchPresenter: SearchPresenter;
 
   private readonly prevState = {
+    pageOpened: false,
     cardShown: false,
     cardPulled: false,
     drawerOpened: false,
@@ -15,10 +18,12 @@ export default class AppPresenter {
   };
 
   constructor(
+    pagePresenter: PagePresenter,
     cardPresenter: CardPresenter,
     drawerPresenter: DrawerPresenter,
     searchPresenter: SearchPresenter,
   ) {
+    this.pagePresenter = pagePresenter;
     this.cardPresenter = cardPresenter;
     this.drawerPresenter = drawerPresenter;
     this.searchPresenter = searchPresenter;
@@ -27,7 +32,22 @@ export default class AppPresenter {
   }
 
   private subscribePresenters() {
-    const { cardPresenter, drawerPresenter, searchPresenter, prevState } = this;
+    const {
+      pagePresenter,
+      cardPresenter,
+      drawerPresenter,
+      searchPresenter,
+      prevState,
+    } = this;
+
+    pagePresenter.opened.subscribe(opened => {
+      if (opened) {
+        cardPresenter.shown.next(false);
+        cardPresenter.pulled.next(false);
+        drawerPresenter.opened.next(false);
+        searchPresenter.focused.next(false);
+      }
+    });
 
     cardPresenter.pulled.subscribe(pulled => {
       if (pulled) {
@@ -69,7 +89,14 @@ export default class AppPresenter {
   }
 
   private saveState() {
-    const { cardPresenter, drawerPresenter, searchPresenter, prevState } = this;
+    const {
+      pagePresenter,
+      cardPresenter,
+      drawerPresenter,
+      searchPresenter,
+      prevState,
+    } = this;
+    prevState.pageOpened = pagePresenter.opened.value;
     prevState.cardShown = cardPresenter.shown.value;
     prevState.cardPulled = cardPresenter.pulled.value;
     prevState.drawerOpened = drawerPresenter.opened.value;

@@ -46,14 +46,14 @@
 }
 
 .title {
-  font-weight: 500;
+  font-weight: $font-weight-bold;
   font-size: 1em;
   margin: 0;
 }
 
 .version {
   color: $font-light-color;
-  font-weight: 300;
+  font-weight: $font-weight-light;
   font-size: 0.8em;
 }
 

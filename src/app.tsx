@@ -3,6 +3,7 @@ import CircleParser from '@models/parsers/CircleParser';
 import AppPresenter from '@presenters/AppPresenter';
 import CardPresenter from '@presenters/CardPresenter';
 import DrawerPresenter from '@presenters/DrawerPresenter';
+import PagePresenter from '@presenters/PagePresenter';
 import SearchPresenter from '@presenters/SearchPresenter';
 import CircleRepositoryApi from '@repositories/CircleRepositoryApi';
 import axios from 'axios';
@@ -18,6 +19,7 @@ const App = (el: Element) => {
   const circleParser = new CircleParser('https://catalog.comifuro.net/');
   const circleRepository = new CircleRepositoryApi(circleClient, circleParser);
   const presenter = new AppPresenter(
+    new PagePresenter(),
     new CardPresenter(),
     new DrawerPresenter(),
     new SearchPresenter(circleRepository),

@@ -60,7 +60,7 @@
   border-bottom: 1px solid $separator-color;
 
   & > .title {
-    font-weight: 500;
+    font-weight: $font-weight-bold;
     margin: 0;
   }
 
@@ -119,7 +119,7 @@
 
   & > span:first-child {
     font-size: 0.8em;
-    font-weight: 300;
+    font-weight: $font-weight-light;
     color: $font-light-color;
     margin-bottom: 4px;
   }

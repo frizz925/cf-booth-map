@@ -5,12 +5,14 @@ import classNames from 'classnames';
 import Hammer from 'hammerjs';
 import map from 'lodash/map';
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as styles from './styles.scss';
 
 export interface DrawerItem {
   icon: IconDefinition;
   title: string;
-  href: string;
+  path?: string;
+  href?: string;
 }
 
 export interface DrawerProps {
@@ -25,19 +27,29 @@ const getLinkTarget = (link: string) => {
 };
 
 const renderItems = (items?: DrawerItem[]) => {
-  return map(items || [], item => (
-    <a
-      key={item.href}
-      href={item.href}
-      className={styles.menuItem}
-      target={getLinkTarget(item.href)}
-    >
+  return map(items || [], (item, idx) => (
+    <DrawerLink key={idx} {...item}>
       <span className={styles.menuItemIcon}>
         <FontAwesomeIcon icon={item.icon} />
       </span>
       <span className={styles.menuItemTitle}>{item.title}</span>
-    </a>
+    </DrawerLink>
   ));
+};
+
+const DrawerLink: React.FC<DrawerItem> = props => {
+  const { href, path, children } = props;
+  const renderHref = () => (
+    <a className={styles.menuItem} href={href} target={getLinkTarget(href)}>
+      {children}
+    </a>
+  );
+  const renderLink = () => (
+    <Link className={styles.menuItem} to={path}>
+      {children}
+    </Link>
+  );
+  return href ? renderHref() : renderLink();
 };
 
 const Drawer: React.FC<DrawerProps> = props => {

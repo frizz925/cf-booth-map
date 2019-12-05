@@ -5,15 +5,17 @@ import AppPresenter from '@presenters/AppPresenter';
 import { IS_DEVELOPMENT } from '@utils/Constants';
 import React from 'react';
 import { hot } from 'react-hot-loader/root';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
+import PageContainer from './PageContainer';
 
 const AppContainer = ({ presenter }: { presenter: AppPresenter }) => {
-  const { cardPresenter, drawerPresenter, searchPresenter } = presenter;
+  const { pagePresenter, cardPresenter, drawerPresenter, searchPresenter } = presenter;
   return (
     <Router>
       <DrawerContainer presenter={drawerPresenter} />
       <SearchContainer presenter={searchPresenter} />
       <CardContainer presenter={cardPresenter} />
+      <PageContainer presenter={pagePresenter} />
     </Router>
   );
 };
