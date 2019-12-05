@@ -2,14 +2,18 @@
 
 .searchBoxContainer {
   position: absolute;
-  top: 0;
+  top: -100%;
   left: 0;
   width: 100%;
   z-index: 2;
 
   background-color: transparent;
-  transition: background-color $transition-duration;
+  transition: top $transition-duration, background-color $transition-duration;
   transition-timing-function: $transition-timing-function;
+
+  &.shown {
+    top: 0;
+  }
 
   &.focused {
     background-color: $background-color;

@@ -11,7 +11,7 @@ export default ({ presenter }: { presenter: DrawerPresenter }) => {
   useEffect(() => {
     const subscriber = presenter.opened.subscribe(setOpened);
     return () => subscriber.unsubscribe();
-  });
+  }, []);
 
   return (
     <Drawer

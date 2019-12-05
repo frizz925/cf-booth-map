@@ -42,9 +42,15 @@ export default class AppPresenter {
 
     pagePresenter.opened.subscribe(opened => {
       if (opened) {
+        this.saveState();
         cardPresenter.pulled.next(false);
+        cardPresenter.shown.next(false);
         drawerPresenter.opened.next(false);
         searchPresenter.focused.next(false);
+        searchPresenter.shown.next(false);
+      } else if (prevState.pageOpened) {
+        searchPresenter.shown.next(true);
+        cardPresenter.shown.next(prevState.cardShown);
       }
     });
 

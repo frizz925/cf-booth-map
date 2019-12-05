@@ -15,7 +15,7 @@ export default ({ presenter }: { presenter: CardPresenter }) => {
       presenter.circle.subscribe(setCircle),
     ];
     return () => subscribers.forEach(s => s.unsubscribe());
-  });
+  }, []);
 
   return (
     <CircleCard

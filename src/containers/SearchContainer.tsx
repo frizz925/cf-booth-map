@@ -5,14 +5,18 @@ import React, { useEffect, useState } from 'react';
 
 export default ({ presenter }: { presenter: SearchPresenter }) => {
   const [circles, setCircles] = useState([] as Circle[]);
+  const [shown, setShown] = useState(presenter.shown.value);
   const [focused, setFocused] = useState(presenter.focused.value);
   const [searching, setSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    const subscriber = presenter.focused.subscribe(setFocused);
-    return () => subscriber.unsubscribe();
-  });
+    const subscribers = [
+      presenter.shown.subscribe(setShown),
+      presenter.focused.subscribe(setFocused),
+    ];
+    return () => subscribers.forEach(s => s.unsubscribe());
+  }, []);
 
   const onClear = () => {
     setSearchText('');
@@ -31,6 +35,7 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
   return (
     <SearchForm
       circles={circles}
+      shown={shown}
       focused={focused}
       searching={searching}
       searchText={searchText}
