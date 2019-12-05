@@ -15,7 +15,7 @@ export interface SearchBoxProps {
   onTextChanged: (value: string) => void;
 }
 
-export default (props: SearchBoxProps) => {
+const SearchBox: React.FC<SearchBoxProps> = props => {
   const {
     className,
     docked,
@@ -56,3 +56,5 @@ export default (props: SearchBoxProps) => {
     </div>
   );
 };
+
+export default SearchBox;

@@ -40,7 +40,7 @@ const renderItems = (items?: DrawerItem[]) => {
   ));
 };
 
-export default (props: DrawerProps) => {
+const Drawer: React.FC<DrawerProps> = props => {
   const { opened, topItems, bottomItems, onClose } = props;
 
   const [pulling, setPulling] = useState(false);
@@ -106,3 +106,5 @@ export default (props: DrawerProps) => {
     </div>
   );
 };
+
+export default Drawer;

@@ -113,7 +113,7 @@ const renderList = (items: string[]) => {
   );
 };
 
-export default (props: CircleCardProps) => {
+const CircleCard: React.FC<CircleCardProps> = props => {
   const [pulling, setPulling] = useState(false);
 
   const propsRef = useRef(props);
@@ -246,3 +246,5 @@ export default (props: CircleCardProps) => {
 
   return render();
 };
+
+export default CircleCard;

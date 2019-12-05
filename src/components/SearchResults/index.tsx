@@ -26,7 +26,7 @@ const renderCircles = (props: SearchResultsProps) => {
   ));
 };
 
-export default (props: SearchResultsProps) => {
+const SearchResults: React.FC<SearchResultsProps> = props => {
   const { className, isLoading } = props;
   return (
     <div className={className}>
@@ -36,3 +36,5 @@ export default (props: SearchResultsProps) => {
     </div>
   );
 };
+
+export default SearchResults;

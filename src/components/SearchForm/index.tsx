@@ -19,7 +19,7 @@ interface SearchFormProps {
   onResultSelected: (circle: Circle) => void;
 }
 
-export default (props: SearchFormProps) => {
+const SearchForm: React.FC<SearchFormProps> = props => {
   const {
     focused,
     searching,
@@ -60,3 +60,5 @@ export default (props: SearchFormProps) => {
     </div>
   );
 };
+
+export default SearchForm;
