@@ -90,7 +90,7 @@ const Drawer: React.FC<DrawerProps> = props => {
     return () => {
       mc.destroy();
     };
-  }, []);
+  }, [containerRef.current]);
 
   const overlayClassNames = classNames('overlay-generic', styles.overlay, {
     'overlay-visible': opened,

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
 import BookmarksPresenter from '@presenters/pages/BookmarksPresenter';
 import map from 'lodash/map';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import * as styles from './styles.scss';
 
@@ -57,15 +57,22 @@ export default ({ presenter }: { presenter: BookmarksPresenter }) => {
   const history = useHistory();
   const [circles, setCircles] = useState([] as Circle[]);
 
+  const onSelected = useCallback(
+    ({ slug }: Circle) => {
+      history.push(`/circle/${slug}`);
+    },
+    [history],
+  );
+
+  const onRemove = useCallback(
+    (circle: Circle) => {
+      presenter.removeBookmark(circle);
+    },
+    [presenter],
+  );
+
   const updateCircles = () => {
     presenter.getAllBookmarks().then(setCircles);
-  };
-
-  const onSelected = ({ slug }: Circle) => {
-    history.push(`/circle/${slug}`);
-  };
-  const onRemove = (circle: Circle) => {
-    presenter.removeBookmark(circle);
   };
 
   useEffect(() => {

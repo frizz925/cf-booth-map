@@ -2,7 +2,7 @@ import SearchForm from '@components/SearchForm';
 import Circle from '@models/Circle';
 import SearchPresenter from '@presenters/SearchPresenter';
 import { pushCircle } from '@utils/Routing';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
 export default ({ presenter }: { presenter: SearchPresenter }) => {
@@ -19,21 +19,23 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
       presenter.focused.subscribe(setFocused),
     ];
     return () => subscribers.forEach(s => s.unsubscribe());
-  }, []);
+  }, [presenter]);
 
-  const onClear = () => {
+  const onClear = useCallback(() => {
     setSearchText('');
     setCircles([]);
-  };
+  }, []);
 
-  const onTextChanged = (value: string) => {
-    setSearchText(value);
-    setSearching(true);
-    presenter.search(value).then(results => {
+  const onTextChanged = useCallback(
+    async (value: string) => {
+      setSearchText(value);
+      setSearching(true);
+      const results = await presenter.search(value);
       setCircles(results);
       setSearching(false);
-    });
-  };
+    },
+    [presenter],
+  );
 
   return (
     <SearchForm
@@ -42,12 +44,12 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
       focused={focused}
       searching={searching}
       searchText={searchText}
-      onFocus={() => presenter.focused.next(true)}
-      onAction={() => presenter.action.next()}
-      onBack={() => presenter.focused.next(false)}
+      onFocus={useCallback(() => presenter.focused.next(true), [presenter])}
+      onAction={useCallback(() => presenter.action.next(), [presenter])}
+      onBack={useCallback(() => presenter.focused.next(false), [presenter])}
       onClear={onClear}
       onTextChanged={onTextChanged}
-      onResultSelected={circle => pushCircle(history, circle)}
+      onResultSelected={useCallback(circle => pushCircle(history, circle), [history])}
     />
   );
 };

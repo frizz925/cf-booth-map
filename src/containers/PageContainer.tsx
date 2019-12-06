@@ -2,7 +2,14 @@ import PageScreen from '@components/PageScreen';
 import AppContext from '@contexts/AppContext';
 import PagePresenter from '@presenters/PagePresenter';
 import BookmarksPresenter from '@presenters/pages/BookmarksPresenter';
-import React, { lazy, Suspense, useContext, useEffect, useMemo } from 'react';
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from 'react';
 import { useHistory, useLocation } from 'react-router';
 
 const BookmarksPage = lazy(() => import('@pages/BookmarksPage'));
@@ -49,14 +56,18 @@ export default ({ presenter }: { presenter: PagePresenter }) => {
 
   useEffect(() => {
     presenter.opened.next(opened);
-  }, [opened]);
+  }, [presenter, opened]);
 
   useEffect(() => {
     presenter.path.next(path);
-  }, [path]);
+  }, [presenter, path]);
 
   return (
-    <PageScreen opened={opened} title={title} onBack={() => history.push('/')}>
+    <PageScreen
+      opened={opened}
+      title={title}
+      onBack={useCallback(() => history.push('/'), [history])}
+    >
       <Suspense fallback={<Loading />}>{page}</Suspense>
     </PageScreen>
   );

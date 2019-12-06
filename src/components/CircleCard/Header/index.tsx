@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = props => {
       <div className={styles.headerContent}>
         <div className={styles.title}>{circle ? circle.name : ''}</div>
         <div className={styles.number}>{circle ? circle.boothNumber : ''}</div>
-        <div className={styles.actions} onClick={handleBookmark}>
+        <div className={`${styles.action} ${styles.right}`} onClick={handleBookmark}>
           <FontAwesomeIcon icon={bookmarked ? faSolidBookmark : faBookmark} />
         </div>
       </div>

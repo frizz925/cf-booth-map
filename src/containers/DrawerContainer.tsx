@@ -1,7 +1,20 @@
-import Drawer from '@components/Drawer';
+import Drawer, { DrawerItem } from '@components/Drawer';
 import { faBookmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import DrawerPresenter from '@presenters/DrawerPresenter';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+
+const drawerItems: DrawerItem[] = [
+  {
+    icon: faBookmark,
+    title: 'Bookmarks',
+    path: '/bookmarks',
+  },
+  {
+    icon: faInfoCircle,
+    title: 'About',
+    path: '/about',
+  },
+];
 
 export default ({ presenter }: { presenter: DrawerPresenter }) => {
   const [opened, setOpened] = useState(presenter.opened.value);
@@ -9,24 +22,13 @@ export default ({ presenter }: { presenter: DrawerPresenter }) => {
   useEffect(() => {
     const subscriber = presenter.opened.subscribe(setOpened);
     return () => subscriber.unsubscribe();
-  }, []);
+  }, [presenter]);
 
   return (
     <Drawer
       opened={opened}
-      onClose={() => presenter.opened.next(false)}
-      topItems={[
-        {
-          icon: faBookmark,
-          title: 'Bookmarks',
-          path: '/bookmarks',
-        },
-        {
-          icon: faInfoCircle,
-          title: 'About',
-          path: '/about',
-        },
-      ]}
+      onClose={useCallback(() => presenter.opened.next(false), [presenter])}
+      topItems={drawerItems}
     />
   );
 };
