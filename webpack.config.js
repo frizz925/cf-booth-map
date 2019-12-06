@@ -42,6 +42,7 @@ const sassLoader = {
 const cssModulePaths = [
   path.resolve(__dirname, 'src/components'),
   path.resolve(__dirname, 'src/containers'),
+  path.resolve(__dirname, 'src/pages'),
 ];
 
 const webpackConfig = {
@@ -77,6 +78,14 @@ const webpackConfig = {
         test: /\.css$/,
         use: [styleLoader, 'css-loader'],
         exclude: cssModulePaths,
+      },
+      {
+        test: /\.html$/,
+        use: 'html-loader',
+      },
+      {
+        test: /\.md$/,
+        use: ['html-loader', 'markdown-loader'],
       },
       {
         test: /\.(png|jpg|jpeg|webp|woff|woff2|eot|ttf)$/,

@@ -1,0 +1,53 @@
+@import 'modules/variables';
+
+.header,
+.body {
+  padding: 8px;
+}
+
+.disclaimer {
+  h1 {
+    font-size: 1em;
+    margin: 0;
+  }
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+}
+
+.version {
+  color: $font-color-light;
+  font-weight: $font-weight-light;
+  text-align: center;
+}
+
+.linkList {
+  margin-top: 8px;
+}
+
+.linkHeader {
+  font-weight: $font-weight-bold;
+  margin-bottom: 8px;
+}
+
+.link {
+  display: flex;
+  padding: 8px 0;
+}
+
+.linkIcon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  line-height: 24px;
+  text-align: center;
+}
+
+.linkTitle {
+  display: block;
+  line-height: 24px;
+  margin-left: 8px;
+}

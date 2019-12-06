@@ -5,22 +5,27 @@ import { useHistory, useLocation } from 'react-router';
 
 const BookmarksPage = lazy(() => import('@pages/BookmarksPage'));
 const SettingsPage = lazy(() => import('@pages/SettingsPage'));
+const AboutPage = lazy(() => import('@pages/AboutPage'));
 
 interface PageDefinitions {
   [key: string]: {
     title: string;
-    page: React.ExoticComponent;
+    page: React.ReactNode;
   };
 }
 
 const pageDefinitions: PageDefinitions = {
   '/bookmarks': {
     title: 'Bookmarks',
-    page: BookmarksPage,
+    page: <BookmarksPage />,
   },
   '/settings': {
     title: 'Settings',
-    page: SettingsPage,
+    page: <SettingsPage />,
+  },
+  '/about': {
+    title: 'About',
+    page: <AboutPage />,
   },
 };
 
@@ -35,7 +40,7 @@ export default ({ presenter }: { presenter: PagePresenter }) => {
 
   const opened = !!pageDefinition;
   const title = pageDefinition ? pageDefinition.title : '';
-  const Page = pageDefinition ? pageDefinition.page : null;
+  const page = pageDefinition ? pageDefinition.page : null;
 
   useEffect(() => {
     presenter.opened.next(opened);
@@ -43,7 +48,7 @@ export default ({ presenter }: { presenter: PagePresenter }) => {
 
   return (
     <PageScreen opened={opened} title={title} onBack={() => history.push('/')}>
-      <Suspense fallback={<Loading />}>{Page ? <Page /> : null}</Suspense>
+      <Suspense fallback={<Loading />}>{page}</Suspense>
     </PageScreen>
   );
 };

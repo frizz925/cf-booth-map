@@ -1,6 +1,6 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { APP_VERSION } from '@utils/Constants';
+import { APP_NAME } from '@utils/Constants';
 import classNames from 'classnames';
 import Hammer from 'hammerjs';
 import map from 'lodash/map';
@@ -106,8 +106,7 @@ const Drawer: React.FC<DrawerProps> = props => {
       <div ref={overlayRef} className={overlayClassNames} onClick={onClose} />
       <div ref={containerRef} className={containerClassNames}>
         <div className={styles.header}>
-          <h3 className={styles.title}>Comic Frontier Booth Map</h3>
-          <div className={styles.version}>{APP_VERSION}</div>
+          <h3 className={styles.title}>{APP_NAME}</h3>
         </div>
         <div className={styles.menuList}>
           {renderItems(topItems)}

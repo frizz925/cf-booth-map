@@ -1,8 +1,6 @@
 import Drawer from '@components/Drawer';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faBookmark, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import DrawerPresenter from '@presenters/DrawerPresenter';
-import { GITHUB_LINK } from '@utils/Constants';
 import React, { useEffect, useState } from 'react';
 
 export default ({ presenter }: { presenter: DrawerPresenter }) => {
@@ -18,6 +16,7 @@ export default ({ presenter }: { presenter: DrawerPresenter }) => {
       opened={opened}
       onClose={() => presenter.opened.next(false)}
       topItems={[
+        /*
         {
           icon: faBookmark,
           title: 'Bookmarks',
@@ -30,12 +29,11 @@ export default ({ presenter }: { presenter: DrawerPresenter }) => {
           title: 'Settings',
           path: '/settings',
         },
-      ]}
-      bottomItems={[
+        */
         {
-          icon: faGithub,
-          title: 'Fork me on GitHub',
-          href: GITHUB_LINK,
+          icon: faInfoCircle,
+          title: 'About',
+          path: '/about',
         },
       ]}
     />
