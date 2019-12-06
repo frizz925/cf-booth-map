@@ -1,5 +1,4 @@
 import { CIRCLE_PATH_PREFIX } from '@utils/Routing';
-import { filter } from 'rxjs/operators';
 import CardPresenter from './CardPresenter';
 import DrawerPresenter from './DrawerPresenter';
 import PagePresenter from './PagePresenter';
@@ -56,14 +55,16 @@ export default class AppPresenter {
       }
     });
 
-    pagePresenter.path
-      .pipe(filter(path => path.startsWith(CIRCLE_PATH_PREFIX)))
-      .subscribe(path => {
-        const slug = path.substring(CIRCLE_PATH_PREFIX.length);
-        searchPresenter.findCircle(slug).then(value => {
-          searchPresenter.select(value);
-        });
+    pagePresenter.path.subscribe(path => {
+      if (!path.startsWith(CIRCLE_PATH_PREFIX)) {
+        cardPresenter.hide();
+        return;
+      }
+      const slug = path.substring(CIRCLE_PATH_PREFIX.length);
+      searchPresenter.findCircle(slug).then(value => {
+        searchPresenter.select(value);
       });
+    });
 
     cardPresenter.pulled.subscribe(pulled => {
       if (pulled) {

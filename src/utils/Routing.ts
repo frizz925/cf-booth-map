@@ -1,7 +1,7 @@
 import Circle from '@models/Circle';
 import { History } from 'history';
 
-export const CIRCLE_PATH_PREFIX = '/circle/';
+export const CIRCLE_PATH_PREFIX = '/c/';
 
 export const pushCircle = (history: History, circle: Circle) => {
   history.push(getCirclePath(circle));

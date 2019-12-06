@@ -5,6 +5,7 @@ const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -126,6 +127,10 @@ const webpackConfig = {
       filename: 'index.html',
       template: 'src/index.html',
       inject: 'head',
+    }),
+    new WorkboxPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
     }),
     new HtmlWebpackTagsPlugin({
       scripts: ['js/modernizr-custom.js'],

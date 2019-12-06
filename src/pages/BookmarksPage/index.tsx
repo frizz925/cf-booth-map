@@ -2,6 +2,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
 import BookmarksPresenter from '@presenters/pages/BookmarksPresenter';
+import { pushCircle } from '@utils/Routing';
 import map from 'lodash/map';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
@@ -57,12 +58,7 @@ export default ({ presenter }: { presenter: BookmarksPresenter }) => {
   const history = useHistory();
   const [circles, setCircles] = useState([] as Circle[]);
 
-  const onSelected = useCallback(
-    ({ slug }: Circle) => {
-      history.push(`/circle/${slug}`);
-    },
-    [history],
-  );
+  const onSelected = useCallback(circle => pushCircle(history, circle), [history]);
 
   const onRemove = useCallback(
     (circle: Circle) => {

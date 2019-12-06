@@ -16,4 +16,16 @@ window.addEventListener('load', () => {
     },
     err => console.error(err),
   );
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then(registration => {
+        // tslint:disable-next-line:no-console
+        console.log('SW registered: ', registration);
+      })
+      .catch(registrationError => {
+        console.error('SW registration failed: ', registrationError);
+      });
+  }
 });
