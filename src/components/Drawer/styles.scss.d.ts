@@ -3,7 +3,6 @@ export const container: string;
 
 export const header: string;
 export const title: string;
-export const version: string;
 
 export const menuList: string;
 export const menuSpacer: string;

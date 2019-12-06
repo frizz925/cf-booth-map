@@ -1,10 +1,11 @@
 import PageScreen from '@components/PageScreen';
+import AppContext from '@contexts/AppContext';
 import PagePresenter from '@presenters/PagePresenter';
-import React, { lazy, Suspense, useEffect } from 'react';
+import BookmarksPresenter from '@presenters/pages/BookmarksPresenter';
+import React, { lazy, Suspense, useContext, useEffect, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router';
 
 const BookmarksPage = lazy(() => import('@pages/BookmarksPage'));
-const SettingsPage = lazy(() => import('@pages/SettingsPage'));
 const AboutPage = lazy(() => import('@pages/AboutPage'));
 
 interface PageDefinitions {
@@ -14,26 +15,31 @@ interface PageDefinitions {
   };
 }
 
-const pageDefinitions: PageDefinitions = {
-  '/bookmarks': {
-    title: 'Bookmarks',
-    page: <BookmarksPage />,
-  },
-  '/settings': {
-    title: 'Settings',
-    page: <SettingsPage />,
-  },
-  '/about': {
-    title: 'About',
-    page: <AboutPage />,
-  },
-};
-
 const Loading = () => <div>Loading...</div>;
 
 export default ({ presenter }: { presenter: PagePresenter }) => {
   const history = useHistory();
   const location = useLocation();
+  const { repositories, observables } = useContext(AppContext);
+
+  const pageDefinitions: PageDefinitions = useMemo(() => {
+    const bookmarksPresenter = new BookmarksPresenter(
+      repositories.bookmark,
+      observables.bookmark,
+    );
+    bookmarksPresenter.circle.subscribe(presenter.circle);
+
+    return {
+      '/bookmarks': {
+        title: 'Bookmarks',
+        page: <BookmarksPage presenter={bookmarksPresenter} />,
+      },
+      '/about': {
+        title: 'About',
+        page: <AboutPage />,
+      },
+    };
+  }, [repositories.bookmark]);
 
   const path = location.pathname;
   const pageDefinition = pageDefinitions[path];

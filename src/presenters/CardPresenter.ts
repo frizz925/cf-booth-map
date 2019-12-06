@@ -1,5 +1,7 @@
 import Circle from '@models/Circle';
+import BookmarkRepository from '@repositories/BookmarkRepository';
 import { BehaviorSubject } from 'rxjs';
+import BookmarkObservable from 'src/observables/BookmarkObservable';
 
 export default class CardPresenter {
   public readonly circle = new BehaviorSubject<Circle | undefined>(undefined);
@@ -10,9 +12,22 @@ export default class CardPresenter {
     return !!this.circle;
   }
 
+  public get onAdd() {
+    return this.observable.onAdd;
+  }
+
+  public get onRemove() {
+    return this.observable.onRemove;
+  }
+
+  private readonly repository: BookmarkRepository;
+  private readonly observable: BookmarkObservable;
   private prevCircle?: Circle;
 
-  constructor() {
+  constructor(repository: BookmarkRepository, observable: BookmarkObservable) {
+    this.repository = repository;
+    this.observable = observable;
+
     this.circle.subscribe(circle => {
       if (circle) {
         this.prevCircle = circle;
@@ -45,5 +60,17 @@ export default class CardPresenter {
   public hide() {
     this.shown.next(false);
     this.pulled.next(false);
+  }
+
+  public bookmark(circle: Circle) {
+    return this.repository.add(circle);
+  }
+
+  public unbookmark(circle: Circle) {
+    return this.repository.remove(circle);
+  }
+
+  public isBookmarked(circle: Circle) {
+    return this.repository.has(circle);
   }
 }

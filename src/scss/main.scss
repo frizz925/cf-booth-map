@@ -6,6 +6,7 @@ body {
   overflow: hidden;
   font-family: $font-family;
   font-weight: $font-weight;
+  font-size: 11pt;
   color: $font-color;
 }
 
@@ -21,6 +22,10 @@ h4,
 h5,
 h6 {
   font-weight: $font-weight-bold;
+}
+
+h3 {
+  font-size: $font-size-large;
 }
 
 #stage {

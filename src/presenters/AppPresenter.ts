@@ -90,7 +90,9 @@ export default class AppPresenter {
     });
 
     searchPresenter.action.subscribe(() => drawerPresenter.opened.next(true));
-    searchPresenter.circle.subscribe(circle => cardPresenter.circle.next(circle));
+
+    pagePresenter.circle.subscribe(cardPresenter.circle);
+    searchPresenter.circle.subscribe(cardPresenter.circle);
   }
 
   private saveState() {

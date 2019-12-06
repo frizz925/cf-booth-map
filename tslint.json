@@ -8,7 +8,7 @@
     "object-literal-sort-keys": false,
     "no-console": [true, "log"],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
-    "quotemark": [true, "single"]
+    "quotemark": [true, "single", "avoid-escape"]
   },
   "rulesDirectory": []
 }

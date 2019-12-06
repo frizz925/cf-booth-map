@@ -1,16 +1,8 @@
-import LazyImage from '@components/LazyImage';
-import {
-  faFacebookSquare,
-  faInstagram,
-  faTwitterSquare,
-} from '@fortawesome/free-brands-svg-icons';
-import { faGlobeAsia } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
-import { SocialType } from '@models/Social';
 import classNames from 'classnames';
-import map from 'lodash/map';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import Body from './Body';
+import Header from './Header';
 import * as styles from './styles.scss';
 
 const PULL_DELTA_THRESHOLD = 80;
@@ -19,102 +11,18 @@ const VISIBLE_HEIGHT_THRESHOLD = 0;
 
 export interface CircleCardProps {
   circle?: Circle;
+  bookmarked: boolean;
   shown: boolean;
   pulled: boolean;
+
+  onBookmark: () => void;
+  onUnbookmark: () => void;
 
   onOverlayClick: () => void;
   onCardPulled: () => void;
   onCardHidden: () => void;
   onCardTabbed: () => void;
 }
-
-interface InfoMapping {
-  title: string;
-  render: (circle: Circle) => string | string[] | JSX.Element | JSX.Element[];
-}
-
-const defaultSocialIcon = faGlobeAsia;
-const socialIcons = {
-  [SocialType.Facebook]: faFacebookSquare,
-  [SocialType.Twitter]: faTwitterSquare,
-  [SocialType.Instagram]: faInstagram,
-  [SocialType.Web]: defaultSocialIcon,
-};
-
-const infoMapping: InfoMapping[] = [
-  {
-    title: 'Day(s)',
-    render: ({ day }) => day,
-  },
-  {
-    title: 'Fandoms',
-    render: ({ fandoms }) => fandoms,
-  },
-  {
-    title: 'Categories',
-    render: ({ categories }) => categories,
-  },
-  {
-    title: 'Rating',
-    render: ({ rating }) => rating,
-  },
-  {
-    title: 'Social',
-    render: ({ socials }) =>
-      socials.length > 0 ? (
-        <div className={styles.socialList}>
-          {socials.map(({ type, url }, idx) => (
-            <a href={url} key={idx} className={styles.socialLink} target='_blank'>
-              <span className={styles.socialIcon}>
-                <FontAwesomeIcon icon={socialIcons[type] || defaultSocialIcon} />
-              </span>
-              <span className={styles.socialTitle}>{type}</span>
-            </a>
-          ))}
-        </div>
-      ) : null,
-  },
-];
-
-const renderCardBody = (circle: Circle) => (
-  <div className={styles.body}>
-    <div className={styles.image}>
-      <LazyImage src={circle.imageUrl} alt={circle.name} width={160} height={240} />
-    </div>
-    <div className={styles.details}>{renderInfo(circle)}</div>
-  </div>
-);
-
-const renderInfo = (circle: Circle) =>
-  map(infoMapping, ({ title, render }, idx) => {
-    let rendered = render(circle);
-    if (typeof rendered === 'string') {
-      rendered = <span>{rendered}</span>;
-    } else if (rendered instanceof Array) {
-      if (typeof rendered[0] === 'string') {
-        rendered = renderList(rendered as string[]);
-      }
-    } else if (!rendered) {
-      return null;
-    }
-
-    return (
-      <div key={idx} className={styles.info}>
-        <span>{title}</span>
-        {rendered}
-      </div>
-    );
-  }).filter(el => !!el);
-
-const renderList = (items: string[]) => {
-  return (
-    <ul>
-      {map(items, (item, idx) => (
-        <li key={idx}>{item}</li>
-      ))}
-    </ul>
-  );
-};
 
 const CircleCard: React.FC<CircleCardProps> = props => {
   const [pulling, setPulling] = useState(false);
@@ -217,7 +125,15 @@ const CircleCard: React.FC<CircleCardProps> = props => {
   });
 
   const render = () => {
-    const { circle, shown, pulled, onOverlayClick } = props;
+    const {
+      circle,
+      bookmarked,
+      shown,
+      pulled,
+      onBookmark,
+      onUnbookmark,
+      onOverlayClick,
+    } = props;
     const classModifiers = {
       [styles.shown]: shown,
       [styles.pulled]: pulled,
@@ -234,14 +150,14 @@ const CircleCard: React.FC<CircleCardProps> = props => {
       <div>
         <div ref={overlayRef} className={overlayClassNames} onClick={onOverlayClick} />
         <div ref={containerRef} className={containerClassNames}>
-          <div ref={headerRef} className={styles.header}>
-            <div className={styles.puller}>
-              <span />
-            </div>
-            <div className={styles.title}>{circle ? circle.name : ''}</div>
-            <div className={styles.number}>{circle ? circle.boothNumber : ''}</div>
-          </div>
-          {circle ? renderCardBody(circle) : null}
+          <Header
+            forwardRef={headerRef}
+            circle={circle}
+            bookmarked={bookmarked}
+            onBookmark={onBookmark}
+            onUnbookmark={onUnbookmark}
+          />
+          {circle ? <Body circle={circle} /> : null}
         </div>
       </div>
     );

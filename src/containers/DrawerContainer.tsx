@@ -1,5 +1,5 @@
 import Drawer from '@components/Drawer';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import DrawerPresenter from '@presenters/DrawerPresenter';
 import React, { useEffect, useState } from 'react';
 
@@ -16,12 +16,12 @@ export default ({ presenter }: { presenter: DrawerPresenter }) => {
       opened={opened}
       onClose={() => presenter.opened.next(false)}
       topItems={[
-        /*
         {
           icon: faBookmark,
           title: 'Bookmarks',
           path: '/bookmarks',
         },
+        /*
         {
           // idk what the settings will be for,
           // but I guess it can be used for troubleshooting stuff

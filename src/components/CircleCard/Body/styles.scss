@@ -1,0 +1,78 @@
+@import 'modules/variables';
+@import 'modules/mixins';
+
+.body {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-grow: 1;
+
+  &::after {
+    content: '';
+    clear: both;
+    display: block;
+    visibility: hidden;
+  }
+}
+
+.image,
+.details {
+  float: left;
+  padding: 0 8px 8px 0;
+}
+
+.image {
+  max-width: 160px;
+  padding-top: 8px;
+
+  & > img {
+    width: 100%;
+  }
+}
+
+.info {
+  padding-top: 8px;
+
+  & > span {
+    display: block;
+  }
+
+  & > span:first-child {
+    font-size: $font-size-small;
+    font-weight: $font-weight-light;
+    color: $font-color-light;
+    margin-bottom: 4px;
+  }
+
+  & > ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  & > ul > li {
+    margin-bottom: 4px;
+  }
+}
+
+.socialLink {
+  display: flex;
+  padding: 4px 0;
+  color: inherit;
+}
+
+.socialIcon {
+  display: block;
+  width: 24px;
+  font-size: 24px;
+  line-height: 24px;
+  text-align: center;
+}
+
+.socialTitle {
+  display: block;
+  margin-left: 8px;
+  line-height: 24px;
+}

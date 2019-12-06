@@ -1,0 +1,51 @@
+@import 'modules/variables';
+@import 'modules/mixins';
+
+.header {
+  flex-grow: 0;
+  box-sizing: border-box;
+  text-align: center;
+  width: 100%;
+  padding: 4px 8px 8px 8px;
+  border-bottom: 1px solid $separator-color;
+}
+
+.headerContent {
+  position: relative;
+
+  & > .title {
+    font-weight: $font-weight-bold;
+    margin: 0;
+  }
+
+  & > .number {
+    display: block;
+    color: $font-color-light;
+    font-size: $font-size-small;
+  }
+}
+
+.puller {
+  position: relative;
+  text-align: center;
+  padding-bottom: 8px;
+
+  & > span {
+    display: block;
+    margin: 4px auto;
+    background-color: $border-color;
+    width: 32px;
+    height: 4px;
+    border-radius: 2px;
+  }
+}
+
+.actions {
+  @include clickable;
+  position: absolute;
+  padding: 8px;
+  right: 0;
+  top: -8px;
+  width: 18px;
+  line-height: 18px;
+}

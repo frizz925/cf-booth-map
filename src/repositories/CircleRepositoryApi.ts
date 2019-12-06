@@ -17,19 +17,18 @@ export default class CircleRepositoryApi implements CircleRepository {
     this.parser = parser;
   }
 
-  public fetch(): Promise<Circle[]> {
-    return this.client.get('/data/circles.json').then(res => {
-      const circles = res.data as RawCircle[];
-      const results = map(circles, circle => this.parser.parse(circle))
-        .filter(circle => {
-          return !!circle.name;
-        })
-        .sort((a, b) => {
-          return a.name > b.name ? 1 : -1;
-        });
-      this.updateFuse(results);
-      return results;
-    });
+  public async fetch(): Promise<Circle[]> {
+    const res = await this.client.get('/data/circles.json');
+    const circles = res.data as RawCircle[];
+    const results = map(circles, circle => this.parser.parse(circle))
+      .filter(circle => {
+        return !!circle.name;
+      })
+      .sort((a, b) => {
+        return a.name > b.name ? 1 : -1;
+      });
+    this.updateFuse(results);
+    return results;
   }
 
   public async find(query: string): Promise<Circle[]> {

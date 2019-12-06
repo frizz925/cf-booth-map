@@ -41,7 +41,7 @@ const aboutLinks: AboutLink[] = [
   },
 ];
 
-const AboutPage: React.FC = () => {
+export default () => {
   return (
     <div>
       <div className={styles.header}>
@@ -74,5 +74,3 @@ const AboutPage: React.FC = () => {
     </div>
   );
 };
-
-export default AboutPage;
