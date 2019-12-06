@@ -4,7 +4,7 @@ import {
   faInstagram,
   faTwitterSquare,
 } from '@fortawesome/free-brands-svg-icons';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faGlobeAsia } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
 import { SocialType } from '@models/Social';
@@ -33,7 +33,7 @@ interface InfoMapping {
   render: (circle: Circle) => string | string[] | JSX.Element | JSX.Element[];
 }
 
-const defaultSocialIcon = faGlobe;
+const defaultSocialIcon = faGlobeAsia;
 const socialIcons = {
   [SocialType.Facebook]: faFacebookSquare,
   [SocialType.Twitter]: faTwitterSquare,
@@ -65,7 +65,10 @@ const infoMapping: InfoMapping[] = [
         <div className={styles.socialList}>
           {socials.map(({ type, url }, idx) => (
             <a href={url} key={idx} className={styles.socialLink} target='_blank'>
-              <FontAwesomeIcon icon={socialIcons[type] || defaultSocialIcon} />
+              <span className={styles.socialIcon}>
+                <FontAwesomeIcon icon={socialIcons[type] || defaultSocialIcon} />
+              </span>
+              <span className={styles.socialTitle}>{type}</span>
             </a>
           ))}
         </div>
