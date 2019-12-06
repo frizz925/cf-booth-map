@@ -1,9 +1,12 @@
 import SearchForm from '@components/SearchForm';
 import Circle from '@models/Circle';
 import SearchPresenter from '@presenters/SearchPresenter';
+import { pushCircle } from '@utils/Routing';
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 
 export default ({ presenter }: { presenter: SearchPresenter }) => {
+  const history = useHistory();
   const [circles, setCircles] = useState([] as Circle[]);
   const [shown, setShown] = useState(presenter.shown.value);
   const [focused, setFocused] = useState(presenter.focused.value);
@@ -44,7 +47,7 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
       onBack={() => presenter.focused.next(false)}
       onClear={onClear}
       onTextChanged={onTextChanged}
-      onResultSelected={circle => presenter.select(circle)}
+      onResultSelected={circle => pushCircle(history, circle)}
     />
   );
 };

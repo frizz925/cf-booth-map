@@ -6,11 +6,17 @@ import Fuse from 'fuse.js';
 import map from 'lodash/map';
 import CircleRepository from './CircleRepository';
 
+interface SlugIndex {
+  [key: string]: Circle;
+}
+
 export default class CircleRepositoryApi implements CircleRepository {
   private client: AxiosInstance;
   private parser: Parser<RawCircle, Circle>;
 
+  private lastResults: Circle[] | undefined;
   private fuse: Fuse<Circle, {}>;
+  private slugIndex: SlugIndex = {};
 
   constructor(client: AxiosInstance, parser: Parser<RawCircle, Circle>) {
     this.client = client;
@@ -27,23 +33,38 @@ export default class CircleRepositoryApi implements CircleRepository {
       .sort((a, b) => {
         return a.name > b.name ? 1 : -1;
       });
-    this.updateFuse(results);
+    this.updateResults(results);
     return results;
   }
 
-  public async find(query: string): Promise<Circle[]> {
+  public async filter(query: string): Promise<Circle[]> {
     if (!query) {
       return [];
     }
-    if (!this.fuse) {
-      await this.fetch();
-      return this.find(query);
-    }
-    return new Promise(resolve => {
-      process.nextTick(() => {
-        resolve(this.fuse.search(query));
-      });
+    return this.withResults(() => {
+      return Promise.resolve(this.fuse.search(query));
     });
+  }
+
+  public async findBySlug(slug: string): Promise<Circle | undefined> {
+    if (!slug) {
+      return null;
+    }
+    return this.withResults(() => {
+      return Promise.resolve(this.slugIndex[slug]);
+    });
+  }
+
+  private async withResults<T>(cb: (circles: Circle[]) => Promise<T>): Promise<T> {
+    if (!this.lastResults) {
+      return cb(await this.fetch());
+    }
+    return cb(this.lastResults);
+  }
+
+  private updateResults(circles: Circle[]) {
+    this.updateFuse(circles);
+    this.updateIndex(circles);
   }
 
   private updateFuse(circles: Circle[]) {
@@ -54,5 +75,13 @@ export default class CircleRepositoryApi implements CircleRepository {
       keys: ['name', 'boothNumber'],
       tokenize: true,
     });
+  }
+
+  private updateIndex(circles: Circle[]) {
+    const newIndex: SlugIndex = {};
+    circles.forEach(circle => {
+      newIndex[circle.slug] = circle;
+    });
+    this.slugIndex = newIndex;
   }
 }

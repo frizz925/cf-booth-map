@@ -21,15 +21,6 @@ export default ({ presenter }: { presenter: DrawerPresenter }) => {
           title: 'Bookmarks',
           path: '/bookmarks',
         },
-        /*
-        {
-          // idk what the settings will be for,
-          // but I guess it can be used for troubleshooting stuff
-          icon: faCog,
-          title: 'Settings',
-          path: '/settings',
-        },
-        */
         {
           icon: faInfoCircle,
           title: 'About',

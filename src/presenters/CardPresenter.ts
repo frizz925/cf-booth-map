@@ -13,20 +13,23 @@ export default class CardPresenter {
   }
 
   public get onAdd() {
-    return this.observable.onAdd;
+    return this.bookmarkObservable.onAdd;
   }
 
   public get onRemove() {
-    return this.observable.onRemove;
+    return this.bookmarkObservable.onRemove;
   }
 
-  private readonly repository: BookmarkRepository;
-  private readonly observable: BookmarkObservable;
+  private readonly bookmarkRepository: BookmarkRepository;
+  private readonly bookmarkObservable: BookmarkObservable;
   private prevCircle?: Circle;
 
-  constructor(repository: BookmarkRepository, observable: BookmarkObservable) {
-    this.repository = repository;
-    this.observable = observable;
+  constructor(
+    bookmarkRepository: BookmarkRepository,
+    bookmarkObservable: BookmarkObservable,
+  ) {
+    this.bookmarkRepository = bookmarkRepository;
+    this.bookmarkObservable = bookmarkObservable;
 
     this.circle.subscribe(circle => {
       if (circle) {
@@ -63,14 +66,14 @@ export default class CardPresenter {
   }
 
   public bookmark(circle: Circle) {
-    return this.repository.add(circle);
+    return this.bookmarkRepository.add(circle);
   }
 
   public unbookmark(circle: Circle) {
-    return this.repository.remove(circle);
+    return this.bookmarkRepository.remove(circle);
   }
 
   public isBookmarked(circle: Circle) {
-    return this.repository.has(circle);
+    return this.bookmarkRepository.has(circle);
   }
 }

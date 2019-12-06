@@ -19,7 +19,6 @@ const Loading = () => <div>Loading...</div>;
 
 export default ({ presenter }: { presenter: PagePresenter }) => {
   const history = useHistory();
-  const location = useLocation();
   const { repositories, observables } = useContext(AppContext);
 
   const pageDefinitions: PageDefinitions = useMemo(() => {
@@ -41,7 +40,7 @@ export default ({ presenter }: { presenter: PagePresenter }) => {
     };
   }, [repositories.bookmark]);
 
-  const path = location.pathname;
+  const path = useLocation().pathname;
   const pageDefinition = pageDefinitions[path];
 
   const opened = !!pageDefinition;
@@ -51,6 +50,10 @@ export default ({ presenter }: { presenter: PagePresenter }) => {
   useEffect(() => {
     presenter.opened.next(opened);
   }, [opened]);
+
+  useEffect(() => {
+    presenter.path.next(path);
+  }, [path]);
 
   return (
     <PageScreen opened={opened} title={title} onBack={() => history.push('/')}>

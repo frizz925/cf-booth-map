@@ -1,6 +1,12 @@
 @import 'modules/variables';
 @import 'modules/mixins';
 
+.noBookmarks {
+  max-width: 240px;
+  text-align: center;
+  margin: 16px auto;
+}
+
 .item {
   display: flex;
   border-bottom: 1px solid $separator-color;

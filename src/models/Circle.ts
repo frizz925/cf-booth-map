@@ -4,6 +4,7 @@ import Social from './Social';
 
 export default interface Circle {
   id: number;
+  slug: string;
   name: string;
   imageUrl: string;
   boothNumber: string;

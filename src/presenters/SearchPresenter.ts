@@ -15,11 +15,15 @@ export default class SearchPresenter {
   }
 
   public search(query: string) {
-    return this.repository.find(query);
+    return this.repository.filter(query);
   }
 
   public select(circle: Circle) {
     this.focused.next(false);
     this.circle.next(circle);
+  }
+
+  public findCircle(slug: string) {
+    return this.repository.findBySlug(slug);
   }
 }

@@ -15,6 +15,14 @@ interface BookmarkItemProps {
   onRemove: BookmarkHandler;
 }
 
+const NoBookmarks = () => {
+  return (
+    <div className={styles.noBookmarks}>
+      You haven't added any circle to your bookmarks yet!
+    </div>
+  );
+};
+
 const BookmarkItem: React.FC<BookmarkItemProps> = props => {
   const { circle, onSelected, onRemove } = props;
   return (
@@ -53,11 +61,8 @@ export default ({ presenter }: { presenter: BookmarksPresenter }) => {
     presenter.getAllBookmarks().then(setCircles);
   };
 
-  const onSelected = (circle: Circle) => {
-    history.push('/');
-    setTimeout(() => {
-      presenter.circle.next(circle);
-    }, 450);
+  const onSelected = ({ slug }: Circle) => {
+    history.push(`/circle/${slug}`);
   };
   const onRemove = (circle: Circle) => {
     presenter.removeBookmark(circle);
@@ -75,9 +80,11 @@ export default ({ presenter }: { presenter: BookmarksPresenter }) => {
 
   return (
     <div className={styles.container}>
-      {circles.length > 0
-        ? renderBookmarks(circles, onSelected, onRemove)
-        : "You haven't added any circle to your bookmarks yet!"}
+      {circles.length > 0 ? (
+        renderBookmarks(circles, onSelected, onRemove)
+      ) : (
+        <NoBookmarks />
+      )}
     </div>
   );
 };

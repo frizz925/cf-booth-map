@@ -4,6 +4,7 @@ import Day from '@models/Day';
 import Social, { SocialType } from '@models/Social';
 import map from 'lodash/map';
 import reduce from 'lodash/reduce';
+import slugify from 'slugify';
 import Parser from './Parser';
 
 export interface RawCircle {
@@ -39,6 +40,7 @@ export default class CircleParser implements Parser<RawCircle, Circle> {
   public parse(circle: RawCircle): Circle {
     return {
       id: circle.id,
+      slug: slugify(circle.name.toLowerCase()),
       name: circle.name,
       imageUrl: this.normalizeUrl(circle.src),
       boothNumber: sanitizeBoothNumber(circle.booth_number),
