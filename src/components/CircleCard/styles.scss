@@ -87,17 +87,24 @@
 }
 
 .body {
-  display: flex;
   box-sizing: border-box;
   width: 100%;
   padding: 8px;
   overflow-x: hidden;
   overflow-y: auto;
   flex-grow: 1;
+
+  &::after {
+    content: '';
+    clear: both;
+    display: block;
+    visibility: hidden;
+  }
 }
 
 .image,
 .details {
+  float: left;
   padding: 0 8px 8px 0;
 }
 
