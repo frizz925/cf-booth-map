@@ -57,7 +57,7 @@ export default class AppPresenter {
 
     pagePresenter.path.subscribe(path => {
       if (!path.startsWith(CIRCLE_PATH_PREFIX)) {
-        cardPresenter.hide();
+        cardPresenter.pulled.next(false);
         return;
       }
       const slug = path.substring(CIRCLE_PATH_PREFIX.length);

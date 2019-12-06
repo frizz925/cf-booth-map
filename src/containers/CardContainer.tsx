@@ -1,6 +1,7 @@
 import CircleCard from '@components/CircleCard';
 import Circle from '@models/Circle';
 import CardPresenter from '@presenters/CardPresenter';
+import { pushCircle } from '@utils/Routing';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { filter } from 'rxjs/operators';
@@ -39,6 +40,10 @@ export default ({ presenter }: { presenter: CardPresenter }) => {
     return () => subscribers.forEach(s => s.unsubscribe());
   }, [presenter]);
 
+  const onCardTabbed = useCallback(() => {
+    history.push('/');
+  }, [history]);
+
   return (
     <CircleCard
       circle={circle}
@@ -47,10 +52,10 @@ export default ({ presenter }: { presenter: CardPresenter }) => {
       pulled={pulled}
       onBookmark={useCallback(() => presenter.bookmark(circle), [presenter, circle])}
       onUnbookmark={useCallback(() => presenter.unbookmark(circle), [presenter, circle])}
-      onOverlayClick={useCallback(() => presenter.tab(), [presenter])}
-      onCardPulled={useCallback(() => presenter.pull(), [presenter])}
-      onCardHidden={useCallback(() => history.push('/'), [history])}
-      onCardTabbed={useCallback(() => presenter.tab(), [presenter])}
+      onOverlayClick={onCardTabbed}
+      onCardPulled={useCallback(() => pushCircle(history, circle), [history, circle])}
+      onCardTabbed={onCardTabbed}
+      onCardHidden={useCallback(() => presenter.hide(), [presenter])}
     />
   );
 };
