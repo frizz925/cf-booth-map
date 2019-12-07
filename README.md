@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Frizz925/cf-booth-map.svg?branch=version-2)](https://travis-ci.org/Frizz925/cf-booth-map)
 
-# Comic Frontier Interactive Booth Map
+# Comic Frontier Booth Map
 
 ## Introduction
 
@@ -12,7 +12,7 @@ This interactive map is aimed to help the visitors to navigate the venue to find
 
 Version 1: <https://cf-map.kogane.moe/>
 
-Version 2: <https://cf-map-dev.kogane.moe/> (In-development)
+Version 2: <https://cf-booth-map.web.app/> (In-development)
 
 Version 2 is a complete rewrite that is aimed to provide better user experience and performance through the use of HTML5 canvas and WebGL for devices that support it.
 

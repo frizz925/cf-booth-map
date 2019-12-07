@@ -44,6 +44,7 @@ const SearchBox: React.FC<SearchBoxProps> = props => {
           onFocus={onFocus}
           onChange={e => onTextChanged(e.target.value)}
           value={value}
+          aria-label='Search for circle'
         />
         <div
           className={styles.formButton}
