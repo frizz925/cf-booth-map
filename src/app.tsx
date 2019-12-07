@@ -48,6 +48,4 @@ const app = (el: Element) => {
   );
 };
 
-window.addEventListener('load', () => {
-  app(document.getElementById('app'));
-});
+export default app;

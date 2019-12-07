@@ -35,6 +35,4 @@ const map = (stage: Element) => {
   });
 };
 
-window.addEventListener('load', () => {
-  map(document.getElementById('stage'));
-});
+export default map;

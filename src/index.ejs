@@ -1,3 +1,13 @@
+<%
+const cdnAssets = [
+  'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.3/localforage.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.5.3/rxjs.umd.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.4.5/fuse.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.5/pixi.min.js',
+];
+%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,24 +26,17 @@
   <link rel="dns-prefetch" href="https://fonts.googleapis.com/">
   <link rel="dns-prefetch" href="https://storage.googleapis.com/">
   <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/">
-  <link rel="dns-prefetch" href="https://unpkg.com/">
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" onload="this.onload=null;this.rel='stylesheet';">
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" onload="this.onload=null;this.rel='stylesheet'">
   <title>Comic Frontier Booth Map</title>
+  <link as="script" href="/js/modernizr-custom.js" rel="preload"><% cdnAssets.forEach(url => { %>
+  <link as="script" href="<%= url %>" crossorigin="anonymous" rel="preload"><% }) %>
 </head>
 
 <body>
   <div id="app">Loading...</div>
   <div id="stage"></div>
-  <script src="/js/modernizr-custom.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" crossorigin="anonymous"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.6.9/core.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.5/pixi.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.4.5/fuse.min.js" crossorigin="anonymous"></script>
-
-  <script src="https://unpkg.com/localforage@1.7.3/dist/localforage.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/hammerjs@2.0.8/hammer.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/rxjs@6.5.3/bundles/rxjs.umd.min.js" crossorigin="anonymous"></script>
+  <script src="/js/modernizr-custom.js"></script><% cdnAssets.forEach(url => { %>
+  <script src="<%= url %>" crossorigin="anonymous"></script><% }) %>
 </body>
 
 </html>

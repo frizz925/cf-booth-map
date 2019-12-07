@@ -4,7 +4,7 @@ module.exports = {
   mode: 'development',
   devtool: 'eval-source-map',
   entry: {
-    app: ['react-hot-loader/patch', './src/app.tsx'],
+    main: ['react-hot-loader/patch', './src/index.ts'],
   },
   devServer: {
     port: 3000,

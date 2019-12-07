@@ -6,7 +6,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -48,10 +47,8 @@ const cssModulePaths = [
 ];
 
 const cssInlinePaths = [
-  /*
   path.resolve(__dirname, 'src/css'),
   path.resolve(__dirname, 'src/scss'),
-  */
 ];
 
 const cdnCacheOptions = cacheName => ({
@@ -64,8 +61,6 @@ const cdnCacheOptions = cacheName => ({
 const webpackConfig = {
   entry: {
     main: './src/index.ts',
-    app: './src/app.tsx',
-    map: './src/map/index.ts',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -129,14 +124,13 @@ const webpackConfig = {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
   externals: {
-    'core-js': 'core',
-    webfontloader: 'WebFont',
-    'pixi.js': 'PIXI',
+    lodash: '_',
     localforage: 'localforage',
-    'fuse.js': 'Fuse',
     hammerjs: 'Hammer',
     rxjs: 'rxjs',
     'rxjs/operators': 'rxjs.operators',
+    'fuse.js': 'Fuse',
+    'pixi.js': 'PIXI',
   },
   optimization: {
     splitChunks: {
@@ -193,10 +187,6 @@ const webpackConfig = {
       filename: 'index.html',
       template: 'src/index.ejs',
       inject: true,
-    }),
-    new ScriptExtHtmlWebpackPlugin({
-      sync: ['vendors', 'runtime'],
-      defaultAttribute: 'async',
     }),
     new PreloadWebpackPlugin({
       rel: 'preload',
