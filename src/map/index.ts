@@ -28,11 +28,13 @@ const setupRenderer = (stage: Element, renderer: MapRenderer) => {
   mc.on('pinchstart pinchmove pinchend', controller.onViewPinch);
 };
 
-const Map = (stage: Element) => {
+const map = (stage: Element) => {
   Modernizr.on('webp', result => {
     const mapImage = result ? mapImageWebp : mapImagePng;
     setupRenderer(stage, new MapRenderer(mapImage));
   });
 };
 
-export default Map;
+window.addEventListener('load', () => {
+  map(document.getElementById('stage'));
+});

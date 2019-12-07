@@ -1,4 +1,4 @@
-import Loading from '@components/Loading';
+import AppContainer from '@containers/AppContainer';
 import AppContext, { AppContextType } from '@contexts/AppContext';
 import CircleParser from '@models/parsers/CircleParser';
 import AppPresenter from '@presenters/AppPresenter';
@@ -9,12 +9,11 @@ import SearchPresenter from '@presenters/SearchPresenter';
 import BookmarkRepositoryStorage from '@repositories/BookmarkRepositoryStorage';
 import CircleRepositoryApi from '@repositories/CircleRepositoryApi';
 import axios from 'axios';
-import React, { Suspense } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import BookmarkObservable from './observables/BookmarkObservable';
 
-const AppContainer = React.lazy(() => import('@containers/AppContainer'));
-const App = (el: Element) => {
+const app = (el: Element) => {
   const { protocol, host } = window.location;
   const circleClient = axios.create({
     baseURL: `${protocol}//${host}/`,
@@ -43,12 +42,12 @@ const App = (el: Element) => {
 
   ReactDOM.render(
     <AppContext.Provider value={context}>
-      <Suspense fallback={<Loading />}>
-        <AppContainer presenter={presenter} />
-      </Suspense>
+      <AppContainer presenter={presenter} />
     </AppContext.Provider>,
     el,
   );
 };
 
-export default App;
+window.addEventListener('load', () => {
+  app(document.getElementById('app'));
+});

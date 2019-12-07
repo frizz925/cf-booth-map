@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
@@ -48,6 +47,13 @@ const cssModulePaths = [
   path.resolve(__dirname, 'src/pages'),
 ];
 
+const cssInlinePaths = [
+  /*
+  path.resolve(__dirname, 'src/css'),
+  path.resolve(__dirname, 'src/scss'),
+  */
+];
+
 const cdnCacheOptions = cacheName => ({
   cacheName,
   cacheableResponse: {
@@ -58,11 +64,13 @@ const cdnCacheOptions = cacheName => ({
 const webpackConfig = {
   entry: {
     main: './src/index.ts',
+    app: './src/app.tsx',
+    map: './src/map/index.ts',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: ASSET_PATH,
-    filename: isDev ? '[name].js' : '[name].[hash:8].js',
+    filename: isDev ? '[name].bundle.js' : '[name].[hash:8].js',
   },
   module: {
     rules: [
@@ -79,8 +87,13 @@ const webpackConfig = {
       },
       {
         test: /\.s[ca]ss$/,
+        use: ['style-loader', 'css-loader', sassLoader],
+        include: cssInlinePaths,
+      },
+      {
+        test: /\.s[ca]ss$/,
         use: [styleLoader, 'css-loader', sassLoader],
-        exclude: cssModulePaths,
+        exclude: [].concat(cssInlinePaths, cssModulePaths),
       },
       {
         test: /\.css$/,
@@ -89,8 +102,13 @@ const webpackConfig = {
       },
       {
         test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+        include: cssInlinePaths,
+      },
+      {
+        test: /\.css$/,
         use: [styleLoader, 'css-loader'],
-        exclude: cssModulePaths,
+        exclude: [].concat(cssInlinePaths, cssModulePaths),
       },
       {
         test: /\.html$/,
@@ -111,29 +129,24 @@ const webpackConfig = {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
   externals: {
-    'pixi.js': 'PIXI',
-    hammerjs: 'Hammer',
+    'core-js': 'core',
     webfontloader: 'WebFont',
+    'pixi.js': 'PIXI',
+    localforage: 'localforage',
+    'fuse.js': 'Fuse',
+    hammerjs: 'Hammer',
+    rxjs: 'rxjs',
+    'rxjs/operators': 'rxjs.operators',
   },
   optimization: {
     splitChunks: {
-      cacheGroups: {
-        commons: {
-          name: 'vendors',
-          chunks: 'initial',
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-        },
-        default: {
-          chunks: 'all',
-          priority: -20,
-        },
-      },
+      chunks: 'all',
     },
+    runtimeChunk: true,
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: isDev ? '[name].css' : '[name].[hash:8].css',
+      filename: isDev ? '[name].bundle.css' : '[name].[hash:8].css',
       ignoreOrder: false,
     }),
     new CopyPlugin([
@@ -146,7 +159,6 @@ const webpackConfig = {
       swDest: 'sw.js',
       clientsClaim: true,
       skipWaiting: true,
-      navigateFallback: '/',
       runtimeCaching: [
         {
           urlPattern: /\/$/,
@@ -154,6 +166,11 @@ const webpackConfig = {
           options: {
             cacheName: 'index-cache',
           },
+        },
+        {
+          urlPattern: new RegExp('^https://unpkg\\.com/'),
+          handler: 'CacheFirst',
+          options: cdnCacheOptions('unpkg-cache'),
         },
         {
           urlPattern: new RegExp('^https://cdnjs\\.cloudflare\\.com/'),
@@ -165,22 +182,25 @@ const webpackConfig = {
           handler: 'CacheFirst',
           options: cdnCacheOptions('google-cache'),
         },
+        {
+          urlPattern: new RegExp('^https://catalog\\.comifuro\\.net/'),
+          handler: 'CacheFirst',
+          options: cdnCacheOptions('comifuro-cache'),
+        },
       ],
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: 'src/index.html',
+      template: 'src/index.ejs',
       inject: true,
     }),
-    new HtmlWebpackTagsPlugin({
-      scripts: ['js/modernizr-custom.js'],
-    }),
     new ScriptExtHtmlWebpackPlugin({
-      defaultAttribute: 'defer',
+      sync: ['vendors', 'runtime'],
+      defaultAttribute: 'async',
     }),
     new PreloadWebpackPlugin({
       rel: 'preload',
-      include: ['main', 'vendors'],
+      include: 'initial',
     }),
     new HtmlBeautifyPlugin({
       replace: [' type="text/javascript"'],
