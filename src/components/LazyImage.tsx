@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Ring } from 'react-awesome-spinners';
 
 const baseLoaderStyle: CSS.Properties = {
-  display: 'inline-flex',
+  display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
 };

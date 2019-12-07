@@ -83,7 +83,7 @@ const Body: React.FC<BodyProps> = ({ circle }) => {
   return (
     <div className={styles.body}>
       <div className={styles.image}>
-        <LazyImage src={circle.imageUrl} alt={circle.name} width={180} height={256} />
+        <LazyImage src={circle.imageUrl} alt={circle.name} width={180} height={240} />
       </div>
       <div className={styles.details}>
         {map(infoMapping, ({ title, render }, idx) => {

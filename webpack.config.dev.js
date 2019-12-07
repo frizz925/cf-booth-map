@@ -8,6 +8,7 @@ module.exports = {
     port: 3000,
     inline: true,
     contentBase: path.resolve(__dirname, 'dist'),
+    historyApiFallback: true,
     hot: true,
   },
   resolve: {

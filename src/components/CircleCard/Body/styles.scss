@@ -12,15 +12,18 @@
 
 .image,
 .details {
-  padding: 0 8px 8px 0;
+  padding: 8px 0;
 }
 
 .image {
-  padding-top: 8px;
-  text-align: center;
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
 
   & > img {
-    max-height: 256px;
+    display: block;
+    height: 240px;
   }
 }
 

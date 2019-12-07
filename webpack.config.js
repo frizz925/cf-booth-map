@@ -5,7 +5,7 @@ const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
+const OfflinePlugin = require('offline-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -120,18 +120,17 @@ const webpackConfig = {
       ignoreOrder: false,
     }),
     new CopyPlugin([
-      { from: 'src/assets/modernizr-custom.js', to: 'js' },
+      { from: 'assets', to: 'assets' },
       { from: 'src/data', to: 'data' },
+      { from: 'src/assets/modernizr-custom.js', to: 'js' },
+      { from: 'src/manifest.json', to: 'manifest.json' },
     ]),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.html',
       inject: 'head',
     }),
-    new WorkboxPlugin.GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
-    }),
+    new OfflinePlugin(),
     new HtmlWebpackTagsPlugin({
       scripts: ['js/modernizr-custom.js'],
     }),
