@@ -146,6 +146,7 @@ const webpackConfig = {
       swDest: 'sw.js',
       clientsClaim: true,
       skipWaiting: true,
+      navigateFallback: '/',
       runtimeCaching: [
         {
           urlPattern: /\/$/,
