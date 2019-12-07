@@ -6,6 +6,8 @@ const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const PreloadWebpackPlugin = require('preload-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -46,11 +48,21 @@ const cssModulePaths = [
   path.resolve(__dirname, 'src/pages'),
 ];
 
+const cdnCacheOptions = cacheName => ({
+  cacheName,
+  cacheableResponse: {
+    statuses: [0, 200],
+  },
+});
+
 const webpackConfig = {
+  entry: {
+    main: './src/index.ts',
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: ASSET_PATH,
-    filename: isDev ? '[name].bundle.js' : '[name].[hash:8].js',
+    filename: isDev ? '[name].js' : '[name].[hash:8].js',
   },
   module: {
     rules: [
@@ -62,7 +74,7 @@ const webpackConfig = {
       },
       {
         test: /\.s[ca]ss$/,
-        use: [styleLoader, cssModuleLoader, sassLoader],
+        use: ['style-loader', cssModuleLoader, sassLoader],
         include: cssModulePaths,
       },
       {
@@ -72,7 +84,7 @@ const webpackConfig = {
       },
       {
         test: /\.css$/,
-        use: [styleLoader, cssModuleLoader],
+        use: ['style-loader', cssModuleLoader],
         include: cssModulePaths,
       },
       {
@@ -101,6 +113,7 @@ const webpackConfig = {
   externals: {
     'pixi.js': 'PIXI',
     hammerjs: 'Hammer',
+    webfontloader: 'WebFont',
   },
   optimization: {
     splitChunks: {
@@ -120,7 +133,7 @@ const webpackConfig = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: isDev ? '[name].bundle.css' : '[name].[hash:8].css',
+      filename: isDev ? '[name].css' : '[name].[hash:8].css',
       ignoreOrder: false,
     }),
     new CopyPlugin([
@@ -129,17 +142,44 @@ const webpackConfig = {
       { from: 'src/assets/modernizr-custom.js', to: 'js' },
       { from: 'src/manifest.json', to: 'manifest.json' },
     ]),
+    new WorkboxPlugin.GenerateSW({
+      swDest: 'sw.js',
+      clientsClaim: true,
+      skipWaiting: true,
+      runtimeCaching: [
+        {
+          urlPattern: /\/$/,
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'index-cache',
+          },
+        },
+        {
+          urlPattern: new RegExp('^https://cdnjs\\.cloudflare\\.com/'),
+          handler: 'CacheFirst',
+          options: cdnCacheOptions('cdnjs-cache'),
+        },
+        {
+          urlPattern: new RegExp('^https://.+\\.googleapis\\.com/'),
+          handler: 'CacheFirst',
+          options: cdnCacheOptions('google-cache'),
+        },
+      ],
+    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.html',
-      inject: 'head',
+      inject: true,
     }),
     new HtmlWebpackTagsPlugin({
       scripts: ['js/modernizr-custom.js'],
     }),
+    new ScriptExtHtmlWebpackPlugin({
+      defaultAttribute: 'defer',
+    }),
     new PreloadWebpackPlugin({
       rel: 'preload',
-      include: 'initial',
+      include: ['main', 'vendors'],
     }),
     new HtmlBeautifyPlugin({
       replace: [' type="text/javascript"'],
