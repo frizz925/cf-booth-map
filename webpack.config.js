@@ -5,7 +5,6 @@ const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const OfflinePlugin = require('offline-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -130,7 +129,6 @@ const webpackConfig = {
       template: 'src/index.html',
       inject: 'head',
     }),
-    new OfflinePlugin(),
     new HtmlWebpackTagsPlugin({
       scripts: ['js/modernizr-custom.js'],
     }),

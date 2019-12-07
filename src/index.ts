@@ -1,10 +1,13 @@
+import { IS_PRODUCTION } from '@utils/Constants';
 import 'core-js/stable';
 import 'normalize.css';
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';
 import 'regenerator-runtime/runtime';
 import './scss/main.scss';
 
-OfflinePluginRuntime.install();
+if (IS_PRODUCTION) {
+  OfflinePluginRuntime.install();
+}
 
 window.addEventListener('load', () => {
   import('./app').then(
@@ -19,18 +22,4 @@ window.addEventListener('load', () => {
     },
     err => console.error(err),
   );
-
-  /*
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then(registration => {
-        // tslint:disable-next-line:no-console
-        console.log('SW registered: ', registration);
-      })
-      .catch(registrationError => {
-        console.error('SW registration failed: ', registrationError);
-      });
-  }
-  */
 });
