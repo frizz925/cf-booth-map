@@ -1,6 +1,5 @@
 import { IS_PRODUCTION } from '@utils/Constants';
 import 'core-js/stable';
-import 'normalize.css';
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';
 import 'regenerator-runtime/runtime';
 import './scss/main.scss';

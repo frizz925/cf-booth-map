@@ -4,6 +4,8 @@ branches:
 language: node_js
 node_js:
   - lts/*
+env:
+  - CI=true
 install:
   - yarn
 script:

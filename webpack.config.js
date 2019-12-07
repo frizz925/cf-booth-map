@@ -5,6 +5,7 @@ const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -97,6 +98,10 @@ const webpackConfig = {
     modules: ['src', 'node_modules'],
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
+  externals: {
+    'pixi.js': 'PIXI',
+    hammerjs: 'Hammer',
+  },
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -131,6 +136,10 @@ const webpackConfig = {
     }),
     new HtmlWebpackTagsPlugin({
       scripts: ['js/modernizr-custom.js'],
+    }),
+    new PreloadWebpackPlugin({
+      rel: 'preload',
+      include: 'initial',
     }),
     new HtmlBeautifyPlugin({
       replace: [' type="text/javascript"'],
