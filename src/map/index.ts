@@ -9,8 +9,8 @@ const setupRenderer = (stage: Element, renderer: MapRenderer) => {
 
   const controller = new MapController(renderer);
   window.addEventListener('resize', controller.onWindowResize);
-  stage.addEventListener('wheel', evt => {
-    controller.onMouseWheel(evt as WheelEvent);
+  stage.addEventListener('wheel', evt => controller.onMouseWheel(evt as WheelEvent), {
+    passive: true,
   });
 
   const mc = new Hammer.Manager(stage);
