@@ -1,6 +1,6 @@
 branches:
   only:
-    - version-2
+    - master
 language: node_js
 node_js:
   - lts/*
