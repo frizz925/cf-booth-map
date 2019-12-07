@@ -2,6 +2,7 @@ import { faBookmark } from '@fortawesome/free-regular-svg-icons';
 import { faBookmark as faSolidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
+import { details } from '@models/formatters/CircleFormatter';
 import React from 'react';
 import * as styles from './styles.scss';
 
@@ -25,7 +26,7 @@ const Header: React.FC<HeaderProps> = props => {
       </div>
       <div className={styles.headerContent}>
         <div className={styles.title}>{circle ? circle.name : ''}</div>
-        <div className={styles.number}>{circle ? circle.boothNumber : ''}</div>
+        <div className={styles.number}>{circle ? details(circle) : ''}</div>
         <div className={`${styles.action} ${styles.right}`} onClick={handleBookmark}>
           <FontAwesomeIcon icon={bookmarked ? faSolidBookmark : faBookmark} />
         </div>

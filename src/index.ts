@@ -19,7 +19,7 @@ window.addEventListener('load', () => {
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker
-      .register('/service-worker.js')
+      .register('/sw.js')
       .then(registration => {
         // tslint:disable-next-line:no-console
         console.log('SW registered: ', registration);

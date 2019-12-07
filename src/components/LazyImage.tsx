@@ -1,6 +1,13 @@
 import * as CSS from 'csstype';
+import merge from 'lodash/merge';
 import React, { useEffect, useRef, useState } from 'react';
 import { Ring } from 'react-awesome-spinners';
+
+const baseLoaderStyle: CSS.Properties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
 
 export interface LazyImageProps {
   src: string;
@@ -38,11 +45,14 @@ const LazyImage: React.FC<LazyImageProps> = props => {
   const renderImage = () => (
     <img src={src} alt={alt} className={className} style={style} />
   );
-  const renderLoader = () => (
-    <div style={{ width, height }}>
-      <Ring color='rgba(0, 0, 0, 0.7)' />
-    </div>
-  );
+  const renderLoader = () => {
+    const loaderStyle = merge(baseLoaderStyle, { width, height });
+    return (
+      <div style={loaderStyle}>
+        <Ring color='rgba(0, 0, 0, 0.7)' />
+      </div>
+    );
+  };
 
   return hasLoaded ? renderImage() : renderLoader();
 };
