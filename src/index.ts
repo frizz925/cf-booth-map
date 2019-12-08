@@ -36,6 +36,8 @@ const registerUpdatesListener = () => {
     const response = await cache.match(updatedUrl);
     if (response) {
       // FIXME: Abruptly reloading on update is a bad UX
+      // tslint:disable-next-line:no-console
+      console.log('Detected new version, reloading...');
       window.location.reload();
     }
   });
