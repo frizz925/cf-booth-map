@@ -6,6 +6,11 @@ import WebFont from 'webfontloader';
 import { Workbox } from 'workbox-window';
 import './scss/main.scss';
 
+const isLocalhost = window.location.hostname === 'localhost';
+const checkType = isLocalhost ? 'Revision' : 'Version';
+const checkEndpoint = isLocalhost ? '/api/revision' : '/api/version';
+const checkInterval = isLocalhost ? 3000 : 3600 * 1000;
+
 interface WorkboxMessage {
   meta: string;
   type: string;
@@ -36,25 +41,26 @@ const handleNewVersion = async (presenter: AppPresenter) => {
   }
   reloadInProgress = true;
 
-  console.log('Detected new version');
-  const message = "There's a new updated version. Click OK to refresh.";
-  const confirmed = await presenter.confirm(message);
-  if (!confirmed) {
-    reloadInProgress = false;
-    return;
-  }
-
   // HACK: Flush all caches before reloading (there's got to be a better way than this)
-  console.log('Flushing caches...');
+  console.log('Detected new version, flushing caches...');
   const keys = await caches.keys();
   let counter = 0;
-  keys.forEach(async key => {
-    await caches.delete(key);
-    if (++counter >= keys.length) {
-      console.log('Reloading...');
-      window.location.reload();
-    }
+  await new Promise(resolve => {
+    keys.forEach(async key => {
+      await caches.delete(key);
+      if (++counter >= keys.length) {
+        resolve();
+      }
+    });
   });
+  console.log('Caches flushed.');
+
+  const message = "There's a new updated version.\nClick OK to refresh.";
+  if (await presenter.confirm(message)) {
+    console.log('Refreshing...');
+    window.location.reload();
+  }
+  reloadInProgress = false;
 };
 // tslint:enable:no-console
 
@@ -74,15 +80,15 @@ const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
 };
 
 const updateCheck = async () => {
-  const now = new Date().toLocaleTimeString('en-US');
-  const res = await Axios.get('/api/version');
+  const now = new Date().toLocaleString('en-US');
+  const res = await Axios.get(checkEndpoint);
   // tslint:disable-next-line:no-console
-  console.log(now, 'Revision from API:', res.data);
+  console.log(now, checkType, 'from API:', res.data);
 };
 
 const startPeriodicUpdateCheck = () => {
-  // Periodically check every hour
-  setInterval(updateCheck, 3600 * 1000);
+  // Periodically check in interval
+  setInterval(updateCheck, checkInterval);
   // Run the initial check
   updateCheck();
 };
