@@ -1,11 +1,16 @@
 import Axios from 'axios';
 import 'regenerator-runtime/runtime';
 import WebFont from 'webfontloader';
+import { Workbox } from 'workbox-window';
 import './scss/main.scss';
 
-interface UpdatePayload {
-  cacheName: string;
-  updatedUrl: string;
+interface WorkboxMessage {
+  meta: string;
+  type: string;
+  payload: {
+    cacheName: string;
+    updatedURL: string;
+  };
 }
 
 WebFont.load({
@@ -28,34 +33,53 @@ import('./map').then(
   err => console.error(err),
 );
 
-const registerUpdatesListener = () => {
-  const channel = new BroadcastChannel('index-updates');
-  channel.addEventListener('message', async event => {
-    const { cacheName, updatedUrl } = event.data.payload as UpdatePayload;
-    const cache = await caches.open(cacheName);
-    const response = await cache.match(updatedUrl);
-    if (response) {
-      // FIXME: Abruptly reloading on update is a bad UX
-      // tslint:disable-next-line:no-console
-      console.log('Detected new version, reloading...');
+const handleNewVersion = async () => {
+  // tslint:disable-next-line:no-console
+  console.log('Detected new version, reloading...');
+  // FIXME: confirm() is a bad UX approach
+  if (!confirm("There's a new updated version. Click OK to refresh.")) {
+    return;
+  }
+  // HACK: Flush all caches before reloading
+  const keys = await caches.keys();
+  let counter = 0;
+  keys.forEach(async key => {
+    await caches.delete(key);
+    if (++counter >= keys.length) {
       window.location.reload();
     }
   });
 };
 
-window.addEventListener('load', async () => {
-  if ('serviceWorker' in navigator) {
-    try {
-      const reg = await navigator.serviceWorker.register('/sw.js');
-      // tslint:disable-next-line:no-console
-      console.log('SW Registration success:', reg);
-      registerUpdatesListener();
-    } catch (err) {
-      console.error('SW Registration failed:', err);
+const registerWorkboxListeners = (wb: Workbox) => {
+  wb.addEventListener('activated', event => {
+    if (event.isUpdate) {
+      handleNewVersion();
     }
-  }
+  });
 
-  const res = await Axios.get('/api/version');
-  // tslint:disable-next-line:no-console
-  console.log('Version from API:', res.data);
+  wb.addEventListener('message', event => {
+    const data = event.data as WorkboxMessage;
+    if (data.type === 'CACHE_UPDATED') {
+      handleNewVersion();
+    }
+  });
+};
+
+const startPeriodicUpdateCheck = () => {
+  setInterval(async () => {
+    const now = new Date().toLocaleTimeString('en-US');
+    const res = await Axios.get('/api/revision');
+    // tslint:disable-next-line:no-console
+    console.log(now, 'Revision from API:', res.data);
+  }, 3000);
+};
+
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    const wb = new Workbox('/sw.js');
+    registerWorkboxListeners(wb);
+    wb.register();
+    startPeriodicUpdateCheck();
+  }
 });

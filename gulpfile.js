@@ -8,7 +8,8 @@ const git = require('simple-git');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
-const revision = require('./gulp-streams/revision');
+const date = require('./gulp-streams/date');
+const hash = require('./gulp-streams/hash');
 const version = require('./gulp-streams/version');
 
 const getVersion = cb => {
@@ -49,7 +50,6 @@ const zeropad = text => {
 
 task('sw', () =>
   src('src/sw.js')
-    .pipe(revision())
     .pipe(babel())
     .pipe(dest('staging')),
 );
@@ -64,7 +64,14 @@ task('version', () =>
     .pipe(dest('staging')),
 );
 
-task('staging', parallel('sw', 'version'));
+task('revision', () =>
+  src('src/api/revision')
+    .pipe(date())
+    .pipe(hash())
+    .pipe(dest('staging')),
+);
+
+task('staging', parallel('sw', 'version', 'revision'));
 
 task('webpack', cb => {
   const webpackCb = (err, stats) => {

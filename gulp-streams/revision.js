@@ -43,8 +43,8 @@ const evaluate = content => {
 };
 
 module.exports = () =>
-  through.obj((file, encoding, done) => {
-    const transformed = file.clone();
+  through.obj((chunk, encoding, done) => {
+    const transformed = chunk.clone();
     let contents = transformed.contents.toString();
     const replacers = evaluate(contents);
     const keys = Object.keys(replacers);

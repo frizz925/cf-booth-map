@@ -57,7 +57,7 @@ const webpackConfig = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: ASSET_PATH,
-    filename: isDev ? '[name].bundle.js' : '[name].[hash:8].js',
+    filename: '[name].bundle.js',
   },
   module: {
     rules: [
@@ -136,7 +136,7 @@ const webpackConfig = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: isDev ? '[name].bundle.css' : '[name].[hash:8].css',
+      filename: '[name].bundle.css',
       ignoreOrder: false,
     }),
     new CopyPlugin([
@@ -145,11 +145,11 @@ const webpackConfig = {
       { from: 'src/assets/modernizr-custom.js', to: 'js' },
       { from: 'src/manifest.json', to: 'manifest.json' },
       { from: 'staging/version', to: 'api', force: true },
+      { from: 'staging/revision', to: 'api', force: true },
     ]),
     new WorkboxPlugin.InjectManifest({
       swSrc: 'staging/sw.js',
       swDest: 'sw.js',
-      exclude: [/api/],
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',

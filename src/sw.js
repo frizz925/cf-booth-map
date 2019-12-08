@@ -1,15 +1,15 @@
 /* global workbox */
-self.__precacheManifest = (self.__precacheManifest || []).concat([
-  {
-    url: '/index.html',
-    revision: '{{ REVISION src/index.pug }}',
-  },
-]);
+self.__precacheManifest = (self.__precacheManifest || [])
+  .filter(cache => {
+    const url = typeof cache === 'object' ? cache.url : cache;
+    return !url.startsWith('/api/');
+  })
+  .concat(['/index.html']);
 
 const { skipWaiting, clientsClaim } = workbox.core;
 const { Plugin: CacheablePlugin } = workbox.cacheableResponse;
 const { Plugin: BroadcastPlugin } = workbox.broadcastUpdate;
-const { precacheAndRoute, getCacheKeyForURL } = workbox.precaching;
+const { addPlugins, precacheAndRoute, getCacheKeyForURL } = workbox.precaching;
 const { registerNavigationRoute, registerRoute } = workbox.routing;
 const { StaleWhileRevalidate, CacheFirst } = workbox.strategies;
 
@@ -23,15 +23,15 @@ const cdnCaches = {
 skipWaiting();
 clientsClaim();
 
+addPlugins([new BroadcastPlugin('precache-updates')]);
 precacheAndRoute(self.__precacheManifest, {});
-
 registerNavigationRoute(getCacheKeyForURL('/index.html'));
 
 registerRoute(
-  /api/,
+  new RegExp('/api/'),
   new StaleWhileRevalidate({
     cacheName: 'api-cache',
-    plugins: [new BroadcastPlugin({ channelName: 'api-updates' })],
+    plugins: [new BroadcastPlugin('api-updates')],
   }),
   'GET',
 );
