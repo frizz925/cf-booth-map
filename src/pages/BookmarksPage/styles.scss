@@ -39,8 +39,8 @@
 
 .action {
   @include clickable;
-  color: $font-color-light;
-  font-size: $font-size-large;
+  color: $accent-color;
+  font-size: $font-size-medium;
   width: 60px;
   line-height: 60px;
   text-align: center;

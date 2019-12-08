@@ -1,4 +1,4 @@
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
 import BookmarksPresenter from '@presenters/pages/BookmarksPresenter';
@@ -33,7 +33,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = props => {
         <div className={styles.number}>{circle.boothNumber}</div>
       </div>
       <div className={styles.action} onClick={() => onRemove(circle)}>
-        <FontAwesomeIcon icon={faTimes} />
+        <FontAwesomeIcon icon={faBookmark} />
       </div>
     </div>
   );
