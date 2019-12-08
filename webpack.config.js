@@ -5,6 +5,7 @@ const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -155,6 +156,10 @@ const webpackConfig = {
       filename: 'index.html',
       template: 'src/index.pug',
       inject: false,
+    }),
+    new PreloadWebpackPlugin({
+      rel: 'prefetch',
+      include: 'asyncChunks',
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),

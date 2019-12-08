@@ -42,12 +42,12 @@ export default class AppPresenter {
     this.subscribePresenters();
   }
 
-  public confirm(message: string) {
-    return this.snackbarPresenter.confirm(message);
+  public confirm(message: string, action?: string) {
+    return this.snackbarPresenter.confirm(message, action);
   }
 
-  public snackbar(message: string) {
-    return this.snackbarPresenter.show(message);
+  public snackbar(message: string, action?: string) {
+    return this.snackbarPresenter.show(message, action);
   }
 
   private subscribeObservables() {

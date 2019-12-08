@@ -112,6 +112,9 @@ import('./app').then(
         window.addEventListener('load', () => registerServiceWorker(presenter));
       }
     }
+    (window as any).snackbar = (message: string, action?: string) => {
+      return presenter.snackbar(message, action);
+    };
   },
   err => console.error(err),
 );

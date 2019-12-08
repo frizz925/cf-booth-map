@@ -1,3 +1,4 @@
+import ErrorBoundary from '@components/ErrorBoundary';
 import Loading from '@components/Loading';
 import ManagedRouter from '@components/ManagedRouter';
 import NullLoading from '@components/NullLoading';
@@ -21,21 +22,33 @@ const AppContainer = ({ presenter }: { presenter: AppPresenter }) => {
     searchPresenter,
     snackbarPresenter,
   } = presenter;
+
+  const reloadOnError = async () => {
+    const message =
+      'An error was encountered and the app needs to refresh. Click OK to refresh.';
+    if (await presenter.confirm(message)) {
+      window.location.reload();
+    }
+  };
+
   const containers = [
     <PageContainer presenter={pagePresenter} />,
     <CardContainer presenter={cardPresenter} />,
     <DrawerContainer presenter={drawerPresenter} />,
   ];
+
   return (
     <ManagedRouter>
-      <Suspense fallback={<Loading />}>
-        <SearchContainer presenter={searchPresenter} />
-      </Suspense>
-      {map(containers, (container, idx) => (
-        <Suspense key={idx} fallback={<NullLoading />}>
-          {container}
+      <ErrorBoundary onError={reloadOnError}>
+        <Suspense fallback={<Loading />}>
+          <SearchContainer presenter={searchPresenter} />
         </Suspense>
-      ))}
+        {map(containers, (container, idx) => (
+          <Suspense key={idx} fallback={<NullLoading />}>
+            {container}
+          </Suspense>
+        ))}
+      </ErrorBoundary>
       <SnackbarContainer presenter={snackbarPresenter} />
     </ManagedRouter>
   );

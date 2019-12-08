@@ -36,7 +36,7 @@
 
 .action {
   @include clickable;
-  padding: 12px;
+  padding: 8px 16px;
   color: $accent-color;
   font-weight: $font-weight-bold;
 }
