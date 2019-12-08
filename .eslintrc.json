@@ -2,6 +2,7 @@
   "env": {
     "browser": true,
     "commonjs": true,
+    "serviceworker": true,
     "node": true
   },
   "extends": "eslint:recommended",

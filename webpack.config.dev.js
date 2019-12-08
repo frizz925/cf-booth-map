@@ -1,4 +1,4 @@
-const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
@@ -6,16 +6,10 @@ module.exports = {
   entry: {
     main: ['react-hot-loader/patch', './src/index.ts'],
   },
-  devServer: {
-    port: 3000,
-    inline: true,
-    contentBase: path.resolve(__dirname, 'dist'),
-    historyApiFallback: true,
-    hot: true,
-  },
   resolve: {
     alias: {
       'react-dom': '@hot-loader/react-dom',
     },
   },
+  plugins: [new webpack.HotModuleReplacementPlugin()],
 };

@@ -1,3 +1,4 @@
+const isDev = process.env.NODE_ENV === 'development';
 const tsConfigPaths = require('./tsconfig.json').compilerOptions.paths;
 const moduleAliases = {};
 Object.keys(tsConfigPaths).forEach(name => {
@@ -14,6 +15,6 @@ module.exports = {
     ['babel-plugin-module-resolver', { root: ['.'], alias: moduleAliases }],
     ['@babel/plugin-proposal-decorators', { legacy: true }],
     '@babel/plugin-proposal-class-properties',
-    'react-hot-loader/babel',
-  ],
+    isDev ? 'react-hot-loader/babel' : null,
+  ].filter(Boolean),
 };

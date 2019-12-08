@@ -46,18 +46,9 @@ const cssModulePaths = [
 ];
 
 const cssInlinePaths = [
-  /*
   path.resolve(__dirname, 'src/css'),
   path.resolve(__dirname, 'src/scss'),
-  */
 ];
-
-const cdnCacheOptions = cacheName => ({
-  cacheName,
-  cacheableResponse: {
-    statuses: [0, 200],
-  },
-});
 
 const webpackConfig = {
   entry: {
@@ -108,11 +99,15 @@ const webpackConfig = {
       },
       {
         test: /\.html$/,
-        use: 'html-loader',
+        use: 'raw-loader',
       },
       {
         test: /\.md$/,
-        use: ['html-loader', 'markdown-loader'],
+        use: ['raw-loader', 'markdown-loader'],
+      },
+      {
+        test: /\.pug$/,
+        use: 'pug-loader',
       },
       {
         test: /\.(png|jpg|jpeg|webp|woff|woff2|eot|ttf)$/,
@@ -150,43 +145,13 @@ const webpackConfig = {
       { from: 'src/assets/modernizr-custom.js', to: 'js' },
       { from: 'src/manifest.json', to: 'manifest.json' },
     ]),
-    new WorkboxPlugin.GenerateSW({
+    new WorkboxPlugin.InjectManifest({
+      swSrc: 'staging/sw.js',
       swDest: 'sw.js',
-      clientsClaim: true,
-      skipWaiting: true,
-      runtimeCaching: [
-        {
-          urlPattern: /\/$/,
-          handler: 'StaleWhileRevalidate',
-          options: {
-            cacheName: 'index-cache',
-          },
-        },
-        {
-          urlPattern: new RegExp('^https://unpkg\\.com/'),
-          handler: 'CacheFirst',
-          options: cdnCacheOptions('unpkg-cache'),
-        },
-        {
-          urlPattern: new RegExp('^https://cdnjs\\.cloudflare\\.com/'),
-          handler: 'CacheFirst',
-          options: cdnCacheOptions('cdnjs-cache'),
-        },
-        {
-          urlPattern: new RegExp('^https://.+\\.googleapis\\.com/'),
-          handler: 'CacheFirst',
-          options: cdnCacheOptions('google-cache'),
-        },
-        {
-          urlPattern: new RegExp('^https://catalog\\.comifuro\\.net/'),
-          handler: 'CacheFirst',
-          options: cdnCacheOptions('comifuro-cache'),
-        },
-      ],
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: 'src/index.ejs',
+      template: 'src/index.pug',
       inject: false,
     }),
     new webpack.DefinePlugin({
