@@ -1,2 +1,42 @@
+@import 'modules/variables';
+@import 'modules/mixins';
+
 .container {
+  position: absolute;
+  box-sizing: border-box;
+  left: 0;
+  bottom: -100%;
+  width: 100%;
+  padding: 8px;
+  z-index: 100;
+
+  transition: bottom $transition-duration-long;
+  transition-timing-function: ease-in;
+
+  &.shown {
+    bottom: 0;
+    transition-timing-function: ease-out;
+  }
+}
+
+.content {
+  display: flex;
+  color: $font-color-dark;
+  background-color: $background-color-dark;
+  box-shadow: 1px 1px 3px 1px $shadow-color;
+  border-radius: 4px;
+  flex-direction: row;
+  align-items: center;
+}
+
+.label {
+  padding: 12px;
+  flex-grow: 1;
+}
+
+.action {
+  @include clickable;
+  padding: 12px;
+  color: $accent-color;
+  font-weight: $font-weight-bold;
 }

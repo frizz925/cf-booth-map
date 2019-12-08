@@ -6,6 +6,7 @@ import { IS_DEVELOPMENT } from '@utils/Constants';
 import map from 'lodash/map';
 import React, { lazy, Suspense } from 'react';
 import { hot } from 'react-hot-loader/root';
+import SnackbarContainer from './SnackbarContainer';
 
 const SearchContainer = lazy(() => import('@containers/SearchContainer'));
 const CardContainer = lazy(() => import('@containers/CardContainer'));
@@ -13,7 +14,13 @@ const DrawerContainer = lazy(() => import('@containers/DrawerContainer'));
 const PageContainer = lazy(() => import('@containers/PageContainer'));
 
 const AppContainer = ({ presenter }: { presenter: AppPresenter }) => {
-  const { pagePresenter, cardPresenter, drawerPresenter, searchPresenter } = presenter;
+  const {
+    pagePresenter,
+    cardPresenter,
+    drawerPresenter,
+    searchPresenter,
+    snackbarPresenter,
+  } = presenter;
   const containers = [
     <PageContainer presenter={pagePresenter} />,
     <CardContainer presenter={cardPresenter} />,
@@ -29,6 +36,7 @@ const AppContainer = ({ presenter }: { presenter: AppPresenter }) => {
           {container}
         </Suspense>
       ))}
+      <SnackbarContainer presenter={snackbarPresenter} />
     </ManagedRouter>
   );
 };

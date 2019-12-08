@@ -97,7 +97,7 @@ const registerServiceWorker = (presenter: AppPresenter) => {
 };
 
 import('./app').then(
-  async ({ default: app }) => {
+  ({ default: app }) => {
     const presenter = app(document.getElementById('app'));
     if (IS_PRODUCTION) {
       if (document.readyState === 'complete') {
@@ -106,9 +106,6 @@ import('./app').then(
         window.addEventListener('load', () => registerServiceWorker(presenter));
       }
     }
-    const result = await presenter.confirm('This is a confirmation dialog');
-    // tslint:disable-next-line:no-console
-    console.log(result);
   },
   err => console.error(err),
 );

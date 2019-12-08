@@ -1,14 +1,19 @@
 import { CIRCLE_PATH_PREFIX } from '@utils/Routing';
+import BookmarkObservable from 'src/observables/BookmarkObservable';
 import CardPresenter from './CardPresenter';
 import DrawerPresenter from './DrawerPresenter';
 import PagePresenter from './PagePresenter';
 import SearchPresenter from './SearchPresenter';
+import SnackbarPresenter from './SnackbarPresenter';
 
 export default class AppPresenter {
   public readonly pagePresenter: PagePresenter;
   public readonly cardPresenter: CardPresenter;
   public readonly drawerPresenter: DrawerPresenter;
   public readonly searchPresenter: SearchPresenter;
+  public readonly snackbarPresenter: SnackbarPresenter;
+
+  private readonly bookmarkObservable: BookmarkObservable;
 
   private readonly prevState = {
     pageOpened: false,
@@ -19,22 +24,39 @@ export default class AppPresenter {
   };
 
   constructor(
+    bookmarkObservable: BookmarkObservable,
     pagePresenter: PagePresenter,
     cardPresenter: CardPresenter,
     drawerPresenter: DrawerPresenter,
     searchPresenter: SearchPresenter,
+    snackbarPresenter: SnackbarPresenter,
   ) {
+    this.bookmarkObservable = bookmarkObservable;
     this.pagePresenter = pagePresenter;
     this.cardPresenter = cardPresenter;
     this.drawerPresenter = drawerPresenter;
     this.searchPresenter = searchPresenter;
+    this.snackbarPresenter = snackbarPresenter;
     this.saveState();
+    this.subscribeObservables();
     this.subscribePresenters();
   }
 
   public confirm(message: string) {
-    // FIXME: confirm() is a bad UX approach
-    return Promise.resolve(confirm(message));
+    return this.snackbarPresenter.confirm(message);
+  }
+
+  public snackbar(message: string) {
+    return this.snackbarPresenter.show(message);
+  }
+
+  private subscribeObservables() {
+    this.bookmarkObservable.onAdd.subscribe(({ name }) => {
+      this.snackbar(`${name} added to bookmarks`);
+    });
+    this.bookmarkObservable.onRemove.subscribe(({ name }) => {
+      this.snackbar(`${name} removed from bookmarks`);
+    });
   }
 
   private subscribePresenters() {

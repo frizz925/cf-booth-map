@@ -1,5 +1,6 @@
 @mixin clickable {
   cursor: pointer;
+  user-select: none;
 
   &:active {
     background-color: $active-bg-color;

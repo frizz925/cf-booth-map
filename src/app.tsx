@@ -6,6 +6,7 @@ import CardPresenter from '@presenters/CardPresenter';
 import DrawerPresenter from '@presenters/DrawerPresenter';
 import PagePresenter from '@presenters/PagePresenter';
 import SearchPresenter from '@presenters/SearchPresenter';
+import SnackbarPresenter from '@presenters/SnackbarPresenter';
 import BookmarkRepositoryStorage from '@repositories/BookmarkRepositoryStorage';
 import CircleRepositoryApi from '@repositories/CircleRepositoryApi';
 import axios from 'axios';
@@ -23,7 +24,17 @@ const app = (root: Element) => {
   const bookmarkRepository = new BookmarkRepositoryStorage();
   const bookmarkObservable: BookmarkObservable = bookmarkRepository;
 
+  const presenter = new AppPresenter(
+    bookmarkObservable,
+    new PagePresenter(),
+    new CardPresenter(bookmarkRepository, bookmarkObservable),
+    new DrawerPresenter(),
+    new SearchPresenter(circleRepository, bookmarkRepository, bookmarkObservable),
+    new SnackbarPresenter(),
+  );
+
   const context: AppContextType = {
+    presenter,
     repositories: {
       circle: circleRepository,
       bookmark: bookmarkRepository,
@@ -32,13 +43,6 @@ const app = (root: Element) => {
       bookmark: bookmarkObservable,
     },
   };
-
-  const presenter = new AppPresenter(
-    new PagePresenter(),
-    new CardPresenter(bookmarkRepository, bookmarkObservable),
-    new DrawerPresenter(),
-    new SearchPresenter(circleRepository, bookmarkRepository, bookmarkObservable),
-  );
 
   render(
     <AppContext.Provider value={context}>
