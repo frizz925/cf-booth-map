@@ -1,7 +1,6 @@
-$font-family: 'Roboto', Helvetica, Arial, sans-serif;
+@import 'colors';
 
-$font-color: rgba(0, 0, 0, 0.7);
-$font-color-light: rgba(0, 0, 0, 0.5);
+$font-family: 'Roboto', Helvetica, Arial, sans-serif;
 
 $font-weight: 400;
 $font-weight-bold: 500;
@@ -14,14 +13,5 @@ $font-size-normal: 1em;
 $font-size-small: 0.9em;
 $font-size-smaller: 0.8em;
 
-$background-color: #fff;
-
 $transition-duration: 450ms;
 $transition-timing-function: ease;
-
-$shadow-color: rgba(0, 0, 0, 0.3);
-
-$separator-color: rgba(0, 0, 0, 0.2);
-$border-color: rgba(0, 0, 0, 0.4);
-
-$active-bg-color: rgba(0, 0, 0, 0.1);

@@ -56,4 +56,8 @@
   &.right {
     right: 0;
   }
+
+  &.active {
+    color: $accent-color;
+  }
 }

@@ -50,8 +50,11 @@ export default ({ presenter }: { presenter: CardPresenter }) => {
       bookmarked={bookmarked}
       shown={shown}
       pulled={pulled}
-      onBookmark={useCallback(() => presenter.bookmark(circle), [presenter, circle])}
-      onUnbookmark={useCallback(() => presenter.unbookmark(circle), [presenter, circle])}
+      onBookmarked={useCallback(() => presenter.bookmark(circle), [presenter, circle])}
+      onUnbookmarked={useCallback(() => presenter.unbookmark(circle), [
+        presenter,
+        circle,
+      ])}
       onOverlayClick={onCardTabbed}
       onCardPulled={useCallback(() => pushCircle(history, circle), [history, circle])}
       onCardTabbed={onCardTabbed}

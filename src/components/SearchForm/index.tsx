@@ -1,12 +1,12 @@
 import SearchBox from '@components/SearchBox';
-import SearchResults from '@components/SearchResults';
-import Circle from '@models/Circle';
+import SearchResults, { CircleHandler } from '@components/SearchResults';
+import CircleBookmark from '@models/CircleBookmark';
 import classNames from 'classnames';
 import React from 'react';
 import * as styles from './styles.scss';
 
 interface SearchFormProps {
-  circles: Circle[];
+  circles: CircleBookmark[];
   shown: boolean;
   focused: boolean;
   searching: boolean;
@@ -17,23 +17,27 @@ interface SearchFormProps {
   onFocus: () => void;
   onClear: () => void;
   onTextChanged: (value: string) => void;
-  onResultSelected: (circle: Circle) => void;
+
+  onResultSelected: CircleHandler;
+  onResultBookmarked: CircleHandler;
+  onResultUnbookmarked: CircleHandler;
 }
 
-const SearchForm: React.FC<SearchFormProps> = props => {
-  const {
-    shown,
-    focused,
-    searching,
-    circles,
-    searchText,
-    onAction,
-    onBack,
-    onFocus,
-    onClear,
-    onTextChanged,
-    onResultSelected,
-  } = props;
+const SearchForm: React.FC<SearchFormProps> = ({
+  shown,
+  focused,
+  searching,
+  circles,
+  searchText,
+  onAction,
+  onBack,
+  onFocus,
+  onClear,
+  onTextChanged,
+  onResultSelected,
+  onResultBookmarked,
+  onResultUnbookmarked,
+}) => {
   const focusedClassName = focused ? styles.focused : '';
   const containerClassNames = classNames(styles.container, focusedClassName);
   const searchBoxClassNames = classNames(styles.searchBoxContainer, focusedClassName, {
@@ -60,6 +64,8 @@ const SearchForm: React.FC<SearchFormProps> = props => {
         isLoading={searching}
         circles={circles}
         onSelected={onResultSelected}
+        onBookmarked={onResultBookmarked}
+        onUnbookmarked={onResultUnbookmarked}
       />
     </div>
   );

@@ -24,8 +24,10 @@ const AppContainer = ({ presenter }: { presenter: AppPresenter }) => {
       <Suspense fallback={<Loading />}>
         <SearchContainer presenter={searchPresenter} />
       </Suspense>
-      {map(containers, container => (
-        <Suspense fallback={<NullLoading />}>{container}</Suspense>
+      {map(containers, (container, idx) => (
+        <Suspense key={idx} fallback={<NullLoading />}>
+          {container}
+        </Suspense>
       ))}
     </ManagedRouter>
   );

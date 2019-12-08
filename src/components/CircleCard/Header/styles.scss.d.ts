@@ -8,3 +8,4 @@ export const action: string;
 // Modifiers
 export const left: string;
 export const right: string;
+export const active: string;

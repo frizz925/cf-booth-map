@@ -10,10 +10,23 @@
 }
 
 .searchResultItem {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid $separator-color;
+  flex-direction: row;
+}
+
+.searchResultDetails {
   @include clickable;
 
-  padding: 12px;
-  border-bottom: 1px solid $separator-color;
+  display: flex;
+  box-sizing: border-box;
+  height: 60px;
+  padding: 0 12px;
+
+  justify-content: center;
+  flex-direction: column;
+  flex-grow: 1;
 
   & > h3 {
     font-weight: 400;
@@ -27,5 +40,20 @@
     font-size: $font-size-small;
     font-weight: $font-weight-light;
     color: $font-color-light;
+  }
+}
+
+.searchResultAction {
+  @include clickable;
+
+  color: $font-color-light;
+  width: 60px;
+  line-height: 60px;
+  padding: 0;
+  font-size: 16px;
+  text-align: center;
+
+  &.active {
+    color: $accent-color;
   }
 }

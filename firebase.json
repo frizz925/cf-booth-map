@@ -10,6 +10,15 @@
     ],
     "headers": [
       {
+        "source": "**/index.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
         "source": "**/*.@(js|css|png|webp|svg|otf|ttf|woff|woff2)",
         "headers": [
           {

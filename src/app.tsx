@@ -37,7 +37,7 @@ const app = (root: Element) => {
     new PagePresenter(),
     new CardPresenter(bookmarkRepository, bookmarkObservable),
     new DrawerPresenter(),
-    new SearchPresenter(circleRepository),
+    new SearchPresenter(circleRepository, bookmarkRepository, bookmarkObservable),
   );
 
   render(

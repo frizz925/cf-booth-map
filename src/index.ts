@@ -1,4 +1,5 @@
 import AppPresenter from '@presenters/AppPresenter';
+import { IS_PRODUCTION } from '@utils/Constants';
 import Axios from 'axios';
 import 'regenerator-runtime/runtime';
 import WebFont from 'webfontloader';
@@ -74,7 +75,7 @@ const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
 
 const updateCheck = async () => {
   const now = new Date().toLocaleTimeString('en-US');
-  const res = await Axios.get('/api/revision');
+  const res = await Axios.get('/api/version');
   // tslint:disable-next-line:no-console
   console.log(now, 'Revision from API:', res.data);
 };
@@ -96,13 +97,18 @@ const registerServiceWorker = (presenter: AppPresenter) => {
 };
 
 import('./app').then(
-  ({ default: app }) => {
+  async ({ default: app }) => {
     const presenter = app(document.getElementById('app'));
-    if (document.readyState === 'complete') {
-      registerServiceWorker(presenter);
-    } else {
-      window.addEventListener('load', () => registerServiceWorker(presenter));
+    if (IS_PRODUCTION) {
+      if (document.readyState === 'complete') {
+        registerServiceWorker(presenter);
+      } else {
+        window.addEventListener('load', () => registerServiceWorker(presenter));
+      }
     }
+    const result = await presenter.confirm('This is a confirmation dialog');
+    // tslint:disable-next-line:no-console
+    console.log(result);
   },
   err => console.error(err),
 );

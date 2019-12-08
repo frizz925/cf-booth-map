@@ -23,7 +23,7 @@ const getVersion = cb => {
     const year = now.getUTCFullYear();
     const month = zeropad(now.getUTCMonth() + 1);
     const date = zeropad(now.getUTCDate());
-    const shortHash = hash.substring(0, 7);
+    const shortHash = hash.substring(0, 8);
     const result = `v${year}${month}${date}-${shortHash}`;
     cb(null, result);
   });

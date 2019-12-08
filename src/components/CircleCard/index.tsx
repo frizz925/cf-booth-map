@@ -15,8 +15,8 @@ export interface CircleCardProps {
   shown: boolean;
   pulled: boolean;
 
-  onBookmark: () => void;
-  onUnbookmark: () => void;
+  onBookmarked: () => void;
+  onUnbookmarked: () => void;
 
   onOverlayClick: () => void;
   onCardPulled: () => void;
@@ -131,8 +131,8 @@ const CircleCard: React.FC<CircleCardProps> = props => {
       bookmarked,
       shown,
       pulled,
-      onBookmark,
-      onUnbookmark,
+      onBookmarked,
+      onUnbookmarked,
       onOverlayClick,
     } = props;
     const classModifiers = {
@@ -155,8 +155,8 @@ const CircleCard: React.FC<CircleCardProps> = props => {
             forwardRef={headerRef}
             circle={circle}
             bookmarked={bookmarked}
-            onBookmark={onBookmark}
-            onUnbookmark={onUnbookmark}
+            onBookmarked={onBookmarked}
+            onUnbookmarked={onUnbookmarked}
           />
           {circle ? <Body circle={circle} /> : null}
         </div>

@@ -7,7 +7,7 @@
   "author": "Izra Faturrahman <Frizz925@hotmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development gulp dev-server",
+    "dev": "cross-env NODE_ENV=development gulp dev",
     "build": "cross-env NODE_ENV=production gulp build",
     "build:dev": "cross-env NODE_ENV=development gulp build"
   },
