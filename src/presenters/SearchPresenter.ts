@@ -14,6 +14,20 @@ export default class SearchPresenter {
     this.repository = repository;
   }
 
+  public hide() {
+    this.focused.next(false);
+    this.shown.next(false);
+  }
+
+  public show() {
+    this.shown.next(true);
+  }
+
+  public focus() {
+    this.shown.next(true);
+    this.focused.next(true);
+  }
+
   public search(query: string) {
     return this.repository.filter(query);
   }

@@ -1,3 +1,4 @@
+import AppPresenter from '@presenters/AppPresenter';
 import Axios from 'axios';
 import 'regenerator-runtime/runtime';
 import WebFont from 'webfontloader';
@@ -19,13 +20,6 @@ WebFont.load({
   },
 });
 
-import('./app').then(
-  ({ default: app }) => {
-    app(document.getElementById('app'));
-  },
-  err => console.error(err),
-);
-
 import('./map').then(
   ({ default: map }) => {
     map(document.getElementById('stage'));
@@ -33,54 +27,74 @@ import('./map').then(
   err => console.error(err),
 );
 
-const handleNewVersion = async () => {
-  // tslint:disable-next-line:no-console
-  console.log('Detected new version, reloading...');
-  // FIXME: confirm() is a bad UX approach
-  if (!confirm("There's a new updated version. Click OK to refresh.")) {
+// tslint:disable:no-console
+const handleNewVersion = async (presenter: AppPresenter) => {
+  console.log('Detected new version');
+  const message = "There's a new updated version. Click OK to refresh.";
+  const confirmed = await presenter.confirm(message);
+  if (!confirmed) {
     return;
   }
-  // HACK: Flush all caches before reloading
+  // HACK: Flush all caches before reloading (there's got to be a better way than this)
+  console.log('Flushing caches...');
   const keys = await caches.keys();
   let counter = 0;
   keys.forEach(async key => {
     await caches.delete(key);
     if (++counter >= keys.length) {
+      console.log('Reloading...');
       window.location.reload();
     }
   });
 };
+// tslint:enable:no-console
 
-const registerWorkboxListeners = (wb: Workbox) => {
+const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
   wb.addEventListener('activated', event => {
     if (event.isUpdate) {
-      handleNewVersion();
+      handleNewVersion(presenter);
     }
   });
 
   wb.addEventListener('message', event => {
     const data = event.data as WorkboxMessage;
     if (data.type === 'CACHE_UPDATED') {
-      handleNewVersion();
+      handleNewVersion(presenter);
     }
   });
 };
 
-const startPeriodicUpdateCheck = () => {
-  // Periodically check every hour
-  setInterval(async () => {
-    const now = new Date().toLocaleTimeString('en-US');
-    const res = await Axios.get('/api/revision');
-    // tslint:disable-next-line:no-console
-    console.log(now, 'Revision from API:', res.data);
-  }, 3600 * 1000);
+const updateCheck = async () => {
+  const now = new Date().toLocaleTimeString('en-US');
+  const res = await Axios.get('/api/revision');
+  // tslint:disable-next-line:no-console
+  console.log(now, 'Revision from API:', res.data);
 };
 
-window.addEventListener('load', () => {
+const startPeriodicUpdateCheck = () => {
+  // Periodically check every hour
+  setInterval(updateCheck, 3600 * 1000);
+  // Run the initial check
+  updateCheck();
+};
+
+const registerServiceWorker = (presenter: AppPresenter) => {
   if ('serviceWorker' in navigator) {
     const wb = new Workbox('/sw.js');
-    registerWorkboxListeners(wb);
+    registerWorkboxListeners(wb, presenter);
     wb.register();
     startPeriodicUpdateCheck();
   }
-});
+};
+
+import('./app').then(
+  ({ default: app }) => {
+    const presenter = app(document.getElementById('app'));
+    if (document.readyState === 'complete') {
+      registerServiceWorker(presenter);
+    } else {
+      window.addEventListener('load', () => registerServiceWorker(presenter));
+    }
+  },
+  err => console.error(err),
+);

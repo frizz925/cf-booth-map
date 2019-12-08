@@ -32,6 +32,11 @@ export default class AppPresenter {
     this.subscribePresenters();
   }
 
+  public confirm(message: string) {
+    // FIXME: confirm() is a bad UX approach
+    return Promise.resolve(confirm(message));
+  }
+
   private subscribePresenters() {
     const {
       pagePresenter,
@@ -44,13 +49,11 @@ export default class AppPresenter {
     pagePresenter.opened.subscribe(opened => {
       if (opened) {
         this.saveState();
-        cardPresenter.pulled.next(false);
-        cardPresenter.shown.next(false);
-        drawerPresenter.opened.next(false);
-        searchPresenter.focused.next(false);
-        searchPresenter.shown.next(false);
+        cardPresenter.hide();
+        drawerPresenter.close();
+        searchPresenter.hide();
       } else if (prevState.pageOpened) {
-        searchPresenter.shown.next(true);
+        searchPresenter.show();
         cardPresenter.shown.next(prevState.cardShown);
       }
     });
@@ -69,7 +72,7 @@ export default class AppPresenter {
     cardPresenter.pulled.subscribe(pulled => {
       if (pulled) {
         this.saveState();
-        drawerPresenter.opened.next(false);
+        drawerPresenter.close();
         searchPresenter.focused.next(false);
       } else if (prevState.cardPulled) {
         drawerPresenter.opened.next(prevState.drawerOpened);
@@ -91,9 +94,8 @@ export default class AppPresenter {
     searchPresenter.focused.subscribe(focused => {
       if (focused) {
         this.saveState();
-        cardPresenter.pulled.next(false);
-        cardPresenter.shown.next(false);
-        drawerPresenter.opened.next(false);
+        cardPresenter.hide();
+        drawerPresenter.close();
       } else if (prevState.searchFocused) {
         cardPresenter.shown.next(prevState.cardShown);
         cardPresenter.pulled.next(prevState.cardPulled);
@@ -101,7 +103,7 @@ export default class AppPresenter {
       }
     });
 
-    searchPresenter.action.subscribe(() => drawerPresenter.opened.next(true));
+    searchPresenter.action.subscribe(() => drawerPresenter.open());
 
     pagePresenter.circle.subscribe(cardPresenter.circle);
     searchPresenter.circle.subscribe(cardPresenter.circle);

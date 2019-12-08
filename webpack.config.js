@@ -57,7 +57,7 @@ const webpackConfig = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: ASSET_PATH,
-    filename: '[name].bundle.js',
+    filename: isDev ? '[name].bundle.js' : '[name].[hash:8].js',
   },
   module: {
     rules: [
@@ -136,7 +136,7 @@ const webpackConfig = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '[name].bundle.css',
+      filename: isDev ? '[name].bundle.css' : '[name].[hash:8].css',
       ignoreOrder: false,
     }),
     new CopyPlugin([

@@ -46,6 +46,8 @@ const app = (root: Element) => {
     </AppContext.Provider>,
     root,
   );
+
+  return presenter;
 };
 
 export default app;
