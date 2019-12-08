@@ -141,13 +141,15 @@ const webpackConfig = {
     }),
     new CopyPlugin([
       { from: 'assets', to: 'assets' },
-      { from: 'src/data', to: 'data' },
+      { from: 'src/api', to: 'api' },
       { from: 'src/assets/modernizr-custom.js', to: 'js' },
       { from: 'src/manifest.json', to: 'manifest.json' },
+      { from: 'staging/version', to: 'api', force: true },
     ]),
     new WorkboxPlugin.InjectManifest({
       swSrc: 'staging/sw.js',
       swDest: 'sw.js',
+      exclude: [/api/],
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',

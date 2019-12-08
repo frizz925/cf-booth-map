@@ -38,7 +38,7 @@ export default class CircleRepositoryApi implements CircleRepository {
     }
 
     process.nextTick(async () => {
-      const res = await this.client.get('/data/circles.json');
+      const res = await this.client.get('/api/circles.json');
       const circles = res.data as RawCircle[];
       const results = map(circles, circle => this.parser.parse(circle))
         .filter(circle => {

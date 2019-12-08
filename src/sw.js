@@ -6,6 +6,13 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   },
 ]);
 
+const { skipWaiting, clientsClaim } = workbox.core;
+const { Plugin: CacheablePlugin } = workbox.cacheableResponse;
+const { Plugin: BroadcastPlugin } = workbox.broadcastUpdate;
+const { precacheAndRoute, getCacheKeyForURL } = workbox.precaching;
+const { registerNavigationRoute, registerRoute } = workbox.routing;
+const { StaleWhileRevalidate, CacheFirst } = workbox.strategies;
+
 const cdnCaches = {
   unpkg: new RegExp('^https://unpkg\\.com/'),
   cdnjs: new RegExp('^https://cdnjs\\.cloudflare\\.com/'),
@@ -13,27 +20,29 @@ const cdnCaches = {
   comifuro: new RegExp('^https://catalog\\.comifuro\\.net/'),
 };
 
-workbox.core.skipWaiting();
-workbox.core.clientsClaim();
+skipWaiting();
+clientsClaim();
 
-workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute(
-  workbox.precaching.getCacheKeyForURL('/index.html'),
+registerNavigationRoute(getCacheKeyForURL('/index.html'));
+
+registerRoute(
+  /api/,
+  new StaleWhileRevalidate({
+    cacheName: 'api-cache',
+    plugins: [new BroadcastPlugin({ channelName: 'api-updates' })],
+  }),
+  'GET',
 );
 
-const cdnPlugins = [
-  new workbox.cacheableResponse.Plugin({
-    statuses: [0, 200],
-  }),
-];
-const cdnStrategy = cacheName =>
-  new workbox.strategies.CacheFirst({
-    cacheName,
-    plugins: cdnPlugins,
-  });
-Object.keys(cdnCaches).forEach(key => {
-  const matcher = cdnCaches[key];
-  const cacheName = `${key}-cache`;
-  workbox.routing.registerRoute(matcher, cdnStrategy(cacheName), 'GET');
-});
+Object.keys(cdnCaches).forEach(key =>
+  registerRoute(
+    cdnCaches[key],
+    new CacheFirst({
+      cacheName: `${key}-cache`,
+      plugins: [new CacheablePlugin({ statuses: [0, 200] })],
+    }),
+    'GET',
+  ),
+);

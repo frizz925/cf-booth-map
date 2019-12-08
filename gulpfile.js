@@ -1,17 +1,21 @@
 const path = require('path');
 const { task, watch, series, parallel, src, dest } = require('gulp');
 const babel = require('gulp-babel');
-const revision = require('./gulp-streams/revision');
 const log = require('fancy-log');
 const PluginError = require('plugin-error');
 
 const git = require('simple-git');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
-const webpackCompiler = cb => {
+
+const revision = require('./gulp-streams/revision');
+const version = require('./gulp-streams/version');
+
+const getVersion = cb => {
   git(__dirname).revparse(['HEAD'], (err, hash) => {
     if (err) {
       cb(err, null);
+      return;
     }
 
     const now = new Date();
@@ -19,9 +23,18 @@ const webpackCompiler = cb => {
     const month = zeropad(now.getUTCMonth() + 1);
     const date = zeropad(now.getUTCDate());
     const shortHash = hash.substring(0, 7);
+    const result = `v${year}${month}${date}-${shortHash}`;
+    cb(null, result);
+  });
+};
 
-    process.env.APP_VERSION = `v${year}${month}${date}-${shortHash}`;
-
+const webpackCompiler = cb => {
+  getVersion((err, result) => {
+    if (err) {
+      cb(err, null);
+      return;
+    }
+    process.env.APP_VERSION = result;
     const compiler = webpack(require('./webpack.config'));
     cb(null, compiler);
   });
@@ -44,6 +57,14 @@ task('sw', () =>
 task('sw:watch', () => {
   watch('src/sw.js', series('sw'));
 });
+
+task('version', () =>
+  src('src/api/version')
+    .pipe(version(getVersion))
+    .pipe(dest('staging')),
+);
+
+task('staging', parallel('sw', 'version'));
 
 task('webpack', cb => {
   const webpackCb = (err, stats) => {
@@ -91,7 +112,7 @@ task('webpack:dev-server', cb => {
   });
 });
 
-task('build', series('sw', 'webpack'));
-task('dev', series('sw', parallel('sw:watch', 'webpack:dev-server')));
+task('build', series('staging', 'webpack'));
+task('dev', series('staging', parallel('sw:watch', 'webpack:dev-server')));
 
 task('default', series('build'));
