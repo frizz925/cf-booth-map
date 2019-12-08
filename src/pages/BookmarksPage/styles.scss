@@ -16,10 +16,13 @@
 
 .details {
   @include clickable;
+  display: flex;
   box-sizing: border-box;
   padding: 12px;
-  height: 56px;
+  height: 60px;
   flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .title {
@@ -38,7 +41,7 @@
   @include clickable;
   color: $font-color-light;
   font-size: $font-size-large;
-  width: 56px;
-  line-height: 56px;
+  width: 60px;
+  line-height: 60px;
   text-align: center;
 }

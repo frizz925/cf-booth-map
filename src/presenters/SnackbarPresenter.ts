@@ -71,7 +71,7 @@ export default class SnackbarPresenter {
       subscriber.unsubscribe();
       this.queue.shift();
       if (this.queue.length > 0) {
-        setTimeout(() => this.run(this.queue[0]), 1500);
+        setTimeout(() => this.run(this.queue[0]), 500);
       }
     });
     this.contentSubject.next({ message, action });
