@@ -28,13 +28,21 @@ import('./map').then(
 );
 
 // tslint:disable:no-console
+let reloadInProgress = false;
 const handleNewVersion = async (presenter: AppPresenter) => {
+  if (reloadInProgress) {
+    return;
+  }
+  reloadInProgress = true;
+
   console.log('Detected new version');
   const message = "There's a new updated version. Click OK to refresh.";
   const confirmed = await presenter.confirm(message);
   if (!confirmed) {
+    reloadInProgress = false;
     return;
   }
+
   // HACK: Flush all caches before reloading (there's got to be a better way than this)
   console.log('Flushing caches...');
   const keys = await caches.keys();
