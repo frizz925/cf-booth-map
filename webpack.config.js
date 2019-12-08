@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
@@ -47,8 +46,10 @@ const cssModulePaths = [
 ];
 
 const cssInlinePaths = [
+  /*
   path.resolve(__dirname, 'src/css'),
   path.resolve(__dirname, 'src/scss'),
+  */
 ];
 
 const cdnCacheOptions = cacheName => ({
@@ -186,14 +187,7 @@ const webpackConfig = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.ejs',
-      inject: true,
-    }),
-    new PreloadWebpackPlugin({
-      rel: 'preload',
-      include: 'initial',
-    }),
-    new HtmlBeautifyPlugin({
-      replace: [' type="text/javascript"'],
+      inject: false,
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
@@ -203,4 +197,16 @@ const webpackConfig = {
   ],
 };
 
-module.exports = require('webpack-merge')(webpackConfig, webpackEnvConfig);
+const webpackOverrideConfig = {
+  plugins: [
+    new HtmlBeautifyPlugin({
+      replace: [' type="text/javascript"'],
+    }),
+  ],
+};
+
+module.exports = require('webpack-merge')(
+  webpackConfig,
+  webpackEnvConfig,
+  webpackOverrideConfig,
+);

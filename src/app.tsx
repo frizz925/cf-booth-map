@@ -10,10 +10,10 @@ import BookmarkRepositoryStorage from '@repositories/BookmarkRepositoryStorage';
 import CircleRepositoryApi from '@repositories/CircleRepositoryApi';
 import axios from 'axios';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import BookmarkObservable from './observables/BookmarkObservable';
 
-const app = (el: Element) => {
+const app = (root: Element) => {
   const { protocol, host } = window.location;
   const circleClient = axios.create({
     baseURL: `${protocol}//${host}/`,
@@ -40,11 +40,11 @@ const app = (el: Element) => {
     new SearchPresenter(circleRepository),
   );
 
-  ReactDOM.render(
+  render(
     <AppContext.Provider value={context}>
       <AppContainer presenter={presenter} />
     </AppContext.Provider>,
-    el,
+    root,
   );
 };
 

@@ -8,15 +8,19 @@ WebFont.load({
   },
 });
 
-import('./app')
-  .then(({ default: app }) => {
+import('./app').then(
+  ({ default: app }) => {
     app(document.getElementById('app'));
-    return import('./map');
-  })
-  .then(({ default: map }) => {
+  },
+  err => console.error(err),
+);
+
+import('./map').then(
+  ({ default: map }) => {
     map(document.getElementById('stage'));
-  })
-  .catch(err => console.error(err));
+  },
+  err => console.error(err),
+);
 
 window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {

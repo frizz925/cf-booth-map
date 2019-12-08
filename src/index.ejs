@@ -1,5 +1,13 @@
 <%
-const cdnAssets = [
+const cdnDomains = [
+  'https://ajax.googleapis.com/',
+  'https://fonts.googleapis.com/',
+  'https://storage.googleapis.com/',
+  'https://cdnjs.cloudflare.com/',
+  'https://unpkg.com/'
+];
+const cdnJsFiles = [
+  '/js/modernizr-custom.js',
   'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.3/localforage.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js',
@@ -7,6 +15,13 @@ const cdnAssets = [
   'https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.4.5/fuse.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.5/pixi.min.js',
 ];
+const cdnCssFiles = [
+  'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css',
+];
+const jsFiles = cdnJsFiles.concat(htmlWebpackPlugin.files.js);
+htmlWebpackPlugin.files.js = [];
+const cssFiles = cdnCssFiles.concat(htmlWebpackPlugin.files.css);
+htmlWebpackPlugin.files.css = [];
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,21 +37,25 @@ const cdnAssets = [
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
   <link rel="manifest" href="/manifest.json">
-  <link rel="dns-prefetch" href="https://ajax.googleapis.com/">
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com/">
-  <link rel="dns-prefetch" href="https://storage.googleapis.com/">
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/">
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" onload="this.onload=null;this.rel='stylesheet'">
   <title>Comic Frontier Booth Map</title>
-  <link as="script" href="/js/modernizr-custom.js" rel="preload"><% cdnAssets.forEach(url => { %>
-  <link as="script" href="<%= url %>" crossorigin="anonymous" rel="preload"><% }) %>
+  <% cdnDomains.forEach(url => { %>
+  <link rel="preconnect" href="<%= url %>"><% }) %>
+  <% jsFiles.forEach(url => { if (url.indexOf('://') > 0) { %>
+  <link as="script" href="<%= url %>" crossorigin="anonymous" rel="preload"><% } else { %>
+  <link as="script" href="<%= url %>" rel="preload"><% }}) %>
+  <% cssFiles.forEach(url => { %>
+  <link as="style" href="<%= url %>" rel="preload" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="<%= url %>">
+  </noscript><% }) %>
 </head>
 
 <body>
   <div id="app">Loading...</div>
   <div id="stage"></div>
-  <script src="/js/modernizr-custom.js"></script><% cdnAssets.forEach(url => { %>
-  <script src="<%= url %>" crossorigin="anonymous"></script><% }) %>
+  <% jsFiles.forEach(url => { if (url.indexOf('://') > 0) { %>
+  <script src="<%= url %>" crossorigin="anonymous"></script><% } else { %>
+  <script src="<%= url %>"></script><% }}) %>
 </body>
 
 </html>

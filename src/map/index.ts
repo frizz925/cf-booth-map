@@ -5,8 +5,6 @@ import MapController from './MapController';
 import MapRenderer from './MapRenderer';
 
 const setupRenderer = (stage: Element, renderer: MapRenderer) => {
-  renderer.attach(stage);
-
   const controller = new MapController(renderer);
   window.addEventListener('resize', controller.onWindowResize);
   stage.addEventListener('wheel', evt => controller.onMouseWheel(evt as WheelEvent), {
@@ -26,6 +24,8 @@ const setupRenderer = (stage: Element, renderer: MapRenderer) => {
   mc.on('doubletap', controller.onViewDoubleTap);
   mc.on('panstart panmove panend', controller.onViewPan);
   mc.on('pinchstart pinchmove pinchend', controller.onViewPinch);
+
+  renderer.attach(stage);
 };
 
 const map = (stage: Element) => {
