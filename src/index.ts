@@ -67,12 +67,13 @@ const registerWorkboxListeners = (wb: Workbox) => {
 };
 
 const startPeriodicUpdateCheck = () => {
+  // Periodically check every hour
   setInterval(async () => {
     const now = new Date().toLocaleTimeString('en-US');
     const res = await Axios.get('/api/revision');
     // tslint:disable-next-line:no-console
     console.log(now, 'Revision from API:', res.data);
-  }, 3000);
+  }, 3600 * 1000);
 };
 
 window.addEventListener('load', () => {
