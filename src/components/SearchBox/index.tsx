@@ -1,7 +1,7 @@
 import { faArrowLeft, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import React from 'react';
+import React, { useCallback } from 'react';
 import * as styles from './styles.scss';
 
 export interface SearchBoxProps {
@@ -31,6 +31,15 @@ const SearchBox: React.FC<SearchBoxProps> = props => {
     [styles.floating]: !docked,
     [styles.docked]: docked,
   });
+  const handleClear = useCallback(
+    (evt: React.MouseEvent) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      onClear();
+      return false;
+    },
+    [onClear],
+  );
   return (
     <div className={containerClassNames}>
       <div className={floatingClassNames}>
@@ -48,7 +57,7 @@ const SearchBox: React.FC<SearchBoxProps> = props => {
         />
         <div
           className={styles.formButton}
-          onClick={onClear}
+          onMouseDownCapture={handleClear}
           style={{ visibility: value.length > 0 ? 'visible' : 'hidden' }}
         >
           <FontAwesomeIcon icon={faTimes} />
