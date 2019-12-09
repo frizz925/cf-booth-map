@@ -11,6 +11,8 @@ const checkType = isLocalhost ? 'Revision' : 'Version';
 const checkEndpoint = isLocalhost ? '/api/revision' : '/api/version';
 const checkInterval = isLocalhost ? 3000 : 3600 * 1000;
 
+type UpdateCheckTask = () => void;
+
 interface WorkboxMessage {
   meta: string;
   type: string;
@@ -60,36 +62,6 @@ const handleNewVersion = async (
 
 const triggerCacheCleanup = (wb: Workbox) => wb.messageSW({ type: 'CACHE_CLEANUP' });
 
-// tslint:disable:no-console
-const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
-  wb.addEventListener('activated', event => {
-    if (event.isUpdate) {
-      return;
-    }
-    presenter.snackbar('Service worker activated. This app can now work offline');
-  });
-
-  wb.addEventListener('waiting', () => {
-    if (reloadInProgress) {
-      return;
-    }
-    wb.addEventListener('controlling', () =>
-      presenter.snackbar('Service worker updated.'),
-    );
-    wb.messageSW({ type: 'SKIP_WAITING' });
-  });
-
-  wb.addEventListener('message', async event => {
-    const data = event.data as WorkboxMessage;
-    if (data.type !== 'CACHE_UPDATED') {
-      return;
-    }
-    await triggerCacheCleanup(wb);
-    handleNewVersion(presenter);
-  });
-};
-// tslint:enable:no-console
-
 const updateCheck = async () => {
   const now = new Date().toLocaleString('en-US');
   const res = await Axios.get(checkEndpoint);
@@ -97,12 +69,59 @@ const updateCheck = async () => {
   console.log(now, checkType, 'from API:', res.data);
 };
 
-const startPeriodicUpdateCheck = () => {
+let initialUpdateCheckRun = false;
+const updateCheckQueue: UpdateCheckTask[] = [];
+const startPeriodicUpdateCheck = async () => {
   // Periodically check in interval
   setInterval(updateCheck, checkInterval);
   // Run the initial check
-  updateCheck();
+  await updateCheck();
+  initialUpdateCheckRun = true;
+  while (updateCheckQueue.length > 0) {
+    updateCheckQueue.shift()();
+  }
 };
+
+// tslint:disable:no-console
+const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
+  let updateInProgress = false;
+  wb.addEventListener('activated', event => {
+    if (event.isUpdate) {
+      return;
+    }
+    presenter.snackbar('Service worker activated. This app can now work offline');
+  });
+
+  const updateWorker = () => {
+    wb.addEventListener('controlling', () =>
+      presenter.snackbar('Service worker updated.'),
+    );
+    wb.messageSW({ type: 'SKIP_WAITING' });
+  };
+
+  wb.addEventListener('waiting', () => {
+    if (reloadInProgress || updateInProgress) {
+      return;
+    }
+    if (!initialUpdateCheckRun) {
+      updateCheckQueue.push(updateWorker);
+    } else {
+      updateWorker();
+    }
+  });
+
+  wb.addEventListener('message', async event => {
+    const data = event.data as WorkboxMessage;
+    if (data.type !== 'CACHE_UPDATED') {
+      return;
+    }
+    updateInProgress = true;
+    await triggerCacheCleanup(wb);
+    await handleNewVersion(presenter);
+    updateInProgress = false;
+  });
+};
+// tslint:enable:no-console
 
 const registerServiceWorker = (presenter: AppPresenter) => {
   if ('serviceWorker' in navigator) {
