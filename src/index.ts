@@ -70,6 +70,9 @@ const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
   });
 
   wb.addEventListener('waiting', () => {
+    if (reloadInProgress) {
+      return;
+    }
     wb.addEventListener('controlling', () =>
       presenter.snackbar('Service worker updated.'),
     );
