@@ -24,7 +24,6 @@ const cdnCaches = {
   comifuro: new RegExp('^https://catalog\\.comifuro\\.net/'),
 };
 
-workbox.core.skipWaiting();
 workbox.core.clientsClaim();
 
 addPlugins([new BroadcastPlugin('precache-updates')]);
@@ -59,11 +58,18 @@ const cleanupStorageCaches = () =>
   });
 
 self.addEventListener('message', evt => {
-  if (!evt.data || evt.data.type !== 'CACHE_CLEANUP') {
+  if (!evt.data || !evt.data.type) {
     return;
   }
-  cleanupOutdatedCaches();
-  cleanupStorageCaches().then(() => {
-    evt.ports[0].postMessage({ type: 'CACHE_CLEANED_UP' });
-  });
+  switch (evt.data.type) {
+    case 'CACHE_CLEANUP':
+      cleanupOutdatedCaches();
+      cleanupStorageCaches().then(() => {
+        evt.ports[0].postMessage({ type: 'CACHE_CLEANED_UP' });
+      });
+      break;
+    case 'SKIP_WAITING':
+      skipWaiting();
+      break;
+  }
 });

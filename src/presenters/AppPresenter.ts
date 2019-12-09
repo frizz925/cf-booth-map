@@ -52,10 +52,10 @@ export default class AppPresenter {
 
   private subscribeObservables() {
     this.bookmarkObservable.onAdd.subscribe(({ name }) => {
-      this.snackbar(`${name} added to bookmarks`);
+      this.snackbar(`${name} added to bookmarks.`);
     });
     this.bookmarkObservable.onRemove.subscribe(({ name }) => {
-      this.snackbar(`${name} removed from bookmarks`);
+      this.snackbar(`${name} removed from bookmarks.`);
     });
   }
 

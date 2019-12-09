@@ -34,21 +34,28 @@ import('./map').then(
 );
 
 let reloadInProgress = false;
-const handleNewVersion = async (presenter: AppPresenter, cb?: () => Promise<void>) => {
+const handleNewVersion = async (
+  presenter: AppPresenter,
+  message?: string,
+  cb?: () => void,
+) => {
   if (reloadInProgress) {
     return;
   }
   reloadInProgress = true;
-  const message = "There's a new updated version.\nClick OK to refresh.";
+  if (!message) {
+    message = "There's a new updated version.\nPress OK to refresh.";
+  }
   const result = await presenter.confirm(message);
   if (!result) {
     return;
   }
   if (cb) {
-    await cb();
+    cb();
+  } else {
+    window.location.reload();
   }
   reloadInProgress = false;
-  window.location.reload();
 };
 
 const triggerCacheCleanup = (wb: Workbox) => wb.messageSW({ type: 'CACHE_CLEANUP' });
@@ -56,18 +63,26 @@ const triggerCacheCleanup = (wb: Workbox) => wb.messageSW({ type: 'CACHE_CLEANUP
 // tslint:disable:no-console
 const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
   wb.addEventListener('activated', event => {
-    if (!event.isUpdate) {
-      presenter.snackbar('Service worker activated. This app can now work offline');
+    if (event.isUpdate) {
       return;
     }
-    handleNewVersion(presenter, () => triggerCacheCleanup(wb));
+    presenter.snackbar('Service worker activated. This app can now work offline');
   });
 
-  wb.addEventListener('message', event => {
+  wb.addEventListener('waiting', () => {
+    wb.addEventListener('controlling', () =>
+      presenter.snackbar('Service worker updated.'),
+    );
+    wb.messageSW({ type: 'SKIP_WAITING' });
+  });
+
+  wb.addEventListener('message', async event => {
     const data = event.data as WorkboxMessage;
-    if (data.type === 'CACHE_UPDATED') {
-      handleNewVersion(presenter);
+    if (data.type !== 'CACHE_UPDATED') {
+      return;
     }
+    await triggerCacheCleanup(wb);
+    handleNewVersion(presenter);
   });
 };
 // tslint:enable:no-console
@@ -83,7 +98,7 @@ const startPeriodicUpdateCheck = () => {
   // Periodically check in interval
   setInterval(updateCheck, checkInterval);
   // Run the initial check
-  // updateCheck();
+  updateCheck();
 };
 
 const registerServiceWorker = (presenter: AppPresenter) => {
@@ -94,7 +109,10 @@ const registerServiceWorker = (presenter: AppPresenter) => {
     startPeriodicUpdateCheck();
 
     (window as any).loadNewVersion = async () => {
-      handleNewVersion(presenter, () => triggerCacheCleanup(wb));
+      handleNewVersion(presenter, null, async () => {
+        await triggerCacheCleanup(wb);
+        window.location.reload();
+      });
     };
   }
 };
