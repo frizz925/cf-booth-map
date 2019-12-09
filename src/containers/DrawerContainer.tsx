@@ -16,7 +16,7 @@ const drawerItems: DrawerItem[] = [
   },
   {
     icon: faSync,
-    title: 'Refresh',
+    title: 'Bruh Moment',
     action: () => window.location.reload(),
   },
 ];
