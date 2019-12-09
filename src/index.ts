@@ -33,42 +33,34 @@ import('./map').then(
   err => console.error(err),
 );
 
-// tslint:disable:no-console
 let reloadInProgress = false;
-const handleNewVersion = async (presenter: AppPresenter) => {
+const handleNewVersion = async (presenter: AppPresenter, cb?: () => Promise<void>) => {
   if (reloadInProgress) {
     return;
   }
   reloadInProgress = true;
-
-  // HACK: Flush all caches before reloading (there's got to be a better way than this)
-  console.log('Detected new version, flushing caches...');
-  const keys = await caches.keys();
-  let counter = 0;
-  await new Promise(resolve => {
-    keys.forEach(async key => {
-      await caches.delete(key);
-      if (++counter >= keys.length) {
-        resolve();
-      }
-    });
-  });
-  console.log('Caches flushed.');
-
   const message = "There's a new updated version.\nClick OK to refresh.";
-  if (await presenter.confirm(message)) {
-    console.log('Refreshing...');
-    window.location.reload();
+  const result = await presenter.confirm(message);
+  if (!result) {
+    return;
+  }
+  if (cb) {
+    await cb();
   }
   reloadInProgress = false;
+  window.location.reload();
 };
-// tslint:enable:no-console
 
+const triggerCacheCleanup = (wb: Workbox) => wb.messageSW({ type: 'CACHE_CLEANUP' });
+
+// tslint:disable:no-console
 const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
   wb.addEventListener('activated', event => {
-    if (event.isUpdate) {
-      handleNewVersion(presenter);
+    if (!event.isUpdate) {
+      presenter.snackbar('Service worker activated. This app can now work offline');
+      return;
     }
+    handleNewVersion(presenter, () => triggerCacheCleanup(wb));
   });
 
   wb.addEventListener('message', event => {
@@ -78,6 +70,7 @@ const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
     }
   });
 };
+// tslint:enable:no-console
 
 const updateCheck = async () => {
   const now = new Date().toLocaleString('en-US');
@@ -90,7 +83,7 @@ const startPeriodicUpdateCheck = () => {
   // Periodically check in interval
   setInterval(updateCheck, checkInterval);
   // Run the initial check
-  updateCheck();
+  // updateCheck();
 };
 
 const registerServiceWorker = (presenter: AppPresenter) => {
@@ -99,6 +92,10 @@ const registerServiceWorker = (presenter: AppPresenter) => {
     registerWorkboxListeners(wb, presenter);
     wb.register();
     startPeriodicUpdateCheck();
+
+    (window as any).loadNewVersion = async () => {
+      handleNewVersion(presenter, () => triggerCacheCleanup(wb));
+    };
   }
 };
 
@@ -112,6 +109,7 @@ import('./app').then(
         window.addEventListener('load', () => registerServiceWorker(presenter));
       }
     }
+
     (window as any).snackbar = (message: string, action?: string) => {
       return presenter.snackbar(message, action);
     };

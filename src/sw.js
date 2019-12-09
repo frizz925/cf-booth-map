@@ -6,10 +6,14 @@ self.__precacheManifest = (self.__precacheManifest || [])
   })
   .concat(['/index.html']);
 
-const { skipWaiting, clientsClaim } = workbox.core;
 const { Plugin: CacheablePlugin } = workbox.cacheableResponse;
 const { Plugin: BroadcastPlugin } = workbox.broadcastUpdate;
-const { addPlugins, precacheAndRoute, getCacheKeyForURL } = workbox.precaching;
+const {
+  addPlugins,
+  precacheAndRoute,
+  cleanupOutdatedCaches,
+  getCacheKeyForURL,
+} = workbox.precaching;
 const { registerNavigationRoute, registerRoute } = workbox.routing;
 const { StaleWhileRevalidate, CacheFirst } = workbox.strategies;
 
@@ -20,8 +24,8 @@ const cdnCaches = {
   comifuro: new RegExp('^https://catalog\\.comifuro\\.net/'),
 };
 
-skipWaiting();
-clientsClaim();
+workbox.core.skipWaiting();
+workbox.core.clientsClaim();
 
 addPlugins([new BroadcastPlugin('precache-updates')]);
 precacheAndRoute(self.__precacheManifest, {});
@@ -46,3 +50,20 @@ Object.keys(cdnCaches).forEach(key =>
     'GET',
   ),
 );
+
+const cleanupStorageCaches = () =>
+  new Promise(resolve => {
+    caches.keys().then(keys => {
+      Promise.all(keys.map(key => caches.delete(key))).then(resolve);
+    });
+  });
+
+self.addEventListener('message', evt => {
+  if (!evt.data || evt.data.type !== 'CACHE_CLEANUP') {
+    return;
+  }
+  cleanupOutdatedCaches();
+  cleanupStorageCaches().then(() => {
+    evt.ports[0].postMessage({ type: 'CACHE_CLEANED_UP' });
+  });
+});
