@@ -1,5 +1,5 @@
 import Drawer, { DrawerItem } from '@components/Drawer';
-import { faBookmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark, faInfoCircle, faSync } from '@fortawesome/free-solid-svg-icons';
 import DrawerPresenter from '@presenters/DrawerPresenter';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -13,6 +13,11 @@ const drawerItems: DrawerItem[] = [
     icon: faInfoCircle,
     title: 'About',
     path: '/about',
+  },
+  {
+    icon: faSync,
+    title: 'Refresh',
+    action: () => window.location.reload(),
   },
 ];
 

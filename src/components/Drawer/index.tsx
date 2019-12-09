@@ -13,6 +13,7 @@ export interface DrawerItem {
   title: string;
   path?: string;
   href?: string;
+  action?: () => void;
 }
 
 export interface DrawerProps {
@@ -38,18 +39,23 @@ const renderItems = (items?: DrawerItem[]) => {
 };
 
 const DrawerLink: React.FC<DrawerItem> = props => {
-  const { href, path, children } = props;
+  const { href, path, action, children } = props;
   const renderHref = () => (
     <a className={styles.menuItem} href={href} target={getLinkTarget(href)}>
       {children}
     </a>
+  );
+  const renderAction = () => (
+    <div className={styles.menuItem} onClick={action}>
+      {children}
+    </div>
   );
   const renderLink = () => (
     <Link className={styles.menuItem} to={path}>
       {children}
     </Link>
   );
-  return href ? renderHref() : renderLink();
+  return href ? renderHref() : action ? renderAction() : renderLink();
 };
 
 const Drawer: React.FC<DrawerProps> = props => {
