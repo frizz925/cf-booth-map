@@ -26,7 +26,6 @@
   box-shadow: 1px 1px 3px 1px $shadow-color;
   border-radius: 4px;
   flex-direction: row;
-  align-items: center;
 }
 
 .label {
@@ -36,7 +35,9 @@
 
 .action {
   @include clickable;
+  display: flex;
   padding: 8px 16px;
   color: $accent-color;
   font-weight: $font-weight-bold;
+  align-items: center;
 }

@@ -53,7 +53,12 @@ const cssInlinePaths = [
 
 const webpackConfig = {
   entry: {
-    main: './src/index.ts',
+    main: [
+      'core-js/stable',
+      'regenerator-runtime/runtime',
+      isDev ? 'react-hot-loader/patch' : null,
+      './src/index.ts',
+    ].filter(Boolean),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

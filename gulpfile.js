@@ -49,13 +49,13 @@ const zeropad = text => {
 };
 
 task('sw', () =>
-  src('src/sw.js')
+  src('src/sw.ts')
     .pipe(babel())
     .pipe(dest('staging')),
 );
 
 task('sw:watch', () => {
-  watch('src/sw.js', series('sw'));
+  watch('src/sw.ts', series('sw'));
 });
 
 task('version', () =>

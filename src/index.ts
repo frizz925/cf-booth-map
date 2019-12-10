@@ -46,9 +46,9 @@ const handleNewVersion = async (
   }
   reloadInProgress = true;
   if (!message) {
-    message = "There's a new updated version.\nPress OK to refresh.";
+    message = 'New version available. Refresh to update.';
   }
-  const result = await presenter.confirm(message);
+  const result = await presenter.confirm(message, 'Refresh');
   if (!result) {
     return;
   }
@@ -89,7 +89,10 @@ const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
     if (event.isUpdate) {
       return;
     }
-    presenter.snackbar('Service worker activated. This app can now work offline');
+    handleNewVersion(
+      presenter,
+      'Service worker activated. Refresh to make sure the app works offline.',
+    );
   });
 
   const updateWorker = () => {
@@ -110,7 +113,8 @@ const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
     }
   });
 
-  wb.addEventListener('message', async event => {
+  const channel = new BroadcastChannel('cache-updates');
+  channel.addEventListener('message', async event => {
     const data = event.data as WorkboxMessage;
     if (data.type !== 'CACHE_UPDATED') {
       return;
