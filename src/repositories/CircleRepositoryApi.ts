@@ -99,8 +99,9 @@ export default class CircleRepositoryApi implements CircleRepository {
       shouldSort: true,
       threshold: 0.3,
       distance: 50,
-      keys: ['name', 'boothNumber'],
+      keys: ['search', 'name', 'boothNumber'],
       tokenize: true,
+      caseSensitive: false,
     });
   }
 

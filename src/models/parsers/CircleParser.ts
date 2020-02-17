@@ -50,6 +50,7 @@ export default class CircleParser implements Parser<RawCircle, Circle> {
       categories: parseCategories(circle),
       socials: parseSocials(circle),
       day: parseDay(circle),
+      search: parseSearch(circle.booth_number),
     };
   }
 
@@ -156,6 +157,12 @@ const parseDay = (circle: RawCircle): Day => {
     return Day.Sunday;
   }
   return Day.Both;
+};
+
+const parseSearch = (boothNumber: string) => {
+  return sanitizeBoothNumber(boothNumber)
+    .replace(/-0/g, '')
+    .replace(/-/g, '');
 };
 
 const normalizeFacebook = (url: string) => {
