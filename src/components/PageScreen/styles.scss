@@ -6,18 +6,21 @@
 
   display: flex;
   position: absolute;
-  top: 100%;
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: 10;
   flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
 
-  transition: top $transition-duration;
+  transition: opacity $transition-duration;
   transition-timing-function: $transition-timing-function;
 
   &.opened {
-    top: 0%;
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 

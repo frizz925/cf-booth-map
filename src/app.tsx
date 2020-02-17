@@ -3,7 +3,7 @@ import AppContext, { AppContextType } from '@contexts/AppContext';
 import CircleParser from '@models/parsers/CircleParser';
 import AppPresenter from '@presenters/AppPresenter';
 import CardPresenter from '@presenters/CardPresenter';
-import DrawerPresenter from '@presenters/DrawerPresenter';
+import NavbarPresenter from '@presenters/NavbarPresenter';
 import PagePresenter from '@presenters/PagePresenter';
 import SearchPresenter from '@presenters/SearchPresenter';
 import SnackbarPresenter from '@presenters/SnackbarPresenter';
@@ -28,7 +28,7 @@ const app = (root: Element) => {
     bookmarkObservable,
     new PagePresenter(),
     new CardPresenter(bookmarkRepository, bookmarkObservable),
-    new DrawerPresenter(),
+    new NavbarPresenter(),
     new SearchPresenter(circleRepository, bookmarkRepository, bookmarkObservable),
     new SnackbarPresenter(),
   );

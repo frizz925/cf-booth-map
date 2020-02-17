@@ -11,14 +11,14 @@ import SnackbarContainer from './SnackbarContainer';
 
 const SearchContainer = lazy(() => import('@containers/SearchContainer'));
 const CardContainer = lazy(() => import('@containers/CardContainer'));
-const DrawerContainer = lazy(() => import('@containers/DrawerContainer'));
+const NavbarContainer = lazy(() => import('@containers/NavbarContainer'));
 const PageContainer = lazy(() => import('@containers/PageContainer'));
 
 const AppContainer = ({ presenter }: { presenter: AppPresenter }) => {
   const {
     pagePresenter,
     cardPresenter,
-    drawerPresenter,
+    navbarPresenter,
     searchPresenter,
     snackbarPresenter,
   } = presenter;
@@ -34,7 +34,7 @@ const AppContainer = ({ presenter }: { presenter: AppPresenter }) => {
   const containers = [
     <PageContainer presenter={pagePresenter} />,
     <CardContainer presenter={cardPresenter} />,
-    <DrawerContainer presenter={drawerPresenter} />,
+    <NavbarContainer presenter={navbarPresenter} />,
   ];
 
   return (

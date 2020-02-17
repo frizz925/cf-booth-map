@@ -1,7 +1,7 @@
 import { CIRCLE_PATH_PREFIX } from '@utils/Routing';
 import BookmarkObservable from 'src/observables/BookmarkObservable';
 import CardPresenter from './CardPresenter';
-import DrawerPresenter from './DrawerPresenter';
+import NavbarPresenter from './NavbarPresenter';
 import PagePresenter from './PagePresenter';
 import SearchPresenter from './SearchPresenter';
 import SnackbarPresenter from './SnackbarPresenter';
@@ -9,7 +9,7 @@ import SnackbarPresenter from './SnackbarPresenter';
 export default class AppPresenter {
   public readonly pagePresenter: PagePresenter;
   public readonly cardPresenter: CardPresenter;
-  public readonly drawerPresenter: DrawerPresenter;
+  public readonly navbarPresenter: NavbarPresenter;
   public readonly searchPresenter: SearchPresenter;
   public readonly snackbarPresenter: SnackbarPresenter;
 
@@ -19,7 +19,6 @@ export default class AppPresenter {
     pageOpened: false,
     cardShown: false,
     cardPulled: false,
-    drawerOpened: false,
     searchFocused: false,
   };
 
@@ -27,14 +26,14 @@ export default class AppPresenter {
     bookmarkObservable: BookmarkObservable,
     pagePresenter: PagePresenter,
     cardPresenter: CardPresenter,
-    drawerPresenter: DrawerPresenter,
+    navbarPresenter: NavbarPresenter,
     searchPresenter: SearchPresenter,
     snackbarPresenter: SnackbarPresenter,
   ) {
     this.bookmarkObservable = bookmarkObservable;
     this.pagePresenter = pagePresenter;
     this.cardPresenter = cardPresenter;
-    this.drawerPresenter = drawerPresenter;
+    this.navbarPresenter = navbarPresenter;
     this.searchPresenter = searchPresenter;
     this.snackbarPresenter = snackbarPresenter;
     this.saveState();
@@ -60,22 +59,13 @@ export default class AppPresenter {
   }
 
   private subscribePresenters() {
-    const {
-      pagePresenter,
-      cardPresenter,
-      drawerPresenter,
-      searchPresenter,
-      prevState,
-    } = this;
+    const { pagePresenter, cardPresenter, searchPresenter, prevState } = this;
 
     pagePresenter.opened.subscribe(opened => {
       if (opened) {
         this.saveState();
         cardPresenter.hide();
-        drawerPresenter.close();
-        searchPresenter.hide();
       } else if (prevState.pageOpened) {
-        searchPresenter.show();
         cardPresenter.shown.next(prevState.cardShown);
       }
     });
@@ -94,21 +84,8 @@ export default class AppPresenter {
     cardPresenter.pulled.subscribe(pulled => {
       if (pulled) {
         this.saveState();
-        drawerPresenter.close();
         searchPresenter.focused.next(false);
       } else if (prevState.cardPulled) {
-        drawerPresenter.opened.next(prevState.drawerOpened);
-        searchPresenter.focused.next(prevState.searchFocused);
-      }
-    });
-
-    drawerPresenter.opened.subscribe(opened => {
-      if (opened) {
-        this.saveState();
-        cardPresenter.pulled.next(false);
-        searchPresenter.focused.next(false);
-      } else if (prevState.drawerOpened) {
-        cardPresenter.pulled.next(prevState.cardPulled);
         searchPresenter.focused.next(prevState.searchFocused);
       }
     });
@@ -117,32 +94,21 @@ export default class AppPresenter {
       if (focused) {
         this.saveState();
         cardPresenter.hide();
-        drawerPresenter.close();
       } else if (prevState.searchFocused) {
         cardPresenter.shown.next(prevState.cardShown);
         cardPresenter.pulled.next(prevState.cardPulled);
-        drawerPresenter.opened.next(prevState.drawerOpened);
       }
     });
-
-    searchPresenter.action.subscribe(() => drawerPresenter.open());
 
     pagePresenter.circle.subscribe(cardPresenter.circle);
     searchPresenter.circle.subscribe(cardPresenter.circle);
   }
 
   private saveState() {
-    const {
-      pagePresenter,
-      cardPresenter,
-      drawerPresenter,
-      searchPresenter,
-      prevState,
-    } = this;
+    const { pagePresenter, cardPresenter, searchPresenter, prevState } = this;
     prevState.pageOpened = pagePresenter.opened.value;
     prevState.cardShown = cardPresenter.shown.value;
     prevState.cardPulled = cardPresenter.pulled.value;
-    prevState.drawerOpened = drawerPresenter.opened.value;
     prevState.searchFocused = searchPresenter.focused.value;
   }
 }
