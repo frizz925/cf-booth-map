@@ -14,7 +14,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import BookmarkObservable from './observables/BookmarkObservable';
 
-const app = (root: Element) => {
+const app = (root: Element, loadMap: MapStageLoader) => {
   const { protocol, host } = window.location;
   const circleClient = axios.create({
     baseURL: `${protocol}//${host}/`,
@@ -46,7 +46,7 @@ const app = (root: Element) => {
 
   render(
     <AppContext.Provider value={context}>
-      <AppContainer presenter={presenter} />
+      <AppContainer presenter={presenter} loadMap={loadMap} />
     </AppContext.Provider>,
     root,
   );

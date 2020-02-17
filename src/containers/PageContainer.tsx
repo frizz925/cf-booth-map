@@ -3,15 +3,8 @@ import AppContext from '@contexts/AppContext';
 import PagePresenter from '@presenters/PagePresenter';
 import BookmarksPresenter from '@presenters/pages/BookmarksPresenter';
 import map from 'lodash/map';
-import React, {
-  lazy,
-  Suspense,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-} from 'react';
-import { Route, Switch, useHistory, useLocation } from 'react-router';
+import React, { lazy, Suspense, useContext, useEffect, useMemo } from 'react';
+import { Route, Switch, useLocation } from 'react-router';
 
 const BookmarksPage = lazy(() => import('@pages/BookmarksPage'));
 const AboutPage = lazy(() => import('@pages/AboutPage'));
@@ -26,7 +19,6 @@ interface PageDefinitions {
 const Loading = () => <div>Loading...</div>;
 
 export default ({ presenter }: { presenter: PagePresenter }) => {
-  const history = useHistory();
   const { repositories, observables } = useContext(AppContext);
 
   const pageDefinitions: PageDefinitions = useMemo(() => {
@@ -63,11 +55,7 @@ export default ({ presenter }: { presenter: PagePresenter }) => {
   }, [presenter, path]);
 
   return (
-    <PageScreen
-      opened={opened}
-      title={title}
-      onBack={useCallback(() => history.push('/'), [history])}
-    >
+    <PageScreen opened={opened} title={title}>
       <Suspense fallback={<Loading />}>
         <Switch>
           {map(pageDefinitions, (def, key) => (

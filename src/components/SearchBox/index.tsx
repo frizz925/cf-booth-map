@@ -21,7 +21,7 @@ const SearchBox: React.FC<SearchBoxProps> = props => {
     [styles.floating]: !docked,
     [styles.docked]: docked,
   });
-  const inputRef = useRef(null as HTMLInputElement);
+  const inputRef = useRef<HTMLInputElement>();
   const handleClear = useCallback(
     (evt: React.MouseEvent) => {
       evt.preventDefault();

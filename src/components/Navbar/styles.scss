@@ -1,0 +1,52 @@
+@import 'modules/variables';
+@import 'modules/colors';
+
+.container {
+  background-color: $background-color;
+  box-shadow: 0 0 3px $shadow-color;
+
+  position: absolute;
+  left: 0;
+  bottom: -100%;
+  width: 100%;
+  z-index: 20;
+
+  box-sizing: border-box;
+
+  transition: bottom $transition-duration;
+  transition-timing-function: $transition-timing-function;
+
+  &.shown {
+    bottom: 0;
+  }
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+}
+
+.menuItem {
+  flex-basis: 100%;
+  text-align: center;
+  padding-top: 4px;
+  padding-bottom: 8px;
+
+  &.selected {
+    color: $accent-color;
+  }
+}
+
+.menuIcon {
+  padding: 4px;
+}
+
+.menuTitle {
+  font-size: $font-size-smaller;
+}
+
+.bottomPad {
+  &.iphonex {
+    padding-bottom: 32px;
+  }
+}

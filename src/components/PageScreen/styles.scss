@@ -15,8 +15,8 @@
   opacity: 0;
   pointer-events: none;
 
-  transition: opacity $transition-duration;
-  transition-timing-function: $transition-timing-function;
+  // transition: opacity $transition-duration;
+  // transition-timing-function: $transition-timing-function;
 
   &.opened {
     opacity: 1;

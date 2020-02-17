@@ -20,6 +20,7 @@ export default class AppPresenter {
     cardShown: false,
     cardPulled: false,
     searchFocused: false,
+    navbarShown: true,
   };
 
   constructor(
@@ -51,15 +52,21 @@ export default class AppPresenter {
 
   private subscribeObservables() {
     this.bookmarkObservable.onAdd.subscribe(({ name }) => {
-      this.snackbar(`${name} added to bookmarks.`);
+      this.snackbar(`${name} added to bookmarks`);
     });
     this.bookmarkObservable.onRemove.subscribe(({ name }) => {
-      this.snackbar(`${name} removed from bookmarks.`);
+      this.snackbar(`${name} removed from bookmarks`);
     });
   }
 
   private subscribePresenters() {
-    const { pagePresenter, cardPresenter, searchPresenter, prevState } = this;
+    const {
+      pagePresenter,
+      cardPresenter,
+      searchPresenter,
+      navbarPresenter,
+      prevState,
+    } = this;
 
     pagePresenter.opened.subscribe(opened => {
       if (opened) {
@@ -79,6 +86,7 @@ export default class AppPresenter {
       searchPresenter.findCircle(slug).then(value => {
         searchPresenter.select(value);
       });
+      navbarPresenter.path.next(path);
     });
 
     cardPresenter.pulled.subscribe(pulled => {
@@ -94,9 +102,11 @@ export default class AppPresenter {
       if (focused) {
         this.saveState();
         cardPresenter.hide();
+        navbarPresenter.hide();
       } else if (prevState.searchFocused) {
         cardPresenter.shown.next(prevState.cardShown);
         cardPresenter.pulled.next(prevState.cardPulled);
+        navbarPresenter.shown.next(prevState.navbarShown);
       }
     });
 
@@ -105,10 +115,17 @@ export default class AppPresenter {
   }
 
   private saveState() {
-    const { pagePresenter, cardPresenter, searchPresenter, prevState } = this;
+    const {
+      pagePresenter,
+      cardPresenter,
+      searchPresenter,
+      navbarPresenter,
+      prevState,
+    } = this;
     prevState.pageOpened = pagePresenter.opened.value;
     prevState.cardShown = cardPresenter.shown.value;
     prevState.cardPulled = cardPresenter.pulled.value;
     prevState.searchFocused = searchPresenter.focused.value;
+    prevState.navbarShown = navbarPresenter.shown.value;
   }
 }

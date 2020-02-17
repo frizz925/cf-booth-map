@@ -38,7 +38,7 @@
   transition: bottom $transition-duration, box-shadow 0s linear $transition-duration;
   transition-timing-function: ease;
   user-select: none;
-  z-index: 0;
+  z-index: 4;
 
   &.shown {
     box-shadow: 0px -1px 3px 0 $shadow-color;
