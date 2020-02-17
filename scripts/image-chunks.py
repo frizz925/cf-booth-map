@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-import asyncio
 import math
 import sys
-from multiprocessing import Pool, cpu_count
 from typing import Tuple
 
 from PIL import Image

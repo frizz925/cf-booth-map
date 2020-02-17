@@ -4,7 +4,10 @@ import Parser from '@models/parsers/Parser';
 import { AxiosInstance } from 'axios';
 import Fuse from 'fuse.js';
 import map from 'lodash/map';
+import range from 'lodash/range';
 import CircleRepository from './CircleRepository';
+
+const CHUNK_COUNT = 7;
 
 type Circles = Circle[];
 type FetchTask = (circles: Circles) => void;
@@ -27,7 +30,7 @@ export default class CircleRepositoryApi implements CircleRepository {
     this.parser = parser;
   }
 
-  public fetch(): Promise<Circles> {
+  public async fetch(): Promise<Circles> {
     const firstTask = this.queue.length <= 0;
     const promise = new Promise<Circles>(resolve => {
       this.queue.push(resolve);
@@ -37,22 +40,27 @@ export default class CircleRepositoryApi implements CircleRepository {
       return promise;
     }
 
-    process.nextTick(async () => {
-      const res = await this.client.get('/api/circles.json');
-      const circles = res.data as RawCircle[];
-      const results = map(circles, circle => this.parser.parse(circle))
-        .filter(circle => {
-          return !!circle.name;
-        })
-        .sort((a, b) => {
-          return a.name > b.name ? 1 : -1;
-        });
+    const chunkPromises = map(range(CHUNK_COUNT), chunk => this.fetchChunk(chunk));
+    Promise.all(chunkPromises).then(chunks => {
+      const results = [].concat(...chunks);
       this.updateResults(results);
       this.queue.forEach(resolve => resolve(results));
       this.queue.length = 0;
     });
 
     return promise;
+  }
+
+  public async fetchChunk(chunk: number): Promise<Circles> {
+    const res = await this.client.get(`/api/circles-${chunk}.json`);
+    const circles = res.data as RawCircle[];
+    return map(circles, circle => this.parser.parse(circle))
+      .filter(circle => {
+        return !!circle.name;
+      })
+      .sort((a, b) => {
+        return a.name > b.name ? 1 : -1;
+      });
   }
 
   public async filter(query: string): Promise<Circles> {
