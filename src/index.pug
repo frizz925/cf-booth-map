@@ -48,8 +48,9 @@ html(lang="en")
       noscript
         link(rel="stylesheet", href=url)
   body
-    div#app Loading...
-    div#stage
+    div#container
+      div#app Loading...
+      div#stage
     each url in jsFiles
       - if (url.indexOf("://") > 0)
         script(src=url crossorigin="anonymous")
