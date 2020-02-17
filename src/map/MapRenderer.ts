@@ -1,6 +1,29 @@
 import { IS_DEVELOPMENT, IS_PRODUCTION } from '@utils/Constants';
+import each from 'lodash/each';
 import merge from 'lodash/merge';
+import range from 'lodash/range';
 import { Application, Container, Graphics, Sprite, utils } from 'pixi.js';
+
+const IMAGE_BASE_URL = '/assets/map';
+const IMAGE_NAME_PREFIX = 'floor_map_cf14';
+const IMAGE_CHUNK_WIDTH = 2048;
+const IMAGE_CHUNK_HEIGHT = 2048;
+const IMAGE_CHUNK_ROWS = 4;
+const IMAGE_CHUNK_COLUMNS = 5;
+
+const getMapImages = (webpSupported: boolean) => {
+  const type = webpSupported ? 'webp' : 'png';
+  const result: string[][] = [];
+  each(range(IMAGE_CHUNK_ROWS), row => {
+    const rowResult: string[] = [];
+    each(range(IMAGE_CHUNK_COLUMNS), col => {
+      const filename = `${IMAGE_NAME_PREFIX}-${row}-${col}.${type}`;
+      rowResult.push(`${IMAGE_BASE_URL}/${type}/${filename}`);
+    });
+    result.push(rowResult);
+  });
+  return result;
+};
 
 if (IS_PRODUCTION) {
   utils.skipHello();
@@ -40,7 +63,7 @@ export default class MapRenderer {
     zoomToggle: false,
   };
 
-  private mapImage: string;
+  private mapImages: string[][];
 
   private outerContainer: Container;
   private innerContainer: Container;
@@ -53,8 +76,8 @@ export default class MapRenderer {
     backgroundColor: 0xffffff,
   });
 
-  constructor(mapImage: string) {
-    this.mapImage = mapImage;
+  constructor(webpSupported: boolean) {
+    this.mapImages = getMapImages(webpSupported);
     this.app.ticker.autoStart = false;
     this.app.ticker.stop();
     this.initContainers();
@@ -146,15 +169,27 @@ export default class MapRenderer {
   }
 
   private initTextures() {
-    this.app.loader.add(this.mapImage).load(() => {
-      const mapTexture = this.app.loader.resources[this.mapImage].texture;
-      const mapSprite = new Sprite(mapTexture);
-      this.innerContainer.addChildAt(mapSprite, 0);
-      this.updateState({
-        x: mapSprite.width / 2 - window.innerWidth / 2,
-        y: mapSprite.height / 2 - window.innerHeight / 2,
+    each(this.mapImages, (mapImages, row) => {
+      each(mapImages, (mapImage, col) => {
+        this.app.loader
+          .add(mapImage)
+          .once('complete', () => this.initTexture(mapImage, row, col));
       });
     });
+    this.app.loader.load(() => {
+      this.updateState({
+        x: 0,
+        y: 0,
+      });
+    });
+  }
+
+  private initTexture(image: string, row: number, col: number) {
+    const mapTexture = this.app.loader.resources[image].texture;
+    const mapSprite = new Sprite(mapTexture);
+    mapSprite.x = IMAGE_CHUNK_WIDTH * col;
+    mapSprite.y = IMAGE_CHUNK_HEIGHT * row;
+    this.innerContainer.addChildAt(mapSprite, 0);
   }
 
   private cancelAllAnimationFrames() {

@@ -1,5 +1,3 @@
-import mapImagePng from '@assets/floor_map_cf13.png';
-import mapImageWebp from '@assets/floor_map_cf13.webp';
 import Hammer from 'hammerjs';
 import MapController from './MapController';
 import MapRenderer from './MapRenderer';
@@ -30,8 +28,7 @@ const setupRenderer = (stage: Element, renderer: MapRenderer) => {
 
 const map = (stage: Element) => {
   Modernizr.on('webp', result => {
-    const mapImage = result ? mapImageWebp : mapImagePng;
-    setupRenderer(stage, new MapRenderer(mapImage));
+    setupRenderer(stage, new MapRenderer(result));
   });
 };
 
