@@ -7,12 +7,10 @@ import * as styles from './styles.scss';
 
 interface SearchFormProps {
   circles: CircleBookmark[];
-  shown: boolean;
   focused: boolean;
   searching: boolean;
   searchText: string;
 
-  onAction: () => void;
   onBack: () => void;
   onFocus: () => void;
   onClear: () => void;
@@ -24,12 +22,10 @@ interface SearchFormProps {
 }
 
 const SearchForm: React.FC<SearchFormProps> = ({
-  shown,
   focused,
   searching,
   circles,
   searchText,
-  onAction,
   onBack,
   onFocus,
   onClear,
@@ -40,9 +36,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
 }) => {
   const focusedClassName = focused ? styles.focused : '';
   const containerClassNames = classNames(styles.container, focusedClassName);
-  const searchBoxClassNames = classNames(styles.searchBoxContainer, focusedClassName, {
-    [styles.shown]: shown,
-  });
+  const searchBoxClassNames = classNames(styles.searchBoxContainer, focusedClassName);
   const searchResultsClassNames = classNames(
     styles.searchResultsContainer,
     focusedClassName,
@@ -53,7 +47,6 @@ const SearchForm: React.FC<SearchFormProps> = ({
         className={searchBoxClassNames}
         docked={focused}
         value={searchText}
-        onAction={onAction}
         onBack={onBack}
         onFocus={onFocus}
         onClear={onClear}

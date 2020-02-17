@@ -1,18 +1,15 @@
 import SearchForm from '@components/SearchForm';
-import AppContext from '@contexts/AppContext';
 import Circle from '@models/Circle';
 import CircleBookmark from '@models/CircleBookmark';
 import SearchPresenter from '@presenters/SearchPresenter';
 import { pushCircle } from '@utils/Routing';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
 export default ({ presenter }: { presenter: SearchPresenter }) => {
   const history = useHistory();
-  const { presenter: appPresenter } = useContext(AppContext);
 
   const [circles, setCircles] = useState([] as CircleBookmark[]);
-  const [shown, setShown] = useState(presenter.shown.value);
   const [focused, setFocused] = useState(presenter.focused.value);
   const [searching, setSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -26,7 +23,6 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
 
   useEffect(() => {
     const subscribers = [
-      presenter.shown.subscribe(setShown),
       presenter.focused.subscribe(setFocused),
       presenter.onBookmark(circle =>
         findAndModifyCircles(circle, value => (value.bookmarked = true)),
@@ -69,12 +65,10 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
   return (
     <SearchForm
       circles={circles}
-      shown={shown}
       focused={focused}
       searching={searching}
       searchText={searchText}
       onFocus={useCallback(() => presenter.focused.next(true), [presenter])}
-      onAction={useCallback(() => presenter.action.next(), [presenter])}
       onBack={useCallback(() => presenter.focused.next(false), [presenter])}
       onClear={onClear}
       onTextChanged={onTextChanged}
