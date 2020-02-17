@@ -1,14 +1,13 @@
-import { faArrowLeft, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import * as styles from './styles.scss';
 
 export interface SearchBoxProps {
   className?: string;
   docked: boolean;
   value: string;
-  onAction: () => void;
   onBack: () => void;
   onFocus: () => void;
   onClear: () => void;
@@ -16,21 +15,13 @@ export interface SearchBoxProps {
 }
 
 const SearchBox: React.FC<SearchBoxProps> = props => {
-  const {
-    className,
-    docked,
-    value,
-    onFocus,
-    onAction,
-    onBack,
-    onClear,
-    onTextChanged,
-  } = props;
+  const { className, docked, value, onFocus, onBack, onClear, onTextChanged } = props;
   const containerClassNames = classNames(styles.container, className);
   const floatingClassNames = classNames(styles.floatingContainer, {
     [styles.floating]: !docked,
     [styles.docked]: docked,
   });
+  const inputRef = useRef<HTMLInputElement>();
   const handleClear = useCallback(
     (evt: React.MouseEvent) => {
       evt.preventDefault();
@@ -40,13 +31,21 @@ const SearchBox: React.FC<SearchBoxProps> = props => {
     },
     [onClear],
   );
+  const handleFocus = useCallback(() => {
+    onFocus();
+    inputRef.current.focus();
+  }, [onFocus]);
   return (
     <div className={containerClassNames}>
       <div className={floatingClassNames}>
-        <div className={styles.formButton} onClick={() => (docked ? onBack : onAction)()}>
-          <FontAwesomeIcon icon={docked ? faArrowLeft : faBars} />
+        <div
+          className={styles.formButton}
+          onClick={() => (docked ? onBack : handleFocus)()}
+        >
+          <FontAwesomeIcon icon={docked ? faArrowLeft : faSearch} />
         </div>
         <input
+          ref={inputRef}
           className={styles.searchInput}
           type='value'
           placeholder='Search for circle'

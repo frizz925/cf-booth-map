@@ -22,6 +22,8 @@ export interface CircleCardProps {
   onCardPulled: () => void;
   onCardHidden: () => void;
   onCardTabbed: () => void;
+
+  navbar?: Element;
 }
 
 const CircleCard: React.FC<CircleCardProps> = props => {
@@ -31,25 +33,38 @@ const CircleCard: React.FC<CircleCardProps> = props => {
   const overlayRef = useRef<HTMLDivElement>();
   const containerRef = useRef<HTMLDivElement>();
   const headerRef = useRef<HTMLDivElement>();
+  const bottomPadRef = useRef<HTMLDivElement>();
   const panStateRef = useRef({
     startBottom: 0,
     currentBottom: 0,
     wasPulled: false,
   });
 
+  const getNavbarHeight = () => {
+    const navbar = propsRef.current.navbar;
+    return navbar ? navbar.clientHeight : 0;
+  };
+
   const updateCard = () => {
     const { shown, pulled } = propsRef.current;
     const panState = panStateRef.current;
     const container = containerRef.current;
+    const bottomPad = bottomPadRef.current;
     panState.wasPulled = pulled;
     if (!container || pulling) {
       return;
     }
+
+    const navbarHeight = getNavbarHeight();
+    if (bottomPad && navbarHeight > 0) {
+      bottomPad.style.paddingBottom = `${navbarHeight}px`;
+    }
+
     let bottom = 0;
     if (!shown) {
       bottom = -container.clientHeight;
     } else if (shown && !pulled) {
-      bottom = -(container.clientHeight - headerRef.current.clientHeight);
+      bottom = -(container.clientHeight - headerRef.current.clientHeight - navbarHeight);
     }
     updateContainerPosition(bottom);
   };
@@ -75,7 +90,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
       } else {
         const currentBottom = panState.currentBottom;
         const hiddenThreshold =
-          container.clientHeight - header.clientHeight / 2 + VISIBLE_HEIGHT_THRESHOLD;
+          container.clientHeight - header.clientHeight / 2 - VISIBLE_HEIGHT_THRESHOLD;
         if (-currentBottom >= hiddenThreshold) {
           panState.wasPulled = false;
           onCardHidden();
@@ -96,14 +111,14 @@ const CircleCard: React.FC<CircleCardProps> = props => {
     if (bottom > 0) {
       return;
     }
+    const navbarHeight = getNavbarHeight();
     const panState = panStateRef.current;
     const overlay = overlayRef.current;
     const container = containerRef.current;
     const header = headerRef.current;
-    const opacity = Math.min(
-      Math.max(0, 1.0 + bottom / (container.clientHeight - header.clientHeight)),
-      1.0,
-    );
+    const currentOpacity =
+      1.0 + bottom / (container.clientHeight - header.clientHeight - navbarHeight);
+    const opacity = Math.min(Math.max(0, currentOpacity), 1.0);
     overlay.style.setProperty('opacity', `${opacity}`);
     panState.currentBottom = bottom;
     container.style.setProperty('bottom', `${bottom}px`);
@@ -114,6 +129,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
     const mc = new Hammer.Manager(headerRef.current);
     mc.add(new Hammer.Pan({ threshold: 0, pointers: 1 }));
     mc.on('panstart panup pandown panend', onPanMove);
+
     return () => {
       mc.destroy();
       window.removeEventListener('resize', updateCard);
@@ -158,7 +174,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
             onBookmarked={onBookmarked}
             onUnbookmarked={onUnbookmarked}
           />
-          {circle ? <Body circle={circle} /> : null}
+          {circle ? <Body circle={circle} bottomRef={bottomPadRef} /> : null}
         </div>
       </div>
     );

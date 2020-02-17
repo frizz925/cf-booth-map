@@ -9,11 +9,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
 import { SocialType } from '@models/Social';
 import map from 'lodash/map';
-import React from 'react';
+import React, { Ref } from 'react';
 import * as styles from './styles.scss';
 
 interface BodyProps {
   circle: Circle;
+  bottomRef?: Ref<HTMLDivElement>;
 }
 
 interface InfoMapping {
@@ -79,7 +80,7 @@ const sanitizeRender = (rendered: any): React.ReactNode | null => {
   return rendered;
 };
 
-const Body: React.FC<BodyProps> = ({ circle }) => {
+const Body: React.FC<BodyProps> = ({ circle, bottomRef }) => {
   return (
     <div className={styles.body}>
       <div className={styles.image}>
@@ -99,6 +100,7 @@ const Body: React.FC<BodyProps> = ({ circle }) => {
           );
         }).filter(el => !!el)}
       </div>
+      <div ref={bottomRef} />
     </div>
   );
 };

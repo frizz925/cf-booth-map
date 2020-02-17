@@ -14,4 +14,5 @@ export default interface Circle {
   categories: Category[];
   socials: Social[];
   day: Day;
+  search: string;
 }

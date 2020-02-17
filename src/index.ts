@@ -28,12 +28,13 @@ WebFont.load({
   },
 });
 
-import('./map').then(
-  ({ default: map }) => {
-    map(document.getElementById('stage'));
-  },
-  err => console.error(err),
-);
+const loadMap = () =>
+  import('./map').then(
+    ({ default: map }) => {
+      map(document.getElementById('stage'));
+    },
+    err => console.error(err),
+  );
 
 let reloadInProgress = false;
 const handleNewVersion = async (
@@ -145,7 +146,7 @@ const registerServiceWorker = (presenter: AppPresenter) => {
 
 import('./app').then(
   ({ default: app }) => {
-    const presenter = app(document.getElementById('app'));
+    const presenter = app(document.getElementById('app'), loadMap);
     if (IS_PRODUCTION) {
       if (document.readyState === 'complete') {
         registerServiceWorker(presenter);

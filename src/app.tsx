@@ -3,7 +3,7 @@ import AppContext, { AppContextType } from '@contexts/AppContext';
 import CircleParser from '@models/parsers/CircleParser';
 import AppPresenter from '@presenters/AppPresenter';
 import CardPresenter from '@presenters/CardPresenter';
-import DrawerPresenter from '@presenters/DrawerPresenter';
+import NavbarPresenter from '@presenters/NavbarPresenter';
 import PagePresenter from '@presenters/PagePresenter';
 import SearchPresenter from '@presenters/SearchPresenter';
 import SnackbarPresenter from '@presenters/SnackbarPresenter';
@@ -14,7 +14,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import BookmarkObservable from './observables/BookmarkObservable';
 
-const app = (root: Element) => {
+const app = (root: Element, loadMap: MapStageLoader) => {
   const { protocol, host } = window.location;
   const circleClient = axios.create({
     baseURL: `${protocol}//${host}/`,
@@ -28,7 +28,7 @@ const app = (root: Element) => {
     bookmarkObservable,
     new PagePresenter(),
     new CardPresenter(bookmarkRepository, bookmarkObservable),
-    new DrawerPresenter(),
+    new NavbarPresenter(),
     new SearchPresenter(circleRepository, bookmarkRepository, bookmarkObservable),
     new SnackbarPresenter(),
   );
@@ -46,7 +46,7 @@ const app = (root: Element) => {
 
   render(
     <AppContext.Provider value={context}>
-      <AppContainer presenter={presenter} />
+      <AppContainer presenter={presenter} loadMap={loadMap} />
     </AppContext.Provider>,
     root,
   );

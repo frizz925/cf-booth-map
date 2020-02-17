@@ -10,7 +10,6 @@ import BookmarkObservable from 'src/observables/BookmarkObservable';
 export type BookmarkHandler = (circle: Circle) => void;
 
 export default class SearchPresenter {
-  public readonly shown = new BehaviorSubject(true);
   public readonly focused = new BehaviorSubject(false);
   public readonly circle = new BehaviorSubject<Circle | undefined>(undefined);
   public readonly action = new Subject();
@@ -37,17 +36,7 @@ export default class SearchPresenter {
     return this.bookmarkObservable.onRemove.subscribe(handler);
   }
 
-  public hide() {
-    this.focused.next(false);
-    this.shown.next(false);
-  }
-
-  public show() {
-    this.shown.next(true);
-  }
-
   public focus() {
-    this.shown.next(true);
     this.focused.next(true);
   }
 

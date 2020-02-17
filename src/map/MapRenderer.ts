@@ -177,10 +177,7 @@ export default class MapRenderer {
       });
     });
     this.app.loader.load(() => {
-      this.updateState({
-        x: 0,
-        y: 0,
-      });
+      this.updateState({ x: 256, y: 0, scale: 0.4 });
     });
   }
 

@@ -5,7 +5,7 @@ import MapRenderer from './MapRenderer';
 const setupRenderer = (stage: Element, renderer: MapRenderer) => {
   const controller = new MapController(renderer);
   window.addEventListener('resize', controller.onWindowResize);
-  stage.addEventListener('wheel', evt => controller.onMouseWheel(evt as WheelEvent), {
+  stage.addEventListener('wheel', (evt: WheelEvent) => controller.onMouseWheel(evt), {
     passive: true,
   });
 

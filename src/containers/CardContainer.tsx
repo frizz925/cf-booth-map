@@ -1,17 +1,25 @@
 import CircleCard from '@components/CircleCard';
 import Circle from '@models/Circle';
 import CardPresenter from '@presenters/CardPresenter';
-import { pushCircle } from '@utils/Routing';
+import NavbarPresenter from '@presenters/NavbarPresenter';
+import { pushCircle, pushIndex } from '@utils/Routing';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { filter } from 'rxjs/operators';
 
-export default ({ presenter }: { presenter: CardPresenter }) => {
+export default ({
+  presenter,
+  navbarPresenter,
+}: {
+  presenter: CardPresenter;
+  navbarPresenter: NavbarPresenter;
+}) => {
   const history = useHistory();
   const [shown, setShown] = useState(presenter.shown.value);
   const [pulled, setPulled] = useState(presenter.pulled.value);
   const [circle, setCircle] = useState<Circle | undefined>(presenter.circle.value);
   const [bookmarked, setBookmarked] = useState(false);
+  const [navbar, setNavbar] = useState<Element | null>(null);
 
   const circleRef = useRef(circle);
   const circleFilter = filter(
@@ -36,13 +44,12 @@ export default ({ presenter }: { presenter: CardPresenter }) => {
       }),
       presenter.onAdd.pipe(circleFilter).subscribe(() => setBookmarked(true)),
       presenter.onRemove.pipe(circleFilter).subscribe(() => setBookmarked(false)),
+      navbarPresenter.navbarElement.subscribe(setNavbar),
     ];
     return () => subscribers.forEach(s => s.unsubscribe());
   }, [presenter]);
 
-  const onCardTabbed = useCallback(() => {
-    history.push('/');
-  }, [history]);
+  const onCardTabbed = useCallback(() => pushIndex(history), [history]);
 
   return (
     <CircleCard
@@ -50,6 +57,7 @@ export default ({ presenter }: { presenter: CardPresenter }) => {
       bookmarked={bookmarked}
       shown={shown}
       pulled={pulled}
+      navbar={navbar}
       onBookmarked={useCallback(() => presenter.bookmark(circle), [presenter, circle])}
       onUnbookmarked={useCallback(() => presenter.unbookmark(circle), [
         presenter,
