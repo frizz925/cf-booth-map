@@ -71,7 +71,7 @@ export default class AppPresenter {
     pagePresenter.opened.subscribe(opened => {
       if (opened && !prevState.pageOpened) {
         this.saveState();
-        cardPresenter.hide();
+        cardPresenter.shown.next(false);
       } else if (!opened && prevState.pageOpened) {
         cardPresenter.shown.next(prevState.cardShown);
         this.saveState();
@@ -80,7 +80,9 @@ export default class AppPresenter {
 
     pagePresenter.path.subscribe(path => {
       if (!path.startsWith(CIRCLE_PATH_PREFIX)) {
-        cardPresenter.pulled.next(false);
+        if (cardPresenter.shown.value) {
+          cardPresenter.pulled.next(false);
+        }
         return;
       }
       const slug = path.substring(CIRCLE_PATH_PREFIX.length);
@@ -117,7 +119,7 @@ export default class AppPresenter {
     searchPresenter.circle.subscribe(cardPresenter.circle);
   }
 
-  private saveState() {
+  private saveState(...presenters: any[]) {
     const {
       pagePresenter,
       cardPresenter,
@@ -125,10 +127,25 @@ export default class AppPresenter {
       navbarPresenter,
       prevState,
     } = this;
-    prevState.pageOpened = pagePresenter.opened.value;
-    prevState.cardShown = cardPresenter.shown.value;
-    prevState.cardPulled = cardPresenter.pulled.value;
-    prevState.searchFocused = searchPresenter.focused.value;
-    prevState.navbarShown = navbarPresenter.shown.value;
+    if (presenters.length <= 0) {
+      presenters = [pagePresenter, cardPresenter, searchPresenter, navbarPresenter];
+    }
+    presenters.forEach(presenter => {
+      switch (true) {
+        case presenter === pagePresenter:
+          prevState.pageOpened = pagePresenter.opened.value;
+          break;
+        case presenter === cardPresenter:
+          prevState.cardShown = cardPresenter.shown.value;
+          prevState.cardPulled = cardPresenter.pulled.value;
+          break;
+        case presenter === searchPresenter:
+          prevState.searchFocused = searchPresenter.focused.value;
+          break;
+        case presenter === navbarPresenter:
+          prevState.navbarShown = navbarPresenter.shown.value;
+          break;
+      }
+    });
   }
 }
