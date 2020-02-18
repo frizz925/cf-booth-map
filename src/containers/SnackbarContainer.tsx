@@ -2,6 +2,7 @@ import Snackbar from '@components/Snackbar';
 import CardPresenter from '@presenters/CardPresenter';
 import NavbarPresenter from '@presenters/NavbarPresenter';
 import SnackbarPresenter from '@presenters/SnackbarPresenter';
+import { isIphoneXAppMode } from '@utils/Device';
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 
 const getTop = (ref: RefObject<Element>) => {
@@ -47,7 +48,8 @@ export default ({
       anchorTop = navbarTop;
     }
 
-    const result = anchorTop > 0 ? window.innerHeight - anchorTop : 0;
+    const result =
+      anchorTop > 0 ? window.innerHeight - anchorTop : isIphoneXAppMode ? 32 : 0;
     bottomRef.current = result;
     return result;
   }, [shown]);
