@@ -67,7 +67,9 @@ export default class CircleRepositoryApi implements CircleRepository {
         return;
       }
       const fuse = this.resultsIndex[chunk].fuse;
-      callback(fuse.search(query), id, chunk);
+      process.nextTick(() => {
+        callback(fuse.search(query), id, chunk);
+      });
     });
   }
 
@@ -82,8 +84,8 @@ export default class CircleRepositoryApi implements CircleRepository {
   private updateResults(chunk: number, circles: Circles) {
     const fuse = new Fuse(circles, {
       shouldSort: true,
-      threshold: 0.3,
-      distance: 50,
+      threshold: 0.2,
+      distance: 30,
       keys: ['search', 'name', 'boothNumber'],
       tokenize: true,
       caseSensitive: false,
