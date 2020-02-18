@@ -29,7 +29,7 @@ const navbarItems: NavbarItem[] = [
   {
     icon: faSync,
     title: 'Refresh',
-    action: () => window.location.reload(),
+    action: () => (window.location.href = '/'),
   },
 ];
 
