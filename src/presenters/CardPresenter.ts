@@ -7,6 +7,7 @@ export default class CardPresenter {
   public readonly circle = new BehaviorSubject<Circle | undefined>(undefined);
   public readonly shown = new BehaviorSubject(false);
   public readonly pulled = new BehaviorSubject(false);
+  public readonly cardElement = new BehaviorSubject<Element | null>(null);
 
   public get circleSelected() {
     return !!this.circle;

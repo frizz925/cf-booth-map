@@ -5,17 +5,20 @@
   position: absolute;
   box-sizing: border-box;
   left: 0;
-  bottom: -100%;
+  bottom: 0;
+  opacity: 0;
   width: 100%;
   padding: 8px;
   z-index: 100;
+  visibility: hidden;
 
-  transition: bottom $transition-duration-long;
-  transition-timing-function: ease-in;
+  transition: opacity $transition-duration, visibility 0s linear $transition-duration;
+  transition-timing-function: $transition-timing-function;
 
   &.shown {
-    bottom: 0;
-    transition-timing-function: ease-out;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity $transition-duration, visibility 0s;
   }
 }
 

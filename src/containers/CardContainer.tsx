@@ -19,12 +19,18 @@ export default ({
   const [pulled, setPulled] = useState(presenter.pulled.value);
   const [circle, setCircle] = useState<Circle | undefined>(presenter.circle.value);
   const [bookmarked, setBookmarked] = useState(false);
-  const [navbar, setNavbar] = useState<Element | null>(null);
+  const [navbar, setNavbar] = useState(null as Element);
 
+  const containerRef = useRef<HTMLDivElement>();
   const circleRef = useRef(circle);
+
   const circleFilter = filter(
     (value: Circle) => circleRef.current && value && circleRef.current.id === value.id,
   );
+
+  useEffect(() => {
+    presenter.cardElement.next(containerRef.current);
+  }, []);
 
   useEffect(() => {
     circleRef.current = circle;
@@ -53,6 +59,7 @@ export default ({
 
   return (
     <CircleCard
+      containerRef={containerRef}
       circle={circle}
       bookmarked={bookmarked}
       shown={shown}

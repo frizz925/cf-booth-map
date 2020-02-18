@@ -1,6 +1,6 @@
 import Circle from '@models/Circle';
 import classNames from 'classnames';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { RefObject, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Body from './Body';
 import Header from './Header';
 import * as styles from './styles.scss';
@@ -10,6 +10,7 @@ const PULL_VELOCITY_THRESHOLD = 0.5;
 const VISIBLE_HEIGHT_THRESHOLD = 0;
 
 export interface CircleCardProps {
+  containerRef?: RefObject<HTMLDivElement>;
   circle?: Circle;
   bookmarked: boolean;
   shown: boolean;
@@ -31,7 +32,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
 
   const propsRef = useRef(props);
   const overlayRef = useRef<HTMLDivElement>();
-  const containerRef = useRef<HTMLDivElement>();
+  const containerRef = props.containerRef || useRef<HTMLDivElement>();
   const headerRef = useRef<HTMLDivElement>();
   const bottomPadRef = useRef<HTMLDivElement>();
   const panStateRef = useRef({
