@@ -12,15 +12,10 @@
   height: 100%;
   z-index: 10;
   flex-direction: column;
-  opacity: 0;
-  pointer-events: none;
-
-  // transition: opacity $transition-duration;
-  // transition-timing-function: $transition-timing-function;
+  visibility: hidden;
 
   &.opened {
-    opacity: 1;
-    pointer-events: auto;
+    visibility: visible;
   }
 }
 
