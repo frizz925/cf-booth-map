@@ -1,5 +1,5 @@
+import CircleList, { CircleHandler } from '@components/CircleList';
 import SearchBox from '@components/SearchBox';
-import SearchResults, { CircleHandler } from '@components/SearchResults';
 import CircleBookmark from '@models/CircleBookmark';
 import classNames from 'classnames';
 import React from 'react';
@@ -52,7 +52,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
         onClear={onClear}
         onTextChanged={onTextChanged}
       />
-      <SearchResults
+      <CircleList
         className={searchResultsClassNames}
         isLoading={searching}
         circles={circles}

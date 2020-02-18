@@ -6,36 +6,38 @@ import CircleBookmark from '@models/CircleBookmark';
 import { details } from '@models/formatters/CircleFormatter';
 import classNames from 'classnames';
 import map from 'lodash/map';
+import noop from 'lodash/noop';
 import React from 'react';
 import * as styles from './styles.scss';
 
 export type CircleHandler = (circle: Circle) => void;
 
-export interface SearchResultsProps {
-  isLoading: boolean;
+export interface CircleListProps {
+  isLoading?: boolean;
   className?: string;
   circles: CircleBookmark[];
-  onSelected: CircleHandler;
-  onBookmarked: CircleHandler;
-  onUnbookmarked: CircleHandler;
+  onSelected?: CircleHandler;
+  onBookmarked?: CircleHandler;
+  onUnbookmarked?: CircleHandler;
 }
 
-interface ResultRowProps {
+interface CircleRowProps {
   circle: CircleBookmark;
-  onSelected: CircleHandler;
-  onBookmarked: CircleHandler;
-  onUnbookmarked: CircleHandler;
+  onSelected?: CircleHandler;
+  onBookmarked?: CircleHandler;
+  onUnbookmarked?: CircleHandler;
 }
 
-const ResultRow = ({
+const CircleRow = ({
   circle,
   onSelected,
   onBookmarked,
   onUnbookmarked,
-}: ResultRowProps) => {
+}: CircleRowProps) => {
   const { bookmarked } = circle;
-  const handleSelect = () => onSelected(circle);
-  const handleBookmark = () => (bookmarked ? onUnbookmarked : onBookmarked)(circle);
+  const handleSelect = () => (onSelected || noop)(circle);
+  const handleBookmark = () =>
+    ((bookmarked ? onUnbookmarked : onBookmarked) || noop)(circle);
 
   const actionClassNames = classNames(styles.searchResultAction, {
     [styles.active]: bookmarked,
@@ -55,7 +57,7 @@ const ResultRow = ({
 
 const Loading = () => (
   <div className={styles.searchResultItem}>
-    <div className={styles.searchResultDetails}>Searching...</div>
+    <div className={styles.searchResultDetails}>Loading...</div>
   </div>
 );
 
@@ -64,9 +66,9 @@ const renderCircles = ({
   onSelected,
   onBookmarked,
   onUnbookmarked,
-}: SearchResultsProps) => {
+}: CircleListProps) => {
   return map(circles, circle => (
-    <ResultRow
+    <CircleRow
       key={circle.id}
       circle={circle}
       onSelected={onSelected}
@@ -76,7 +78,7 @@ const renderCircles = ({
   ));
 };
 
-const SearchResults: React.FC<SearchResultsProps> = props => {
+const CircleList: React.FC<CircleListProps> = props => {
   const { className, isLoading } = props;
   return (
     <div className={className}>
@@ -87,4 +89,4 @@ const SearchResults: React.FC<SearchResultsProps> = props => {
   );
 };
 
-export default SearchResults;
+export default CircleList;
