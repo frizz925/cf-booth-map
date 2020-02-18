@@ -1,20 +1,16 @@
-import { faBookmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import CircleList from '@components/CircleList';
 import Circle from '@models/Circle';
+import CircleBookmark from '@models/CircleBookmark';
 import BookmarksPresenter from '@presenters/pages/BookmarksPresenter';
 import { pushCircle } from '@utils/Routing';
 import map from 'lodash/map';
+import merge from 'lodash/merge';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import * as styles from './styles.scss';
 
-type BookmarkHandler = (circle: Circle) => void;
-
-interface BookmarkItemProps {
-  circle: Circle;
-  onSelected: BookmarkHandler;
-  onRemove: BookmarkHandler;
-}
+const circleBookmarks = (circles: Circle[]) =>
+  map(circles, circle => merge(circle, { bookmarked: true } as CircleBookmark));
 
 const NoBookmarks = () => {
   return (
@@ -22,36 +18,6 @@ const NoBookmarks = () => {
       You haven't added any circle to your bookmarks yet!
     </div>
   );
-};
-
-const BookmarkItem: React.FC<BookmarkItemProps> = props => {
-  const { circle, onSelected, onRemove } = props;
-  return (
-    <div className={styles.item}>
-      <div className={styles.details} onClick={() => onSelected(circle)}>
-        <h3 className={styles.title}>{circle.name}</h3>
-        <div className={styles.number}>{circle.boothNumber}</div>
-      </div>
-      <div className={styles.action} onClick={() => onRemove(circle)}>
-        <FontAwesomeIcon icon={faBookmark} />
-      </div>
-    </div>
-  );
-};
-
-const renderBookmarks = (
-  circles: Circle[],
-  onSelected: BookmarkHandler,
-  onRemove: BookmarkHandler,
-) => {
-  return map(circles, circle => (
-    <BookmarkItem
-      key={circle.id}
-      circle={circle}
-      onSelected={onSelected}
-      onRemove={onRemove}
-    />
-  ));
 };
 
 export default ({ presenter }: { presenter: BookmarksPresenter }) => {
@@ -84,7 +50,11 @@ export default ({ presenter }: { presenter: BookmarksPresenter }) => {
   return (
     <div className={styles.container}>
       {circles.length > 0 ? (
-        renderBookmarks(circles, onSelected, onRemove)
+        <CircleList
+          circles={circleBookmarks(circles)}
+          onSelected={onSelected}
+          onUnbookmarked={onRemove}
+        />
       ) : (
         <NoBookmarks />
       )}

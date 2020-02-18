@@ -9,6 +9,10 @@ import BookmarkObservable from 'src/observables/BookmarkObservable';
 
 export type BookmarkHandler = (circle: Circle) => void;
 
+interface BookmarkMap {
+  [key: number]: Circle;
+}
+
 export default class SearchPresenter {
   public readonly focused = new BehaviorSubject(false);
   public readonly circle = new BehaviorSubject<Circle | undefined>(undefined);
@@ -40,16 +44,20 @@ export default class SearchPresenter {
     this.focused.next(true);
   }
 
-  public async search(query: string): Promise<CircleBookmark[]> {
-    return Promise.all([
-      this.circleRepository.filter(query),
-      this.bookmarkRepository.all(),
-    ]).then(([circles, bookmarks]) => {
-      const bookmarkedIds = map(bookmarks, circle => circle.id);
-      return map(circles, circle => {
-        const bookmarked = bookmarkedIds.includes(circle.id);
-        return merge({ bookmarked }, circle);
-      });
+  public async search(query: string, callback: (circles: CircleBookmark[]) => void) {
+    const bookmarkMap: BookmarkMap = {};
+    (await this.bookmarkRepository.all()).forEach(circle => {
+      bookmarkMap[circle.id] = circle;
+    });
+
+    const fetchId = this.circleRepository.filter(query, (circles, id) => {
+      if (id !== fetchId) {
+        return;
+      }
+      const results = map(circles, circle =>
+        merge({ bookmarked: !!bookmarkMap[circle.id] } as CircleBookmark, circle),
+      );
+      callback(results);
     });
   }
 

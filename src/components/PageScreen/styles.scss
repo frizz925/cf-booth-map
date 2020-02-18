@@ -12,20 +12,15 @@
   height: 100%;
   z-index: 10;
   flex-direction: column;
-  opacity: 0;
-  pointer-events: none;
-
-  // transition: opacity $transition-duration;
-  // transition-timing-function: $transition-timing-function;
+  visibility: hidden;
 
   &.opened {
-    opacity: 1;
-    pointer-events: auto;
+    visibility: visible;
   }
 }
 
 .header {
-  padding: 8px;
+  padding: 4px;
   box-sizing: border-box;
   border-bottom: 1px solid $separator-color;
 }
@@ -37,17 +32,6 @@
 
 .headerContent {
   position: relative;
-}
-
-.back {
-  @include clickable;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 42px;
-  height: 42px;
-  line-height: 42px;
-  text-align: center;
 }
 
 .title {

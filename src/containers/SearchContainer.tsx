@@ -6,6 +6,8 @@ import { pushCircle } from '@utils/Routing';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
+const MAX_RESULTS = 50;
+
 export default ({ presenter }: { presenter: SearchPresenter }) => {
   const history = useHistory();
 
@@ -44,12 +46,25 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
   }, []);
 
   const onTextChanged = useCallback(
-    async (value: string) => {
+    (value: string) => {
       setSearchText(value);
+      if (value === '') {
+        setCircles([]);
+        setSearching(false);
+        return;
+      }
+
       setSearching(true);
-      const results = await presenter.search(value);
-      setCircles(results);
-      setSearching(false);
+      let results: CircleBookmark[] = [];
+      presenter.search(value, chunk => {
+        if (results.length <= 0) {
+          setSearching(false);
+        } else if (results.length >= MAX_RESULTS) {
+          return;
+        }
+        results = results.concat(chunk);
+        setCircles(results);
+      });
     },
     [presenter],
   );

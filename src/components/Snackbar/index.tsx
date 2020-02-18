@@ -1,12 +1,13 @@
 import classNames from 'classnames';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import * as styles from './styles.scss';
 
 interface SnackbarProps {
   message: string;
-  action?: string;
   shown: boolean;
+  action?: string;
   onResult?: (result: boolean) => void;
+  bottom?: number;
 }
 
 interface ActionButtonProps {
@@ -23,7 +24,10 @@ const ActionButton = ({ text, onClick }: ActionButtonProps) => {
 };
 
 const Snackbar: React.FC<SnackbarProps> = props => {
-  const { message, action, shown, onResult } = props;
+  const { message, action, shown, onResult, bottom } = props;
+  const containerStyle = useMemo(() => {
+    return bottom ? { bottom: `${bottom}px` } : {};
+  }, [bottom]);
   const onClick = useCallback(() => {
     if (onResult) {
       onResult(true);
@@ -33,7 +37,7 @@ const Snackbar: React.FC<SnackbarProps> = props => {
     [styles.shown]: shown,
   });
   return (
-    <div className={containerClassNames}>
+    <div className={containerClassNames} style={containerStyle}>
       <div className={styles.content}>
         <div className={styles.label}>{message}</div>
         {action ? <ActionButton text={action} onClick={onClick} /> : null}

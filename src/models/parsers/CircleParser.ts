@@ -162,7 +162,8 @@ const parseDay = (circle: RawCircle): Day => {
 const parseSearch = (boothNumber: string) => {
   return sanitizeBoothNumber(boothNumber)
     .replace(/-0/g, '')
-    .replace(/-/g, '');
+    .replace(/-/g, '')
+    .toLowerCase();
 };
 
 const normalizeFacebook = (url: string) => {
