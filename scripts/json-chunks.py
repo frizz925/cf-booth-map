@@ -3,7 +3,7 @@
 import json
 import sys
 
-CHUNK_SIZE = 100
+CHUNK_SIZE = 50
 FILENAME_PREFIX = 'circles'
 
 

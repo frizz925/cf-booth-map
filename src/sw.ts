@@ -29,6 +29,8 @@ interface MessageHandlers {
   [key: string]: (port: MessagePort) => void;
 }
 
+const CIRCLE_CHUNKS = 13;
+
 const cdnCaches: CDNCaches = {
   unpkg: new RegExp('^https://unpkg\\.com/'),
   cdnjs: new RegExp('^https://cdnjs\\.cloudflare\\.com/'),
@@ -48,13 +50,28 @@ const cacheUpdatesPlugin = new BroadcastPlugin({
   headersToCheck: ['ETag', 'Last-Modified'],
 });
 
+const range = (end: number) => {
+  const results: number[] = [];
+  for (let i = 0; i < end; i++) {
+    results.push(i);
+  }
+  return results;
+};
+
+const circleData = () => range(CIRCLE_CHUNKS).map(chunk => `/api/circles-${chunk}.json`);
+const mapImages = () => {
+  const results: string[] = [];
+
+  return results;
+};
+
 ((service: WorkboxGlobalScope) => {
   service.__precacheManifest = (service.__precacheManifest || [])
     .filter(cache => {
       const url = typeof cache === 'object' ? cache.url : cache;
       return !url.startsWith('/api/');
     })
-    .concat(['/index.html', '/api/circles.json'])
+    .concat(['/index.html'], circleData())
     .reverse();
 
   clientsClaim();
