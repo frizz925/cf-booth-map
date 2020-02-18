@@ -6,6 +6,7 @@ import {
   faSync,
 } from '@fortawesome/free-solid-svg-icons';
 import NavbarPresenter from '@presenters/NavbarPresenter';
+import { isFullscreen } from '@utils/Device';
 import each from 'lodash/each';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -26,12 +27,15 @@ const navbarItems: NavbarItem[] = [
     title: 'About',
     path: '/about',
   },
-  {
+];
+
+if (isFullscreen) {
+  navbarItems.push({
     icon: faSync,
     title: 'Refresh',
     action: () => (window.location.href = '/'),
-  },
-];
+  });
+}
 
 const findIndexByPath = (path: string) => {
   let result = 0;
