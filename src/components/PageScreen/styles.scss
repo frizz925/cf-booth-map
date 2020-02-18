@@ -20,7 +20,7 @@
 }
 
 .header {
-  padding: 8px;
+  padding: 4px;
   box-sizing: border-box;
   border-bottom: 1px solid $separator-color;
 }
@@ -32,17 +32,6 @@
 
 .headerContent {
   position: relative;
-}
-
-.back {
-  @include clickable;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 42px;
-  height: 42px;
-  line-height: 42px;
-  text-align: center;
 }
 
 .title {
