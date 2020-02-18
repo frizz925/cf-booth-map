@@ -32,7 +32,6 @@ const SearchBox: React.FC<SearchBoxProps> = props => {
     [onClear],
   );
   const handleFocus = useCallback(() => {
-    onFocus();
     inputRef.current.focus();
   }, [onFocus]);
   return (

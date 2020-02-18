@@ -69,11 +69,12 @@ export default class AppPresenter {
     } = this;
 
     pagePresenter.opened.subscribe(opened => {
-      if (opened) {
+      if (opened && !prevState.pageOpened) {
         this.saveState();
         cardPresenter.hide();
-      } else if (prevState.pageOpened) {
+      } else if (!opened && prevState.pageOpened) {
         cardPresenter.shown.next(prevState.cardShown);
+        this.saveState();
       }
     });
 
@@ -90,23 +91,25 @@ export default class AppPresenter {
     });
 
     cardPresenter.pulled.subscribe(pulled => {
-      if (pulled) {
+      if (pulled && !prevState.cardPulled) {
         this.saveState();
         searchPresenter.focused.next(false);
-      } else if (prevState.cardPulled) {
+      } else if (!pulled && prevState.cardPulled) {
         searchPresenter.focused.next(prevState.searchFocused);
+        this.saveState();
       }
     });
 
     searchPresenter.focused.subscribe(focused => {
-      if (focused) {
+      if (focused && !prevState.searchFocused) {
         this.saveState();
         cardPresenter.hide();
         navbarPresenter.hide();
-      } else if (prevState.searchFocused) {
+      } else if (!focused && prevState.searchFocused) {
         cardPresenter.shown.next(prevState.cardShown);
         cardPresenter.pulled.next(prevState.cardPulled);
         navbarPresenter.shown.next(prevState.navbarShown);
+        this.saveState();
       }
     });
 

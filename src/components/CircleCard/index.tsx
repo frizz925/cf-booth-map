@@ -78,7 +78,6 @@ const CircleCard: React.FC<CircleCardProps> = props => {
       panState.startBottom = panState.currentBottom;
       setPulling(true);
     } else if (evt.type === 'panend') {
-      setPulling(false);
       const reachThreshold =
         Math.abs(evt.deltaY) >= PULL_DELTA_THRESHOLD ||
         Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD;
@@ -90,17 +89,24 @@ const CircleCard: React.FC<CircleCardProps> = props => {
       } else {
         const currentBottom = panState.currentBottom;
         const hiddenThreshold =
-          container.clientHeight - header.clientHeight / 2 - VISIBLE_HEIGHT_THRESHOLD;
+          container.clientHeight -
+          header.clientHeight / 2 -
+          getNavbarHeight() +
+          VISIBLE_HEIGHT_THRESHOLD;
         if (-currentBottom >= hiddenThreshold) {
           panState.wasPulled = false;
+          updateCard();
           onCardHidden();
         } else if (pulled && reachThreshold) {
           panState.wasPulled = false;
+          updateCard();
           onCardTabbed();
         } else if (!panState.wasPulled) {
+          updateCard();
           onCardHidden();
         }
       }
+      setPulling(false);
       return;
     }
     const bottom = panState.startBottom - evt.deltaY;
