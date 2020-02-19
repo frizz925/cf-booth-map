@@ -9,7 +9,8 @@ import * as styles from './styles.scss';
 
 interface HeaderProps {
   circle?: Circle;
-  forwardRef?: Ref<HTMLDivElement>;
+  headerRef?: Ref<HTMLDivElement>;
+  previewRef?: Ref<HTMLDivElement>;
   actionsRef?: Ref<HTMLDivElement>;
   bookmarked: boolean;
   onBookmarked: () => void;
@@ -18,7 +19,8 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   circle,
-  forwardRef,
+  headerRef,
+  previewRef,
   actionsRef,
   bookmarked,
   onBookmarked,
@@ -31,13 +33,15 @@ const Header: React.FC<HeaderProps> = ({
     [styles.active]: bookmarked,
   });
   return (
-    <div ref={forwardRef} className={styles.header}>
-      <div className={styles.puller}>
-        <span />
-      </div>
-      <div className={styles.headerContent}>
-        <div className={styles.title}>{circle ? circle.name : ''}</div>
-        <div className={styles.number}>{circle ? details(circle) : ''}</div>
+    <div ref={headerRef} className={styles.header}>
+      <div ref={previewRef} className={styles.preview}>
+        <div className={styles.puller}>
+          <span />
+        </div>
+        <div className={styles.details}>
+          <div className={styles.title}>{circle ? circle.name : ''}</div>
+          <div className={styles.number}>{circle ? details(circle) : ''}</div>
+        </div>
       </div>
       <div ref={actionsRef} className={styles.actions}>
         <div className={actionClassNames} onClick={handleBookmark}>

@@ -5,13 +5,12 @@
   flex-grow: 0;
   box-sizing: border-box;
   width: 100%;
-  padding: 4px 8px 8px 8px;
-  border-bottom: 1px solid $separator-color;
 }
 
-.headerContent {
+.details {
   position: relative;
   text-align: center;
+  padding-bottom: 4px;
 
   & > .title {
     font-weight: $font-weight-bold;
@@ -28,7 +27,7 @@
 .puller {
   position: relative;
   text-align: center;
-  padding-bottom: 4px;
+  padding: 2px 0 4px 0;
 
   & > span {
     display: block;
@@ -41,8 +40,9 @@
 }
 
 .actions {
-  padding-top: 8px;
+  padding: 8px 0;
   text-align: center;
+  border-bottom: 1px solid $separator-color;
 }
 
 .actionItem {
