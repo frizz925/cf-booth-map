@@ -30,6 +30,15 @@ h4,
 h5,
 h6 {
   font-weight: $font-weight-bold;
+  margin: 0;
+}
+
+h1 {
+  font-size: $font-size-xxlarge;
+}
+
+h2 {
+  font-size: $font-size-xlarge;
 }
 
 h3 {

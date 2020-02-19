@@ -43,6 +43,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
   const headerRef = useRef<HTMLDivElement>();
   const previewRef = useRef<HTMLDivElement>();
   const actionsRef = useRef<HTMLDivElement>();
+  const bodyRef = useRef<HTMLDivElement>();
   const bottomPadRef = useRef<HTMLDivElement>();
   const panStateRef = useRef({
     deltaY: 0,
@@ -80,11 +81,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
     if (!shown) {
       bottom = -container.clientHeight;
     } else if (shown && !pulled) {
-      bottom = -(
-        container.clientHeight -
-        navbarHeight -
-        getHeight(previewRef)
-      );
+      bottom = -(container.clientHeight - navbarHeight - getHeight(previewRef));
     }
     updateContainerPosition(bottom);
   };
@@ -99,7 +96,6 @@ const CircleCard: React.FC<CircleCardProps> = props => {
       const deltaThreshold = Math.abs(evt.deltaY) >= window.innerHeight / 2;
       const velocityThreshold = Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD;
       const reachThreshold = deltaThreshold || velocityThreshold;
-      debugger;
       if (velocityThreshold) {
         if (Math.sign(evt.velocityY) <= 0) {
           panState.wasPulled = true;
@@ -166,6 +162,13 @@ const CircleCard: React.FC<CircleCardProps> = props => {
     };
   }, []);
 
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (body) {
+      body.scrollTop = 0;
+    }
+  }, [props.circle]);
+
   useLayoutEffect(() => {
     propsRef.current = props;
     updateCard();
@@ -206,7 +209,9 @@ const CircleCard: React.FC<CircleCardProps> = props => {
             onBookmarked={onBookmarked}
             onUnbookmarked={onUnbookmarked}
           />
-          {circle ? <Body circle={circle} bottomRef={bottomPadRef} /> : null}
+          {circle ? (
+            <Body circle={circle} bodyRef={bodyRef} bottomRef={bottomPadRef} />
+          ) : null}
         </div>
       </div>
     );

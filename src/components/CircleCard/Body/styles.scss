@@ -29,27 +29,22 @@
 
 .info {
   padding-top: 8px;
+}
 
-  & > span {
-    display: block;
-  }
+.infoTitle,
+.infoItem {
+  margin-bottom: 4px;
+}
 
-  & > span:first-child {
-    font-size: $font-size-small;
-    font-weight: $font-weight-light;
-    color: $font-color-light;
-    margin-bottom: 4px;
-  }
+.infoTitle {
+  color: $accent-color;
+  font-weight: $font-weight-bold;
+}
 
-  & > ul {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-  }
-
-  & > ul > li {
-    margin-bottom: 4px;
-  }
+.infoList {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
 }
 
 .socialLink {
@@ -59,6 +54,7 @@
 }
 
 .socialIcon {
+  color: $accent-color;
   display: block;
   width: 24px;
   font-size: 24px;
@@ -70,4 +66,5 @@
   display: block;
   margin-left: 8px;
   line-height: 24px;
+  font-size: $font-size-small;
 }

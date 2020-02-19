@@ -21,7 +21,7 @@
 }
 
 .header {
-  padding: 4px;
+  color: $accent-color;
   box-sizing: border-box;
   border-bottom: 1px solid $separator-color;
 }
@@ -36,10 +36,10 @@
 }
 
 .title {
-  font-size: $font-size-larger;
+  font-size: $font-size-xlarge;
   font-weight: $font-weight-bold;
   margin: 0;
   padding: 0;
-  line-height: 42px;
+  line-height: 48px;
   text-align: center;
 }

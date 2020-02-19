@@ -1,4 +1,4 @@
-# Disclaimer
+## Disclaimer
 
 This site is NOT officially affiliated with Comic Frontier organizers.
 
