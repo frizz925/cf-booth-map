@@ -1,6 +1,13 @@
 import Circle from '@models/Circle';
 import classNames from 'classnames';
-import React, { RefObject, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  RefObject,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import Body from './Body';
 import Header from './Header';
 import * as styles from './styles.scss';
@@ -34,6 +41,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
   const overlayRef = useRef<HTMLDivElement>();
   const containerRef = props.containerRef || useRef<HTMLDivElement>();
   const headerRef = useRef<HTMLDivElement>();
+  const actionsRef = useRef<HTMLDivElement>();
   const bottomPadRef = useRef<HTMLDivElement>();
   const panStateRef = useRef({
     startBottom: 0,
@@ -41,10 +49,15 @@ const CircleCard: React.FC<CircleCardProps> = props => {
     wasPulled: false,
   });
 
-  const getNavbarHeight = () => {
+  const getHeight = useCallback((ref: RefObject<Element>) => {
+    const el = ref.current;
+    return el ? el.clientHeight : 0;
+  }, []);
+
+  const getNavbarHeight = useCallback(() => {
     const navbar = propsRef.current.navbar;
     return navbar ? navbar.clientHeight : 0;
-  };
+  }, []);
 
   const updateCard = () => {
     const { shown, pulled } = propsRef.current;
@@ -56,6 +69,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
       return;
     }
 
+    const actionsHeight = getHeight(actionsRef);
     const navbarHeight = getNavbarHeight();
     if (bottomPad && navbarHeight > 0) {
       bottomPad.style.paddingBottom = `${navbarHeight}px`;
@@ -65,7 +79,12 @@ const CircleCard: React.FC<CircleCardProps> = props => {
     if (!shown) {
       bottom = -container.clientHeight;
     } else if (shown && !pulled) {
-      bottom = -(container.clientHeight - headerRef.current.clientHeight - navbarHeight);
+      bottom = -(
+        container.clientHeight -
+        headerRef.current.clientHeight +
+        actionsHeight -
+        navbarHeight
+      );
     }
     updateContainerPosition(bottom);
   };
@@ -176,6 +195,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
         <div ref={containerRef} className={containerClassNames}>
           <Header
             forwardRef={headerRef}
+            actionsRef={actionsRef}
             circle={circle}
             bookmarked={bookmarked}
             onBookmarked={onBookmarked}

@@ -1,5 +1,5 @@
-import { faBookmark } from '@fortawesome/free-regular-svg-icons';
-import { faBookmark as faSolidBookmark } from '@fortawesome/free-solid-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as faSolidHeart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Circle from '@models/Circle';
 import CircleBookmark from '@models/CircleBookmark';
@@ -49,7 +49,7 @@ const CircleRow = ({
         <span>{details(circle)}</span>
       </div>
       <div className={actionClassNames} onClick={handleBookmark}>
-        <FontAwesomeIcon icon={bookmarked ? faSolidBookmark : faBookmark} />
+        <FontAwesomeIcon icon={bookmarked ? faSolidHeart : faHeart} />
       </div>
     </div>
   );

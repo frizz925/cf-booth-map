@@ -1,6 +1,6 @@
 import Navbar, { NavbarItem } from '@components/Navbar';
 import {
-  faBookmark,
+  faHeart,
   faInfoCircle,
   faMapMarked,
   faSync,
@@ -18,8 +18,8 @@ const navbarItems: NavbarItem[] = [
     path: '/',
   },
   {
-    icon: faBookmark,
-    title: 'Bookmarks',
+    icon: faHeart,
+    title: 'Favorites',
     path: '/bookmarks',
   },
   {
