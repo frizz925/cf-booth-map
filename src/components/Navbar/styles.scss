@@ -1,5 +1,6 @@
 @import 'modules/variables';
 @import 'modules/colors';
+@import 'modules/mixins';
 
 .container {
   background-color: $background-color;
@@ -25,6 +26,7 @@
 }
 
 .menuItem {
+  @include clickable;
   flex-basis: 100%;
   text-align: center;
   padding-top: 4px;

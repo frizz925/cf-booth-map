@@ -40,7 +40,13 @@
   }
 }
 
+.actions {
+  padding-top: 8px;
+  text-align: center;
+}
+
 .actionItem {
+  @include clickable;
   font-size: $font-size-small;
   display: inline-block;
   text-align: center;
@@ -53,11 +59,6 @@
     background-color: $accent-color;
     color: $font-color-dark;
   }
-}
-
-.actions {
-  padding-top: 8px;
-  text-align: center;
 }
 
 .actionIcon {
