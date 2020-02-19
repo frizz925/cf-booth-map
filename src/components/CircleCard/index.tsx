@@ -45,6 +45,7 @@ const CircleCard: React.FC<CircleCardProps> = props => {
   const actionsRef = useRef<HTMLDivElement>();
   const bottomPadRef = useRef<HTMLDivElement>();
   const panStateRef = useRef({
+    deltaY: 0,
     startBottom: 0,
     currentBottom: 0,
     wasPulled: false,
@@ -95,13 +96,25 @@ const CircleCard: React.FC<CircleCardProps> = props => {
       panState.startBottom = panState.currentBottom;
       setPulling(true);
     } else if (evt.type === 'panend') {
-      const reachThreshold =
-        Math.abs(evt.deltaY) >= PULL_DELTA_THRESHOLD ||
-        Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD;
-      if (Math.sign(evt.deltaY) <= 0) {
-        if (reachThreshold) {
+      const deltaThreshold = Math.abs(evt.deltaY) >= window.innerHeight / 2;
+      const velocityThreshold = Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD;
+      const reachThreshold = deltaThreshold || velocityThreshold;
+      debugger;
+      if (velocityThreshold) {
+        if (Math.sign(evt.velocityY) <= 0) {
           panState.wasPulled = true;
           onCardPulled();
+        } else if (pulled) {
+          panState.wasPulled = false;
+          onCardTabbed();
+        }
+      } else if (deltaThreshold) {
+        if (Math.sign(evt.deltaY) <= 0) {
+          panState.wasPulled = true;
+          onCardPulled();
+        } else if (pulled) {
+          panState.wasPulled = false;
+          onCardTabbed();
         }
       } else {
         const currentBottom = panState.currentBottom;
@@ -112,20 +125,16 @@ const CircleCard: React.FC<CircleCardProps> = props => {
           VISIBLE_HEIGHT_THRESHOLD;
         if (-currentBottom >= hiddenThreshold) {
           panState.wasPulled = false;
-          updateCard();
           onCardHidden();
         } else if (pulled && reachThreshold) {
           panState.wasPulled = false;
-          updateCard();
           onCardTabbed();
-        } else if (!panState.wasPulled) {
-          updateCard();
-          onCardHidden();
         }
       }
       setPulling(false);
       return;
     }
+    panState.deltaY = evt.deltaY;
     const bottom = panState.startBottom - evt.deltaY;
     updateContainerPosition(bottom);
   };
