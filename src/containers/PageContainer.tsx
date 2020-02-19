@@ -38,7 +38,7 @@ export default ({
 
     return {
       '/bookmarks': {
-        title: 'Bookmarks',
+        title: 'Favorites',
         page: <BookmarksPage presenter={bookmarksPresenter} />,
       },
       '/about': {
