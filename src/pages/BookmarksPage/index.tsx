@@ -15,7 +15,7 @@ const circleBookmarks = (circles: Circle[]) =>
 const NoBookmarks = () => {
   return (
     <div className={styles.noBookmarks}>
-      You haven't added any circle to your bookmarks yet!
+      You haven't saved any circle to your favorites yet!
     </div>
   );
 };
