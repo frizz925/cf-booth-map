@@ -1,9 +1,10 @@
 import PageScreen from '@components/PageScreen';
 import AppContext from '@contexts/AppContext';
+import NavbarPresenter from '@presenters/NavbarPresenter';
 import PagePresenter from '@presenters/PagePresenter';
 import BookmarksPresenter from '@presenters/pages/BookmarksPresenter';
 import map from 'lodash/map';
-import React, { lazy, Suspense, useContext, useEffect, useMemo } from 'react';
+import React, { lazy, Suspense, useContext, useEffect, useMemo, useState } from 'react';
 import { Route, Switch, useLocation } from 'react-router';
 
 const BookmarksPage = lazy(() => import('@pages/BookmarksPage'));
@@ -18,8 +19,15 @@ interface PageDefinitions {
 
 const Loading = () => <div>Loading...</div>;
 
-export default ({ presenter }: { presenter: PagePresenter }) => {
+export default ({
+  presenter,
+  navbarPresenter,
+}: {
+  presenter: PagePresenter;
+  navbarPresenter: NavbarPresenter;
+}) => {
   const { repositories, observables } = useContext(AppContext);
+  const [navbar, setNavbar] = useState<Element>();
 
   const pageDefinitions: PageDefinitions = useMemo(() => {
     const bookmarksPresenter = new BookmarksPresenter(
@@ -47,6 +55,11 @@ export default ({ presenter }: { presenter: PagePresenter }) => {
   const title = pageDefinition ? pageDefinition.title : '';
 
   useEffect(() => {
+    const subscriber = navbarPresenter.navbarElement.subscribe(setNavbar);
+    return () => subscriber.unsubscribe();
+  }, []);
+
+  useEffect(() => {
     presenter.opened.next(opened);
   }, [presenter, opened]);
 
@@ -55,7 +68,7 @@ export default ({ presenter }: { presenter: PagePresenter }) => {
   }, [presenter, path]);
 
   return (
-    <PageScreen opened={opened} title={title}>
+    <PageScreen opened={opened} title={title} navbar={navbar}>
       <Suspense fallback={<Loading />}>
         <Switch>
           {map(pageDefinitions, (def, key) => (

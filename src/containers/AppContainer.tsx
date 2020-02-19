@@ -39,7 +39,7 @@ const AppContainer = ({
   };
 
   const containers = [
-    <PageContainer presenter={pagePresenter} />,
+    <PageContainer presenter={pagePresenter} navbarPresenter={navbarPresenter} />,
     <CardContainer presenter={cardPresenter} navbarPresenter={navbarPresenter} />,
     <NavbarContainer presenter={navbarPresenter} />,
     <StageContainer loadMap={loadMap} />,

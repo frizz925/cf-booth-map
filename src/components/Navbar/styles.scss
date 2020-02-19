@@ -10,11 +10,9 @@
   bottom: -100%;
   width: 100%;
   z-index: 20;
-
   box-sizing: border-box;
 
-  transition: bottom $transition-duration;
-  transition-timing-function: $transition-timing-function;
+  transition: bottom $transition-duration $transition-timing-function;
 
   &.shown {
     bottom: 0;
@@ -47,6 +45,6 @@
 
 .bottomPad {
   &.iphonex {
-    padding-bottom: 32px;
+    padding-bottom: $iphonex-bottom-margin;
   }
 }
