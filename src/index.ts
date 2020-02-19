@@ -47,7 +47,7 @@ const handleNewVersion = async (
   }
   reloadInProgress = true;
   if (!message) {
-    message = 'New version available. Refresh to update.';
+    message = 'New version available, refresh to update';
   }
   const result = await presenter.confirm(message, 'Refresh');
   if (!result) {
@@ -98,7 +98,7 @@ const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
 
   const updateWorker = () => {
     wb.addEventListener('controlling', () =>
-      presenter.snackbar('Service worker updated.'),
+      presenter.snackbar('Service worker updated'),
     );
     wb.messageSW({ type: 'SKIP_WAITING' });
   };

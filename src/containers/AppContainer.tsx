@@ -32,7 +32,7 @@ const AppContainer = ({
 
   const reloadOnError = async () => {
     const message =
-      'An error was encountered and the app needs to refresh. Press OK to refresh.';
+      'An error was encountered and the app needs to refresh. Press OK to refresh';
     if (await presenter.confirm(message)) {
       window.location.reload();
     }
