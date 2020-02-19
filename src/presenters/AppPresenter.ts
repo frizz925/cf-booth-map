@@ -61,7 +61,7 @@ export default class AppPresenter {
 
   private subscribeObservables() {
     this.bookmarkObservable.onAdd.subscribe(({ name }) => {
-      this.snackbar(`${name} added to favorites`);
+      this.snackbar(`${name} saved to favorites`);
     });
     this.bookmarkObservable.onRemove.subscribe(({ name }) => {
       this.snackbar(`${name} removed from favorites`);
