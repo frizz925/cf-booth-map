@@ -1,4 +1,5 @@
 import { CIRCLE_PATH_PREFIX } from '@utils/Routing';
+import { BehaviorSubject } from 'rxjs';
 import BookmarkObservable from 'src/observables/BookmarkObservable';
 import CardPresenter from './CardPresenter';
 import NavbarPresenter from './NavbarPresenter';
@@ -7,6 +8,8 @@ import SearchPresenter from './SearchPresenter';
 import SnackbarPresenter from './SnackbarPresenter';
 
 export default class AppPresenter {
+  public readonly shown = new BehaviorSubject(true);
+
   public readonly pagePresenter: PagePresenter;
   public readonly cardPresenter: CardPresenter;
   public readonly navbarPresenter: NavbarPresenter;
@@ -16,9 +19,11 @@ export default class AppPresenter {
   private readonly bookmarkObservable: BookmarkObservable;
 
   private readonly prevState = {
+    uiShown: true,
     pageOpened: false,
     cardShown: false,
     cardPulled: false,
+    searchShown: true,
     searchFocused: false,
     navbarShown: true,
   };
@@ -50,6 +55,10 @@ export default class AppPresenter {
     return this.snackbarPresenter.show(message, action);
   }
 
+  public toggleUi() {
+    this.shown.next(!this.shown.value);
+  }
+
   private subscribeObservables() {
     this.bookmarkObservable.onAdd.subscribe(({ name }) => {
       this.snackbar(`${name} added to bookmarks`);
@@ -67,6 +76,24 @@ export default class AppPresenter {
       navbarPresenter,
       prevState,
     } = this;
+
+    this.shown.subscribe(shown => {
+      if (!shown && prevState.uiShown) {
+        this.saveState();
+        cardPresenter.pulled.next(false);
+        cardPresenter.shown.next(false);
+        searchPresenter.focused.next(false);
+        searchPresenter.shown.next(false);
+        navbarPresenter.shown.next(false);
+      } else if (shown && !prevState.uiShown) {
+        cardPresenter.pulled.next(prevState.cardPulled);
+        cardPresenter.shown.next(prevState.cardShown);
+        searchPresenter.focused.next(prevState.searchFocused);
+        searchPresenter.shown.next(prevState.searchShown);
+        navbarPresenter.shown.next(prevState.navbarShown);
+        this.saveState();
+      }
+    });
 
     pagePresenter.opened.subscribe(opened => {
       if (opened && !prevState.pageOpened) {
@@ -128,10 +155,13 @@ export default class AppPresenter {
       prevState,
     } = this;
     if (presenters.length <= 0) {
-      presenters = [pagePresenter, cardPresenter, searchPresenter, navbarPresenter];
+      presenters = [this, pagePresenter, cardPresenter, searchPresenter, navbarPresenter];
     }
     presenters.forEach(presenter => {
       switch (true) {
+        case presenter === this:
+          prevState.uiShown = this.shown.value;
+          break;
         case presenter === pagePresenter:
           prevState.pageOpened = pagePresenter.opened.value;
           break;
@@ -140,6 +170,7 @@ export default class AppPresenter {
           prevState.cardPulled = cardPresenter.pulled.value;
           break;
         case presenter === searchPresenter:
+          prevState.searchShown = searchPresenter.shown.value;
           prevState.searchFocused = searchPresenter.focused.value;
           break;
         case presenter === navbarPresenter:

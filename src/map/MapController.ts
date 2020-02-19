@@ -1,3 +1,4 @@
+import AppPresenter from '@presenters/AppPresenter';
 import merge from 'lodash/merge';
 import MapRenderer, { AppState } from './MapRenderer';
 
@@ -6,6 +7,7 @@ const VELOCITY_MULTIPLIER = 20.0;
 const MAX_SCALE_VELOCITY = 3.0;
 
 export default class MapController {
+  private presenter: AppPresenter;
   private renderer: MapRenderer;
 
   private panState = {
@@ -20,7 +22,8 @@ export default class MapController {
     scaleVelocity: 0,
   };
 
-  constructor(renderer: MapRenderer) {
+  constructor(presenter: AppPresenter, renderer: MapRenderer) {
+    this.presenter = presenter;
     this.renderer = renderer;
   }
 
@@ -47,6 +50,7 @@ export default class MapController {
   };
 
   public onViewSingleTap = (evt: HammerInput) => {
+    this.presenter.toggleUi();
     this.updateOffset(evt.center.x, evt.center.y);
   };
 

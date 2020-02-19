@@ -28,10 +28,10 @@ WebFont.load({
   },
 });
 
-const loadMap = () =>
+const loadMap = (presenter: AppPresenter) =>
   import('./map').then(
     ({ default: map }) => {
-      map(document.getElementById('stage'));
+      map(presenter, document.getElementById('stage'));
     },
     err => console.error(err),
   );
@@ -146,7 +146,7 @@ const registerServiceWorker = (presenter: AppPresenter) => {
 
 import('./app').then(
   ({ default: app }) => {
-    const presenter = app(document.getElementById('app'), loadMap);
+    const presenter = app(document.getElementById('app'), () => loadMap(presenter));
     if (IS_PRODUCTION) {
       if (document.readyState === 'complete') {
         registerServiceWorker(presenter);

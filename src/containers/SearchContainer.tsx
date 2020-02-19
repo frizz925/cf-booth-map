@@ -12,6 +12,7 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
   const history = useHistory();
 
   const [circles, setCircles] = useState([] as CircleBookmark[]);
+  const [shown, setShown] = useState(presenter.shown.value);
   const [focused, setFocused] = useState(presenter.focused.value);
   const [searching, setSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -25,6 +26,7 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
 
   useEffect(() => {
     const subscribers = [
+      presenter.shown.subscribe(setShown),
       presenter.focused.subscribe(setFocused),
       presenter.onBookmark(circle =>
         findAndModifyCircles(circle, value => (value.bookmarked = true)),
@@ -80,6 +82,7 @@ export default ({ presenter }: { presenter: SearchPresenter }) => {
   return (
     <SearchForm
       circles={circles}
+      shown={shown}
       focused={focused}
       searching={searching}
       searchText={searchText}

@@ -14,6 +14,7 @@ interface BookmarkMap {
 }
 
 export default class SearchPresenter {
+  public readonly shown = new BehaviorSubject(true);
   public readonly focused = new BehaviorSubject(false);
   public readonly circle = new BehaviorSubject<Circle | undefined>(undefined);
   public readonly action = new Subject();

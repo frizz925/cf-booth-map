@@ -4,3 +4,4 @@ export const searchResultsContainer: string;
 
 // Modifiers
 export const focused: string;
+export const shown: string;

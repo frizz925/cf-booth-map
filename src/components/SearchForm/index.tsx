@@ -7,6 +7,7 @@ import * as styles from './styles.scss';
 
 interface SearchFormProps {
   circles: CircleBookmark[];
+  shown: boolean;
   focused: boolean;
   searching: boolean;
   searchText: string;
@@ -22,6 +23,7 @@ interface SearchFormProps {
 }
 
 const SearchForm: React.FC<SearchFormProps> = ({
+  shown,
   focused,
   searching,
   circles,
@@ -36,7 +38,9 @@ const SearchForm: React.FC<SearchFormProps> = ({
 }) => {
   const focusedClassName = focused ? styles.focused : '';
   const containerClassNames = classNames(styles.container, focusedClassName);
-  const searchBoxClassNames = classNames(styles.searchBoxContainer, focusedClassName);
+  const searchBoxClassNames = classNames(styles.searchBoxContainer, focusedClassName, {
+    [styles.shown]: shown,
+  });
   const searchResultsClassNames = classNames(
     styles.searchResultsContainer,
     focusedClassName,

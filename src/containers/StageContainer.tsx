@@ -1,10 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-interface StageContainerProps {
-  loadMap: MapStageLoader;
-}
-
-const StageContainer = ({ loadMap }: StageContainerProps) => {
+const StageContainer = ({ loadMap }: { loadMap: MapStageLoader }) => {
   const stageRef = useRef<HTMLDivElement>();
   useEffect(() => {
     loadMap(stageRef.current);

@@ -1,9 +1,13 @@
+import AppPresenter from '@presenters/AppPresenter';
 import Hammer from 'hammerjs';
 import MapController from './MapController';
 import MapRenderer from './MapRenderer';
 
-const setupRenderer = (stage: Element, renderer: MapRenderer) => {
-  const controller = new MapController(renderer);
+const setupRenderer = (
+  renderer: MapRenderer,
+  controller: MapController,
+  stage: Element,
+) => {
   window.addEventListener('resize', controller.onWindowResize);
   stage.addEventListener('wheel', (evt: WheelEvent) => controller.onMouseWheel(evt), {
     passive: true,
@@ -15,7 +19,10 @@ const setupRenderer = (stage: Element, renderer: MapRenderer) => {
   const doubleTap = new Hammer.Tap({ event: 'doubletap', taps: 2 });
   const pan = new Hammer.Pan({ threshold: 0, pointers: 0 });
 
-  mc.add([doubleTap, singleTap, pan]);
+  mc.add(doubleTap);
+  mc.add(singleTap).requireFailure(doubleTap);
+
+  mc.add(pan);
   mc.add(new Hammer.Pinch({ threshold: 0 })).recognizeWith(pan);
 
   mc.on('singletap', controller.onViewSingleTap);
@@ -26,9 +33,11 @@ const setupRenderer = (stage: Element, renderer: MapRenderer) => {
   renderer.attach(stage);
 };
 
-const map = (stage: Element) => {
+const map = (presenter: AppPresenter, stage: Element) => {
   Modernizr.on('webp', result => {
-    setupRenderer(stage, new MapRenderer(result));
+    const renderer = new MapRenderer(result);
+    const controller = new MapController(presenter, renderer);
+    setupRenderer(renderer, controller, stage);
   });
 };
 
