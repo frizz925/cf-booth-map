@@ -12,6 +12,7 @@ type OnSelectedItem = (item: NavbarItem) => void;
 
 export interface NavbarItem {
   icon: IconDefinition;
+  iconActive?: IconDefinition;
   title: string;
   path?: string;
   href?: string;
@@ -68,7 +69,7 @@ const renderItem = (
 ) => (
   <NavbarLink key={index} item={item} selected={selected} onSelectedItem={onSelectedItem}>
     <div className={styles.menuIcon}>
-      <FontAwesomeIcon icon={item.icon} />
+      <FontAwesomeIcon icon={(selected && item.iconActive) || item.icon} />
     </div>
     <div className={styles.menuTitle}>{item.title}</div>
   </NavbarLink>

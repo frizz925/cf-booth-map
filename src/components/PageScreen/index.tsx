@@ -18,11 +18,6 @@ const PageScreen: React.FC<PageScreenProps> = props => {
   });
   return (
     <div className={containerClassNames} style={{ paddingBottom: `${paddingBottom}px` }}>
-      <div className={styles.header}>
-        <div className={styles.headerContent}>
-          <h3 className={styles.title}>{title}</h3>
-        </div>
-      </div>
       <div className={styles.body}>{props.children}</div>
     </div>
   );

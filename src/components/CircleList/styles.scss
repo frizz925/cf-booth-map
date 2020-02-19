@@ -26,16 +26,25 @@
 
   justify-content: center;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1;
+  min-width: 0;
 
   & > h3 {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+
     color: $accent-color;
     font-size: $font-size-normal;
     font-weight: $font-weight;
-    margin: 0;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   & > span {
+    display: block;
     color: $font-color-light;
     display: block;
     margin-top: 2px;

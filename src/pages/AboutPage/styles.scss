@@ -23,6 +23,7 @@
 }
 
 .version {
+  color: $font-color-light;
   font-weight: $font-weight-light;
   text-align: center;
 }
@@ -33,6 +34,14 @@
   h3 {
     color: $accent-color;
     font-size: $font-size-normal;
+  }
+}
+
+.disclaimer {
+  h1,
+  h2,
+  h3 {
+    margin-bottom: 4px;
   }
 }
 

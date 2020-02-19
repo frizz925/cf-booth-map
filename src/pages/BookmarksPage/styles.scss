@@ -1,47 +1,5 @@
-@import 'modules/variables';
-@import 'modules/mixins';
-
 .noBookmarks {
   padding: 0 16px;
   text-align: center;
   margin: 16px auto;
-}
-
-.item {
-  display: flex;
-  border-bottom: 1px solid $separator-color;
-  flex-direction: row;
-  align-items: center;
-}
-
-.details {
-  @include clickable;
-  display: flex;
-  box-sizing: border-box;
-  padding: 12px;
-  height: 60px;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.title {
-  font-weight: $font-weight;
-  font-size: $font-size-normal;
-  margin: 0;
-}
-
-.number {
-  color: $font-color-light;
-  font-weight: $font-weight-light;
-  font-size: $font-size-small;
-}
-
-.action {
-  @include clickable;
-  color: $accent-color;
-  font-size: $font-size-medium;
-  width: 60px;
-  line-height: 60px;
-  text-align: center;
 }

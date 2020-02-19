@@ -1,6 +1,7 @@
 import Navbar, { NavbarItem } from '@components/Navbar';
+import { faHeart, faMap, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import {
-  faHeart,
+  faHeart as faHeartSolid,
   faInfoCircle,
   faMapMarked,
   faSync,
@@ -13,17 +14,20 @@ import { useLocation } from 'react-router-dom';
 
 const navbarItems: NavbarItem[] = [
   {
-    icon: faMapMarked,
+    icon: faMap,
+    iconActive: faMapMarked,
     title: 'Map',
     path: '/',
   },
   {
     icon: faHeart,
+    iconActive: faHeartSolid,
     title: 'Favorites',
     path: '/bookmarks',
   },
   {
-    icon: faInfoCircle,
+    icon: faQuestionCircle,
+    iconActive: faInfoCircle,
     title: 'About',
     path: '/about',
   },

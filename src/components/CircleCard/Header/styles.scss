@@ -2,7 +2,7 @@
 @import 'modules/mixins';
 
 .header {
-  flex-grow: 0;
+  flex: 0;
   box-sizing: border-box;
   width: 100%;
 }
@@ -16,6 +16,10 @@
     color: $accent-color;
     font-weight: $font-weight-bold;
     margin: 0;
+    padding: 0 8px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   & > .number {

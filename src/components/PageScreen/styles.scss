@@ -21,13 +21,12 @@
 }
 
 .header {
-  color: $accent-color;
   box-sizing: border-box;
   border-bottom: 1px solid $separator-color;
 }
 
 .body {
-  flex-grow: 1;
+  flex: 1;
   overflow: auto;
 }
 
