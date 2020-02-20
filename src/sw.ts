@@ -39,13 +39,6 @@ const cdnCaches: CDNCaches = {
   comifuro: new RegExp('^https://catalog\\.comifuro\\.net/'),
 };
 
-const cleanupStorageCaches = () =>
-  new Promise(resolve => {
-    caches.keys().then(keys => {
-      Promise.all(keys.map(key => caches.delete(key))).then(resolve);
-    });
-  });
-
 const cacheUpdatesPlugin = new BroadcastPlugin({
   channelName: 'cache-updates',
   headersToCheck: ['ETag', 'Last-Modified'],
@@ -126,10 +119,6 @@ const circleData = () =>
   );
 
   const messageHandlers: MessageHandlers = {
-    CACHE_CLEANUP: port => {
-      // Mock the cleanup process (because it's not necessary)
-      port.postMessage({ type: 'CACHE_CLEANUP_SUCCESS' });
-    },
     SKIP_WAITING: port => {
       service.skipWaiting();
       port.postMessage({ type: 'SKIP_WAITING_SUCCESS' });
