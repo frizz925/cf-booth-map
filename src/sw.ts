@@ -100,7 +100,7 @@ const circleData = () =>
   );
 
   registerRoute(
-    new RegExp('/api/'),
+    new RegExp('/api/(version|revision)$'),
     new StaleWhileRevalidate({
       cacheName: 'api-cache',
       plugins: [cacheUpdatesPlugin],
