@@ -63,7 +63,7 @@ const circleData = () =>
   service.__precacheManifest = (service.__precacheManifest || [])
     .filter(cache => {
       const url = typeof cache === 'object' ? cache.url : cache;
-      return !url.startsWith('/api/');
+      return !url.startsWith('/api/') && !url.startsWith('/assets/');
     })
     .map(cache => {
       if (typeof cache !== 'object') {
