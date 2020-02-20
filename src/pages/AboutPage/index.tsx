@@ -41,16 +41,22 @@ const aboutLinks: AboutLink[] = [
     href: 'https://twitter.com/comifuro',
   },
   {
+    title: 'GitHub',
+    icon: faGithub,
+    iconColor: GITHUB_COLOR,
+    href: GITHUB_LINK,
+  },
+  {
     title: 'Comic Frontier',
     icon: faGlobeAsia,
     iconColor: WEB_COLOR,
     href: 'https://comifuro.net/',
   },
   {
-    title: 'GitHub',
-    icon: faGithub,
-    iconColor: GITHUB_COLOR,
-    href: GITHUB_LINK,
+    title: 'Comic Frontier Catalog',
+    icon: faGlobeAsia,
+    iconColor: WEB_COLOR,
+    href: 'https://catalog.comifuro.net/',
   },
   {
     title: 'Feedback Form',
