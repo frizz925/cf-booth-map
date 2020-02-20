@@ -59,7 +59,6 @@ const AppContainer = ({
       </ErrorBoundary>
       <SnackbarContainer
         presenter={snackbarPresenter}
-        cardPresenter={cardPresenter}
         navbarPresenter={navbarPresenter}
       />
     </ManagedRouter>

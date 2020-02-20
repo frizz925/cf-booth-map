@@ -1,5 +1,4 @@
 import Snackbar from '@components/Snackbar';
-import CardPresenter from '@presenters/CardPresenter';
 import NavbarPresenter from '@presenters/NavbarPresenter';
 import SnackbarPresenter from '@presenters/SnackbarPresenter';
 import { isIphoneXAppMode } from '@utils/Device';
@@ -15,18 +14,15 @@ const getTop = (ref: RefObject<Element>) => {
 
 export default ({
   presenter,
-  cardPresenter,
   navbarPresenter,
 }: {
   presenter: SnackbarPresenter;
-  cardPresenter: CardPresenter;
   navbarPresenter: NavbarPresenter;
 }) => {
   const [shown, setShown] = useState(presenter.shown);
   const [content, setContent] = useState(presenter.content);
 
   const navbarRef = useRef<Element>();
-  const cardRef = useRef<Element>();
   const bottomRef = useRef(0);
 
   const bottom = useMemo(() => {
@@ -34,17 +30,10 @@ export default ({
       return bottomRef.current;
     }
 
-    const cardTop = getTop(cardRef);
     const navbarTop = getTop(navbarRef);
 
     let anchorTop = 0;
-    if (
-      cardPresenter.shown.value &&
-      !cardPresenter.pulled.value &&
-      cardTop < window.innerHeight
-    ) {
-      anchorTop = cardTop;
-    } else if (navbarPresenter.shown.value && navbarTop < window.innerHeight) {
+    if (navbarPresenter.shown.value && navbarTop < window.innerHeight) {
       anchorTop = navbarTop;
     }
 
@@ -58,9 +47,6 @@ export default ({
     const subscribers = [
       presenter.onShown(setShown),
       presenter.onContent(setContent),
-      cardPresenter.cardElement.subscribe(card => {
-        cardRef.current = card;
-      }),
       navbarPresenter.navbarElement.subscribe(navbar => {
         navbarRef.current = navbar;
       }),
