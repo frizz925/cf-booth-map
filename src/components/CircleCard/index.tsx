@@ -96,22 +96,19 @@ const CircleCard: React.FC<CircleCardProps> = props => {
       const deltaThreshold = Math.abs(evt.deltaY) >= window.innerHeight / 2;
       const velocityThreshold = Math.abs(evt.velocityY) >= PULL_VELOCITY_THRESHOLD;
       const reachThreshold = deltaThreshold || velocityThreshold;
-      if (velocityThreshold) {
-        if (Math.sign(evt.velocityY) <= 0) {
-          panState.wasPulled = true;
-          onCardPulled();
-        } else if (pulled) {
+      if (velocityThreshold && Math.sign(evt.velocityY) <= 0) {
+        panState.wasPulled = true;
+        onCardPulled();
+      } else if (velocityThreshold && Math.sign(evt.velocityY) > 0) {
+        if (pulled) {
           panState.wasPulled = false;
           onCardTabbed();
+        } else {
+          onCardHidden();
         }
-      } else if (deltaThreshold) {
-        if (Math.sign(evt.deltaY) <= 0) {
-          panState.wasPulled = true;
-          onCardPulled();
-        } else if (pulled) {
-          panState.wasPulled = false;
-          onCardTabbed();
-        }
+      } else if (deltaThreshold && Math.sign(evt.deltaY) <= 0) {
+        panState.wasPulled = true;
+        onCardPulled();
       } else {
         const currentBottom = panState.currentBottom;
         const hiddenThreshold =
