@@ -28,6 +28,11 @@ WebFont.load({
   },
 });
 
+const skipWaiting = async (wb: Workbox) => {
+  const result = await wb.messageSW({ type: 'SKIP_WAITING' });
+  return result.type === 'SKIP_WAITING_SUCCESS';
+};
+
 const loadMap = (presenter: AppPresenter) =>
   import('./map').then(
     ({ default: map }) => {
@@ -49,19 +54,17 @@ const handleNewVersion = async (
   if (!message) {
     message = 'New version available, refresh to update';
   }
-  const result = await presenter.confirm(message, 'Refresh');
-  if (!result) {
+  const confirmed = await presenter.confirm(message, 'Refresh');
+  if (!confirmed) {
     return;
   }
   if (cb) {
     cb();
   } else {
-    window.location.reload();
+    window.location.href = '/';
   }
   reloadInProgress = false;
 };
-
-const triggerCacheCleanup = (wb: Workbox) => wb.messageSW({ type: 'CACHE_CLEANUP' });
 
 const updateCheck = async () => {
   const now = new Date().toLocaleString('en-US');
@@ -100,7 +103,7 @@ const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
     wb.addEventListener('controlling', () =>
       presenter.snackbar('Service worker updated'),
     );
-    wb.messageSW({ type: 'SKIP_WAITING' });
+    skipWaiting(wb);
   };
 
   wb.addEventListener('waiting', () => {
@@ -121,7 +124,6 @@ const registerWorkboxListeners = (wb: Workbox, presenter: AppPresenter) => {
       return;
     }
     updateInProgress = true;
-    await triggerCacheCleanup(wb);
     await handleNewVersion(presenter);
     updateInProgress = false;
   });
@@ -136,10 +138,7 @@ const registerServiceWorker = (presenter: AppPresenter) => {
     startPeriodicUpdateCheck();
 
     (window as any).loadNewVersion = async () => {
-      handleNewVersion(presenter, null, async () => {
-        await triggerCacheCleanup(wb);
-        window.location.reload();
-      });
+      await handleNewVersion(presenter);
     };
   }
 };

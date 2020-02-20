@@ -10,6 +10,7 @@ const WebpackDevServer = require('webpack-dev-server');
 
 const date = require('./gulp-streams/date');
 const hash = require('./gulp-streams/hash');
+const revision = require('./gulp-streams/revision');
 const version = require('./gulp-streams/version');
 
 const getVersion = cb => {
@@ -50,6 +51,7 @@ const zeropad = text => {
 
 task('sw', () =>
   src('src/sw.ts')
+    .pipe(revision())
     .pipe(babel())
     .pipe(dest('staging')),
 );

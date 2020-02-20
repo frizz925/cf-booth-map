@@ -148,7 +148,7 @@ const webpackConfig = {
     new CopyPlugin([
       { from: 'assets', to: 'assets' },
       { from: 'src/api', to: 'api' },
-      { from: 'src/assets/modernizr-custom.js', to: 'js' },
+      { from: 'src/assets/modernizr-custom.js', to: 'assets/js' },
       { from: 'src/manifest.json', to: 'manifest.json' },
       { from: 'staging/version', to: 'api', force: true },
       { from: 'staging/revision', to: 'api', force: true },

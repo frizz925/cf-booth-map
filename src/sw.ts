@@ -29,6 +29,7 @@ interface MessageHandlers {
   [key: string]: (port: MessagePort) => void;
 }
 
+const CURRENT_REVISION = '{{ REVISION }}';
 const CIRCLE_CHUNKS = 13;
 
 const cdnCaches: CDNCaches = {
@@ -58,20 +59,30 @@ const range = (end: number) => {
   return results;
 };
 
-const circleData = () => range(CIRCLE_CHUNKS).map(chunk => `/api/circles-${chunk}.json`);
-const mapImages = () => {
-  const results: string[] = [];
-
-  return results;
-};
+const circleData = () =>
+  range(CIRCLE_CHUNKS).map(chunk => ({
+    url: `/api/circles-${chunk}.json`,
+    revision: CURRENT_REVISION,
+  }));
 
 ((service: WorkboxGlobalScope) => {
+  const bundleRegexp = /\w+\.\w+\.js(\.LICENSE)?$/;
   service.__precacheManifest = (service.__precacheManifest || [])
     .filter(cache => {
       const url = typeof cache === 'object' ? cache.url : cache;
       return !url.startsWith('/api/');
     })
-    .concat(['/index.html'], circleData())
+    .map(cache => {
+      if (typeof cache !== 'object') {
+        return cache;
+      }
+      const url = cache.url;
+      if (bundleRegexp.test(url) && url.indexOf('bundle') <= 0) {
+        cache.revision = null;
+      }
+      return cache;
+    })
+    .concat([{ url: '/index.html', revision: CURRENT_REVISION }], circleData())
     .reverse();
 
   clientsClaim();
@@ -85,6 +96,15 @@ const mapImages = () => {
     caches.open(cacheNames.precache).then(cache => cache.match(cacheKey)),
   );
   registerRoute(navigationRoute);
+
+  registerRoute(
+    new RegExp('/assets/'),
+    new StaleWhileRevalidate({
+      cacheName: 'assets-cache',
+      plugins: [cacheUpdatesPlugin],
+    }),
+    'GET',
+  );
 
   registerRoute(
     new RegExp('/api/'),
@@ -107,11 +127,13 @@ const mapImages = () => {
 
   const messageHandlers: MessageHandlers = {
     CACHE_CLEANUP: port => {
-      cleanupStorageCaches().then(() => {
-        port.postMessage({ type: 'CACHE_CLEANED_UP' });
-      });
+      // Mock the cleanup process (because it's not necessary)
+      port.postMessage({ type: 'CACHE_CLEANUP_SUCCESS' });
     },
-    SKIP_WAITING: () => service.skipWaiting(),
+    SKIP_WAITING: port => {
+      service.skipWaiting();
+      port.postMessage({ type: 'SKIP_WAITING_SUCCESS' });
+    },
   };
 
   service.addEventListener('message', ({ data, ports }) => {
